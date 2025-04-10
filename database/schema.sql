@@ -1,0 +1,46 @@
+
+CREATE TABLE IF NOT EXISTS covers (
+
+    id BIGSERIAL PRIMARY KEY,
+    enum_value VARCHAR(63) UNIQUE NOT NULL
+
+);
+
+
+CREATE TABLE IF NOT EXISTS books (
+
+	id BIGSERIAL PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	isbn VARCHAR(31),
+	cover_id BIGINT NOT NULL REFERENCES covers,
+	author VARCHAR (255),
+	published_year INT,
+	price DECIMAL(15,2)
+
+);
+
+CREATE TABLE IF NOT EXISTS roles (
+
+    id BIGSERIAL PRIMARY KEY,
+    enum_value VARCHAR(63) UNIQUE NOT NULL
+
+);
+
+
+CREATE TABLE IF NOT EXISTS users (
+
+	id BIGSERIAL PRIMARY KEY,
+	first_name VARCHAR(255),
+	last_name VARCHAR(255),
+	email VARCHAR(255),
+	login VARCHAR(255) UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	role_id BIGINT NOT NULL REFERENCES roles
+
+);
+
+
+
+
+
+

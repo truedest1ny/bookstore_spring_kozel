@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status = "error" strict = "true">
+
+    <Properties>
+        <Property name = "stdPattern" >%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{5} - %msg%n</Property>
+        <Property name = "LOG_DIR" >logs</Property>
+        <Property name = "ARCHIVE_LOG_DIR" >${LOG_DIR}/archive</Property>
+    </Properties>
+
+    <Appenders>
+
+        <Console name = "Console">
+            <Layout type = "patternLayout" pattern = "${stdPattern}" />
+        </Console>
+
+        <RollingFile name = "FileRoll" fileName = "${LOG_DIR}/text_log.log" append = "true"
+                        filePattern =
+                                    "${LOG_DIR}/${date:yyyy-MM-dd}/%d{yyyy-MM-dd_HH-mm}_%i.log">
+            <PatternLayout pattern = "${stdPattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size = "15 KB"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max = "10"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level = "debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileRoll" level = "info"/>
+        </Root>
+    </Loggers>
+</Configuration>

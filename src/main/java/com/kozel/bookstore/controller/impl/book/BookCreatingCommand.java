@@ -1,0 +1,23 @@
+package com.kozel.bookstore.controller.impl.book;
+
+import com.kozel.bookstore.controller.Command;
+import com.kozel.bookstore.controller.CommandResult;
+import com.kozel.bookstore.service.dto.BookDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class BookCreatingCommand implements Command {
+
+    @Override
+    public CommandResult process(HttpServletRequest req) {
+
+        req.setAttribute("covers", BookDto.Cover.values());
+
+        return new CommandResult("jsp/book/create_book.jsp", HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    public CommandResult process(HttpServletRequest req, Exception e) {
+        return null;
+    }
+}
