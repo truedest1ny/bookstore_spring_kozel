@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <bean id="dataSource" class="com.kozel.bookstore.data.connection.impl.DataSourceImpl">
+        <constructor-arg value="${DRIVER_REMOTE}"/>
+        <constructor-arg value="${URI_REMOTE}"/>
+        <constructor-arg value="${USER_REMOTE}"/>
+        <constructor-arg value="${PASSWORD_REMOTE}"/>
+        <constructor-arg value="${CONNECTION_POOL_SIZE}"/>
+    </bean>
+
+    <bean id="bookDao" class="com.kozel.bookstore.data.dao.impl.BookDaoImpl">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="userDao" class="com.kozel.bookstore.data.dao.impl.UserDaoImpl">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="dataMapper" class="com.kozel.bookstore.service.mapper.DataMapperImpl" />
+
+    <bean id="bookService" class="com.kozel.bookstore.service.impl.BookServiceImpl">
+        <constructor-arg ref="bookDao"/>
+        <constructor-arg ref="dataMapper"/>
+    </bean>
+
+    <bean id="userService" class="com.kozel.bookstore.service.impl.UserServiceImpl">
+        <constructor-arg ref="userDao"/>
+        <constructor-arg ref="dataMapper"/>
+    </bean>
+
+    <!--COMMANDS-->
+
+    <bean id="book" class="com.kozel.bookstore.controller.impl.book.BookCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="books" class="com.kozel.bookstore.controller.impl.book.BooksCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="user" class="com.kozel.bookstore.controller.impl.user.UserCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+    <bean id="users" class="com.kozel.bookstore.controller.impl.user.UsersCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+    <bean id="error" class="com.kozel.bookstore.controller.impl.ErrorCommand" />
+
+    <bean id="updateBook" class="com.kozel.bookstore.controller.impl.book.UpdateBookCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="editBook" class="com.kozel.bookstore.controller.impl.book.EditBookCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="updateUser" class="com.kozel.bookstore.controller.impl.user.UpdateUserCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+    <bean id="editUser" class="com.kozel.bookstore.controller.impl.user.EditUserCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+    <bean id="deleteBook" class="com.kozel.bookstore.controller.impl.book.BookDeleteCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="deleteUser" class="com.kozel.bookstore.controller.impl.user.UserDeleteCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+    <bean id="creatingBook" class="com.kozel.bookstore.controller.impl.book.BookCreatingCommand" />
+
+    <bean id="createBook" class="com.kozel.bookstore.controller.impl.book.BookCreateCommand">
+        <constructor-arg ref="bookService"/>
+    </bean>
+
+    <bean id="creatingUser" class="com.kozel.bookstore.controller.impl.user.UserCreatingCommand" />
+
+    <bean id="createUser" class="com.kozel.bookstore.controller.impl.user.UserCreateCommand">
+        <constructor-arg ref="userService"/>
+    </bean>
+
+</beans>
