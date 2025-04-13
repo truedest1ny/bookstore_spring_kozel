@@ -1,20 +1,27 @@
 package com.kozel.bookstore.controller;
 
+import com.kozel.bookstore.AppConfig;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
 @WebListener
 @Slf4j
 public class AppListener implements ServletContextListener {
 
+    private static AnnotationConfigApplicationContext CONTEXT;
+
+    public static AnnotationConfigApplicationContext getContext() {
+        return CONTEXT;
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
-        CommandFactory instance = CommandFactory.INSTANCE;
+        CONTEXT = new AnnotationConfigApplicationContext(AppConfig.class);
         log.info("Context initialized");
     }
 
@@ -22,7 +29,7 @@ public class AppListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
 
         log.debug("ServletContextDestroy event");
-        CommandFactory.INSTANCE.close();
+        CONTEXT.close();
         log.info("Context destroyed");
     }
 }

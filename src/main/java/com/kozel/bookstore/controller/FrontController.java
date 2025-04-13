@@ -28,7 +28,7 @@ public class FrontController extends HttpServlet {
         String commandParameter = req.getParameter("command");
 
         try {
-            Command command = CommandFactory.INSTANCE.get(commandParameter);
+            Command command = AppListener.getContext().getBean(commandParameter, Command.class);
             CommandResult result = command.process(req);
             req.getRequestDispatcher(result.getPage()).forward(req, resp);
 
@@ -39,7 +39,8 @@ public class FrontController extends HttpServlet {
             req.setAttribute("id", id);
             req.setAttribute("command", commandParameter);
 
-            Command command = CommandFactory.INSTANCE.get("error");
+            Command command = AppListener.getContext().getBean("error", Command.class);
+
             CommandResult result = command.process(req, e);
 
             resp.setStatus(result.getStatusCode());
