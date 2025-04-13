@@ -7,9 +7,11 @@ import com.kozel.bookstore.service.dto.BookDtoShowing;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller("books")
 @RequiredArgsConstructor
 public class BooksCommand implements Command {
 

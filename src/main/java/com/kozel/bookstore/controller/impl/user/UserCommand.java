@@ -7,8 +7,9 @@ import com.kozel.bookstore.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
-
+@Controller("user")
 @RequiredArgsConstructor
 public class UserCommand implements Command {
 

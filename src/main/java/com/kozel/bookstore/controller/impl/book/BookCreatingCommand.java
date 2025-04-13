@@ -5,7 +5,9 @@ import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.dto.BookDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
 
+@Controller("creatingBook")
 public class BookCreatingCommand implements Command {
 
     @Override

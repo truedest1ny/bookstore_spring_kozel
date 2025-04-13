@@ -5,11 +5,13 @@ import com.kozel.bookstore.data.dao.BookDao;
 import com.kozel.bookstore.data.entity.Book;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 @Slf4j
 @RequiredArgsConstructor
 public class BookDaoImpl implements BookDao {

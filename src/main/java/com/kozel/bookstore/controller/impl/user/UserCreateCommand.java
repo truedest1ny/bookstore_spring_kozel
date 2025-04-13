@@ -7,8 +7,9 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
-
+@Controller("createUser")
 @RequiredArgsConstructor
 public class UserCreateCommand implements Command {
     private final UserService userService;

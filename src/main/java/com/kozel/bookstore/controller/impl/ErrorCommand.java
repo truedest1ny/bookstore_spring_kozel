@@ -3,14 +3,15 @@ package com.kozel.bookstore.controller.impl;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.exception.BookNotFoundException;
-import com.kozel.bookstore.service.exception.IllegalCommandException;
 import com.kozel.bookstore.service.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.stereotype.Controller;
 
 import java.sql.SQLException;
 
-
+@Controller("error")
 public class ErrorCommand implements Command {
 
     @Override
@@ -30,7 +31,7 @@ public class ErrorCommand implements Command {
             case SQLException sqlException ->
                     new CommandResult("jsp/error/sql_error.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
-            case IllegalCommandException illegalCommandException ->
+            case NoSuchBeanDefinitionException noSuchBeanDefinitionException ->
                     new CommandResult("jsp/error/404/command_not_found.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
             case NumberFormatException numberFormatException ->

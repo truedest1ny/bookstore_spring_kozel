@@ -6,7 +6,9 @@ import com.kozel.bookstore.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
+@Controller("deleteBook")
 @RequiredArgsConstructor
 public class BookDeleteCommand implements Command {
 
