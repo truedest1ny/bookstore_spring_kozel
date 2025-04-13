@@ -4,7 +4,9 @@ import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
 
+@Controller("creatingUser")
 public class UserCreatingCommand implements Command {
 
     @Override

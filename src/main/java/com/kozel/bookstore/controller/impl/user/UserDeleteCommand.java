@@ -6,7 +6,9 @@ import com.kozel.bookstore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
+@Controller("deleteUser")
 @RequiredArgsConstructor
 public class UserDeleteCommand implements Command {
 

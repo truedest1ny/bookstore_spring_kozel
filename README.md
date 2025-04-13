@@ -8,10 +8,10 @@ You must have a **database**, that meets  the following *criteria*:
 - *Database name*: `bookstore_bh`;
 - *Login* : `postgres`, *password*: see in a file `application.properties`.
 
-## Hometask #1 (Data Access Object)
-
 
 ### Application description
+
+## Hometask #1.1 (Data Access Object)
 
 There is a *data class* [Book](src/main/java/com/kozel/bookstore/data/entity/Book.java) used in application, which contains following fields:
 
@@ -39,7 +39,7 @@ There is also an *interface* [BookDao](src/main/java/com/kozel/bookstore/data/da
 *Class* [BookDaoImpl](src/main/java/com/kozel/bookstore/data/dao/impl/BookDaoImpl.java) implements interface `BookDao` and carries out the methods described above.
 
 
-## Hometask #2 (Service)
+## Hometask #1.2 (Service)
 
 There is a *Data Transfer Object* [BookDto](src/main/java/com/kozel/bookstore/service/dto/BookDto.java) Having a similar structure to `Book` data class and another *DTO* [BookDtoShowing](src/main/java/com/kozel/bookstore/service/dto/BookDtoShowing.java) providing an abbreviated representation of a `Book` object for display to the user.
 
@@ -47,9 +47,9 @@ Also, there is an *interface* [BookService](src/main/java/com/kozel/bookstore/se
 
 Interface [DataSource](src/main/java/com/kozel/bookstore/data/connection/DataSource.java) has a method `getConnection()`, which is implemented by class: [DataSourceImpl](src/main/java/com/kozel/bookstore/data/connection/impl/DataSourceImpl.java).
 
-Connection parameters are read from the file [application.properties](src/main/resources/application.properties) (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the [ConnectionProperties](src/main/java/com/kozel/bookstore/data/connection/ConnectionProperties.java) class.
+Connection parameters are read from the file [application.properties](src/main/resources/application.properties) (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the `ConnectionProperties` class.
 
-## Hometask 3 (User)
+## Hometask #1.3 (User)
 
 Added entity [User](src/main/java/com/kozel/bookstore/data/entity/User.java) and created all classes, Data and DTO similar to entity `Book`.
 
@@ -57,9 +57,9 @@ The project now uses *Maven* for build. Its code is in [pom.xml](pom.xml) file w
 
 *Logging* is connected to the project `(Log4j2)`. Its configuration settings are described in the [log4j2.xml](src/main/resources/log4j2.xml) file.
 
-## Hometask 4 (Web HTTP)
+## Hometask #1.4 (Web HTTP)
 
-There is a Controller layer implemented in next classes: 
+There is a Controller layer implemented in next classes:
 - `MainPageController`,being a servlet to the server's home page;
 - `BookController`, which is a book information servlet;
 - `UserController` is a user information servlet;
@@ -70,7 +70,7 @@ All these classes extend `HttpServlet` class and override the `doGet()` method. 
 
 The project is packed into a `war` archive, as a result of which it can be deployed on the server (`Tomcat` in this case).
 
-## Hometask 5 (Patterns)
+## Hometask #1.5 (Patterns)
 
 Previous controller classes were reworked: the *Front Controller* design pattern was applied.
 
@@ -96,4 +96,12 @@ A `FrontController` class of the same name was created, which is the only servle
    - [UserDeleteCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UserDeleteCommand.java);
    - [UsersCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UsersCommand.java).
 
-The creation of all the main components of the application takes place in the [CommandFactory](src/main/java/com/kozel/bookstore/controller/CommandFactory.java) class, which implements two design patterns at once: `Factory` and `Singleton` 
+The creation of all the main components of the application takes place in the `CommandFactory` class, which implements two design patterns at once: `Factory` and `Singleton`.
+
+## Hometask #2.1 (Spring Framework)
+
+The project has been migrated to Spring Framework. The framework is configured using a Java class [AppConfig](src/main/java/com/kozel/bookstore/AppConfig.java) and Annotation `@Component (@Repository, @Service, @Controller)`.
+Removed unused classes:
+- `CommandFactory`;
+- `ConnectionProperties` and its implementation `ConnectionPropertiesImpl`;
+- `IllegalCommandException`.

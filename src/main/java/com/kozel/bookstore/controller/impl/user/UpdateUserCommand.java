@@ -7,7 +7,9 @@ import com.kozel.bookstore.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
+@Controller("updateUser")
 @RequiredArgsConstructor
 public class UpdateUserCommand implements Command {
 

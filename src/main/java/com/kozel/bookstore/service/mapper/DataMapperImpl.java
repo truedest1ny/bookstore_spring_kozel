@@ -3,7 +3,9 @@ package com.kozel.bookstore.service.mapper;
 import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.service.dto.*;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DataMapperImpl implements DataMapper {
     @Override
     public UserDto toDto(User entity) {
