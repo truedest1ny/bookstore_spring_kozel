@@ -7,9 +7,9 @@ import com.kozel.bookstore.service.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 
-import java.sql.SQLException;
 
 @Controller("error")
 public class ErrorCommand implements Command {
@@ -28,7 +28,7 @@ public class ErrorCommand implements Command {
             case BookNotFoundException bookNotFoundException ->
                     new CommandResult("jsp/error/404/book_not_found.jsp", HttpServletResponse.SC_NOT_FOUND);
 
-            case SQLException sqlException ->
+            case DataAccessException dataAccessException ->
                     new CommandResult("jsp/error/sql_error.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
             case NoSuchBeanDefinitionException noSuchBeanDefinitionException ->

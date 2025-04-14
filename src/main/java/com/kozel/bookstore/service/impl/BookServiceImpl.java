@@ -9,6 +9,7 @@ import com.kozel.bookstore.service.exception.BookNotFoundException;
 import com.kozel.bookstore.service.mapper.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,7 +25,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAll() {
-
         log.debug("Called getAll() method");
 
         return bookDao.findAll()
@@ -35,7 +35,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDtoShowing> getBooksDtoShort() {
-
         log.debug("Called getBooksDtoShort() method");
 
         return bookDao.findAll()
@@ -46,20 +45,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getById(Long id) {
-
         log.debug("Called getById() method");
+        try {
 
-        Book book = bookDao.findById(id);
-        if (book == null)
-        {
+            Book book = bookDao.findById(id);
+
+            return dataMapper.toDto(book);
+        } catch (DataAccessException e) {
             throw new BookNotFoundException("Cannot find book by id " + id);
         }
-        return dataMapper.toDto(book);
+
     }
 
     @Override
     public Long create(BookDto bookDto) {
-
         log.debug("Called create() method");
 
         Book entity = dataMapper.toEntity(bookDto);
@@ -68,7 +67,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto update(BookDto bookDto) {
-
         log.debug("Called update() method");
 
         Book entity = dataMapper.toEntity(bookDto);
@@ -78,26 +76,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id) {
-
         log.debug("Called delete() method");
 
-        boolean success = bookDao.deleteById(id);
-        if (!success)
-        {
-           throw new RuntimeException("Cannot delete book (id = " + id + ")");
+        try {
+            bookDao.deleteById(id);
+        }catch (DataAccessException e){
+            throw new RuntimeException("Cannot delete book (id = " + id + ")");
         }
     }
 
     @Override
     public BigDecimal getSumPriceByAuthor(String author) {
-
         log.debug("Called getSumPriceByAuthor() method");
 
         BigDecimal SumPrice = BigDecimal.valueOf(0);
         List<BookDto> bookDtos = bookDao.findByAuthor(author)
-                                    .stream()
-                                    .map(dataMapper::toDto)
-                                    .toList();
+                .stream()
+                .map(dataMapper::toDto)
+                .toList();
         if (bookDtos.isEmpty())
         {
             return SumPrice;
@@ -109,3 +105,4 @@ public class BookServiceImpl implements BookService {
         return SumPrice;
     }
 }
+
