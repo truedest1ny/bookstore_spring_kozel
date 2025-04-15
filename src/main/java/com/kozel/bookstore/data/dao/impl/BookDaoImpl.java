@@ -10,7 +10,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,19 +27,24 @@ public class BookDaoImpl implements BookDao {
 
     private static final String GET_BY_ID_SQL_NP =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.id = :id";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.id = :id AND bk.is_deleted = false";
 
     private static final String GET_ALL_SQL =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id ORDER BY bk.id";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.is_deleted = false" +
+                    " ORDER BY bk.id";
 
     private static final String GET_BY_ISBN_SQL_NP =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.isbn = :isbn";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.isbn = :isbn AND bk.is_deleted = false";
 
     private static final String GET_BY_AUTHOR_SQL_NP =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.author = :author";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.author = :author AND bk.is_deleted = false";
 
     private static final String UPDATE_SQL_NP =
             "UPDATE books SET " +
@@ -49,16 +53,16 @@ public class BookDaoImpl implements BookDao {
                     "cover_id = (SELECT id FROM covers WHERE enum_value = :cover), " +
                     "author = :author, " +
                     "published_year = :publishedYear, " +
-                    "price = :price " +
+                    "price = :price, " +
+                    "is_deleted = :isDeleted " +
                     "WHERE id = :id";
 
-    private static final String DELETE_BY_ID_SQL_NP =
-            "DELETE FROM books WHERE id = :id";
+    private static final String CLEAR_DELETED_ROWS_SQL_NP =
+            "DELETE FROM books WHERE is_deleted = :isDeleted";
 
     private static final String COUNT_ALL_SQL =
             "SELECT COUNT (id) FROM books";
 
-    private final DataSource dataSource;
     private final NamedParameterJdbcTemplate template;
 
 
@@ -112,26 +116,21 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book update(Book book) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("id", book.getId())
-                .addValue("name", book.getName())
-                .addValue("isbn", book.getIsbn())
-                .addValue("cover", book.getCover().toString())
-                .addValue("author", book.getAuthor())
-                .addValue("publishedYear", book.getPublishedYear())
-                .addValue("price", book.getPrice());
-
-        template.update(UPDATE_SQL_NP, parameterSource);
-
+        MapSqlUpdate(book);
         return findById(book.getId());
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("id", id);
+    public void delete(Book book) {
+        MapSqlUpdate(book);
+    }
 
-        return template.update(DELETE_BY_ID_SQL_NP, parameterSource) == 1;
+    @Override
+    public long clearDeletedRows() {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("isDeleted", true);
+
+        return template.update(CLEAR_DELETED_ROWS_SQL_NP, parameterSource);
     }
 
     @Override
@@ -148,9 +147,22 @@ public class BookDaoImpl implements BookDao {
         book.setAuthor(resultSet.getString("author"));
         book.setPublishedYear(resultSet.getInt("published_year"));
         book.setPrice(resultSet.getBigDecimal("price"));
+
         return book;
     }
+    private void MapSqlUpdate(Book book) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", book.getId())
+                .addValue("name", book.getName())
+                .addValue("isbn", book.getIsbn())
+                .addValue("cover", book.getCover().toString())
+                .addValue("author", book.getAuthor())
+                .addValue("publishedYear", book.getPublishedYear())
+                .addValue("price", book.getPrice())
+                .addValue("isDeleted", book.isDeleted());
 
+        template.update(UPDATE_SQL_NP, parameterSource);
+    }
 }
 
 

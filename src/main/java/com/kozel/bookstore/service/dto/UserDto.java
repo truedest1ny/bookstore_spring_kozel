@@ -14,6 +14,7 @@ public class UserDto {
     private String login;
     private String password;
     private Role role;
+    private boolean isDeleted;
 
     public enum Role {
         SUPER_ADMIN,

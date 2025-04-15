@@ -18,6 +18,7 @@ public class DataMapperImpl implements DataMapper {
         userDto.setLogin(entity.getLogin());
         userDto.setPassword(entity.getPassword());
         userDto.setRole(UserDto.Role.valueOf(entity.getRole().toString()));
+        userDto.setDeleted(entity.isDeleted());
 
         return userDto;
     }
@@ -34,6 +35,7 @@ public class DataMapperImpl implements DataMapper {
         user.setLogin(userDto.getLogin());
         user.setPassword(userDto.getPassword());
         user.setRole(User.Role.valueOf(userDto.getRole().toString()));
+        user.setDeleted(userDto.isDeleted());
 
         return user;
 
@@ -63,6 +65,7 @@ public class DataMapperImpl implements DataMapper {
         bookDto.setAuthor(entity.getAuthor());
         bookDto.setPublishedYear(entity.getPublishedYear());
         bookDto.setPrice(entity.getPrice());
+        bookDto.setDeleted(entity.isDeleted());
         return bookDto;
     }
 
@@ -76,6 +79,7 @@ public class DataMapperImpl implements DataMapper {
         book.setAuthor(bookDto.getAuthor());
         book.setPublishedYear(bookDto.getPublishedYear());
         book.setPrice(bookDto.getPrice());
+        book.setDeleted(bookDto.isDeleted());
         return book;
     }
 

@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class User {
-
     private Long id;
     private String firstName;
     private String lastName;
@@ -13,6 +12,7 @@ public class User {
     private String login;
     private String password;
     private Role role;
+    private boolean isDeleted = false;
 
     public enum Role {
         SUPER_ADMIN,

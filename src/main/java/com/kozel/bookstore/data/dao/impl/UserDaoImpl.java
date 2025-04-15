@@ -10,7 +10,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,23 +27,29 @@ public class UserDaoImpl implements UserDao {
 
     private static final String GET_ALL_SQL =
             "SELECT us.id, us.first_name, us.last_name, us.email, us.login, us.password, rl.enum_value FROM users us" +
-                    " JOIN roles rl ON us.role_id = rl.id ORDER BY us.id";
+                    " JOIN roles rl ON us.role_id = rl.id" +
+                    " WHERE us.is_deleted = false" +
+                    " ORDER BY us.id";
 
     private static final String GET_BY_ID_SQL_NP =
             "SELECT us.id, us.first_name, us.last_name, us.email, us.login, us.password, rl.enum_value FROM users us" +
-                    " JOIN roles rl ON us.role_id = rl.id WHERE us.id = :id";
+                    " JOIN roles rl ON us.role_id = rl.id" +
+                    " WHERE us.id = :id AND us.is_deleted = false";
 
     private static final String GET_BY_EMAIL_SQL_NP =
             "SELECT us.id, us.first_name, us.last_name, us.email, us.login, us.password, rl.enum_value FROM users us" +
-                    " JOIN roles rl ON us.role_id = rl.id WHERE us.email = :email";
+                    " JOIN roles rl ON us.role_id = rl.id" +
+                    " WHERE us.email = :email AND us.is_deleted = false";
 
     private static final String GET_BY_LOGIN_SQL_NP =
             "SELECT us.id, us.first_name, us.last_name, us.email, us.login, us.password, rl.enum_value FROM users us" +
-                    " JOIN roles rl ON us.role_id = rl.id WHERE us.login = :login";
+                    " JOIN roles rl ON us.role_id = rl.id" +
+                    " WHERE us.login = :login AND us.is_deleted = false";
 
     private static final String GET_BY_LAST_NAME_SQL_NP =
             "SELECT us.id, us.first_name, us.last_name, us.email, us.login, us.password, rl.enum_value FROM users us" +
-                    " JOIN roles rl ON us.role_id = rl.id WHERE us.last_name = :lastName";
+                    " JOIN roles rl ON us.role_id = rl.id" +
+                    " WHERE us.last_name = :lastName AND us.is_deleted = false";
 
     private static final String UPDATE_SQL_NP =
             "UPDATE users SET " +
@@ -53,16 +58,16 @@ public class UserDaoImpl implements UserDao {
                     "email = :email, " +
                     "login = :login, " +
                     "password = :password, " +
-                    "role_id = (SELECT id FROM roles WHERE enum_value = :role) " +
+                    "role_id = (SELECT id FROM roles WHERE enum_value = :role), " +
+                    "is_deleted = :isDeleted " +
                     "WHERE id = :id";
 
-    private static final String DELETE_BY_ID_SQL_NP =
-            "DELETE FROM users WHERE id = :id";
+    private static final String CLEAR_DELETED_ROWS_SQL_NP =
+            "DELETE FROM users WHERE is_deleted = :isDeleted";
 
     private static final String COUNT_ALL_SQL =
             "SELECT COUNT (id) FROM users";
 
-    private final DataSource dataSource;
     private final NamedParameterJdbcTemplate template;
 
 
@@ -98,27 +103,22 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User update(User user) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource
-                .addValue("id", user.getId())
-                .addValue("firstName", user.getFirstName())
-                .addValue("lastName", user.getLastName())
-                .addValue("email", user.getEmail())
-                .addValue("login", user.getLogin())
-                .addValue("password", user.getPassword())
-                .addValue("role", user.getRole().toString());
-
-        template.update(UPDATE_SQL_NP, parameterSource);
-
+        MapSqlUpdate(user);
         return findById(user.getId());
     }
 
-    @Override
-    public boolean deleteById(Long id) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("id", id);
 
-        return template.update(DELETE_BY_ID_SQL_NP, parameterSource) == 1;
+    @Override
+    public void delete(User user) {
+        MapSqlUpdate(user);
+    }
+
+    @Override
+    public long clearDeletedRows() {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("isDeleted", true);
+
+        return template.update(CLEAR_DELETED_ROWS_SQL_NP, parameterSource);
     }
 
     @Override
@@ -161,5 +161,21 @@ public class UserDaoImpl implements UserDao {
         user.setRole(User.Role.valueOf(resultSet.getString("enum_value")));
         return user;
     }
-}
 
+
+    private void MapSqlUpdate(User user) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource
+                .addValue("id", user.getId())
+                .addValue("firstName", user.getFirstName())
+                .addValue("lastName", user.getLastName())
+                .addValue("email", user.getEmail())
+                .addValue("login", user.getLogin())
+                .addValue("password", user.getPassword())
+                .addValue("role", user.getRole().toString())
+                .addValue("isDeleted", user.isDeleted());
+
+
+        template.update(UPDATE_SQL_NP, parameterSource);
+    }
+}

@@ -14,6 +14,7 @@ public class BookDto {
     private String author;
     private Integer publishedYear;
     private BigDecimal price;
+    private boolean isDeleted;
 
     public enum Cover {
         SOFT,

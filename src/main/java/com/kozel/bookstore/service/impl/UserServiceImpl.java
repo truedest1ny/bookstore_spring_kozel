@@ -84,10 +84,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void disable(Long id) {
-        try {
-            log.debug("Called disable() method");
+        log.debug("Called disable() method");
 
-            userDao.deleteById(id);
+        try {
+
+            UserDto user = dataMapper.toDto(userDao.findById(id));
+            user.setDeleted(true);
+            userDao.delete(dataMapper.toEntity(user));
+
         } catch (DataAccessException e){
             throw new RuntimeException("Cannot delete user (id = " + id + ")");
         }

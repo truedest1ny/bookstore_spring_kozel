@@ -14,6 +14,7 @@ public class Book {
     private String author;
     private Integer publishedYear;
     private BigDecimal price;
+    private boolean isDeleted = false;
 
     public enum Cover
     {

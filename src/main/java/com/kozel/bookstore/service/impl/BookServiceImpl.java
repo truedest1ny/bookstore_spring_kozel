@@ -75,13 +75,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void delete(Long id) {
-        log.debug("Called delete() method");
+    public void disable(Long id) {
+        log.debug("Called disable() method");
 
         try {
-            bookDao.deleteById(id);
-        }catch (DataAccessException e){
-            throw new RuntimeException("Cannot delete book (id = " + id + ")");
+                BookDto book = dataMapper.toDto(bookDao.findById(id));
+                book.setDeleted(true);
+                bookDao.delete(dataMapper.toEntity(book));
+
+        } catch (DataAccessException e){
+            throw new RuntimeException("Cannot delete book (id = " + id + "): " + e.getMessage());
         }
     }
 
