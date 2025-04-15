@@ -11,6 +11,7 @@ import com.kozel.bookstore.service.exception.UserNotFoundException;
 import com.kozel.bookstore.service.mapper.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,15 +49,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long id) {
+        try {
+            log.debug("Called getById() method");
 
-        log.debug("Called getById() method");
+            User user = userDao.findById(id);
+            return dataMapper.toDto(user);
 
-        User user = userDao.findById(id);
-        if (user == null)
-        {
-            throw new UserNotFoundException("Cannot find book by id " + id);
+        } catch (DataAccessException e){
+            throw new UserNotFoundException("Cannot find user by id " + id);
         }
-        return dataMapper.toDto(user);
+
     }
 
     @Override
@@ -82,32 +84,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void disable(Long id) {
-
         log.debug("Called disable() method");
 
-        boolean success = userDao.deleteById(id);
-        if (!success)
-        {
+        try {
+
+            UserDto user = dataMapper.toDto(userDao.findById(id));
+            user.setDeleted(true);
+            userDao.delete(dataMapper.toEntity(user));
+
+        } catch (DataAccessException e){
             throw new RuntimeException("Cannot delete user (id = " + id + ")");
         }
     }
 
     @Override
     public UserDto login(UserLoginDto userLoginDto) {
+        try {
+            log.debug("Called login() method");
 
-        log.debug("Called login() method");
+            User user = userDao.findByLogin(userLoginDto.getLogin());
+            if (!user.getPassword().equals(userLoginDto.getPassword())){
+                throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
+            }
 
-        User user = userDao.findByLogin(userLoginDto.getLogin());
+            return dataMapper.toDto(user);
 
-        if (user == null){
+        } catch (DataAccessException e){
             throw new UserNotFoundException("No user with such login (" + userLoginDto.getLogin() +").");
         }
 
-        if (!user.getPassword().equals(userLoginDto.getPassword())){
-            throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
-        }
-
-
-        return dataMapper.toDto(user);
     }
 }

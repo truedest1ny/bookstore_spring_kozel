@@ -1,254 +1,144 @@
 package com.kozel.bookstore.data.dao.impl;
 
-import com.kozel.bookstore.data.connection.DataSource;
 import com.kozel.bookstore.data.dao.BookDao;
 import com.kozel.bookstore.data.entity.Book;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 @Slf4j
 @RequiredArgsConstructor
 public class BookDaoImpl implements BookDao {
 
-
-    private static final String ADD_BOOK_SQL =
+    private static final String ADD_SQL_NP =
             "INSERT INTO books (name, isbn, cover_id, author, published_year, price) " +
-                        "VALUES (?, ?, (SELECT id FROM covers WHERE enum_value = ?), ?, ?, ?)";
-    private static final String GET_ID_ADD_SQL =
-            "SELECT id FROM books WHERE isbn = ?";
+                    "VALUES (:name, :isbn, (SELECT id FROM covers WHERE enum_value = :cover), :author, :publishedYear, :price)";
+
+    private static final String GET_BY_ID_SQL_NP =
+            "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.id = :id AND bk.is_deleted = false";
 
     private static final String GET_ALL_SQL =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id ORDER BY bk.id";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.is_deleted = false" +
+                    " ORDER BY bk.id";
 
-    private static final String GET_BY_ID_SQL =
+    private static final String GET_BY_ISBN_SQL_NP =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.id = ?";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.isbn = :isbn AND bk.is_deleted = false";
 
-    private static final String GET_BY_ISBN_SQL =
+    private static final String GET_BY_AUTHOR_SQL_NP =
             "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.isbn = ?";
-    private static final String GET_BY_AUTHOR_SQL =
-            "SELECT bk.id, bk.name, bk.isbn, cv.enum_value, bk.author, bk.published_year, bk.price FROM books bk" +
-                    " JOIN covers cv ON bk.cover_id = cv.id WHERE bk.author = ?";
+                    " JOIN covers cv ON bk.cover_id = cv.id" +
+                    " WHERE bk.author = :author AND bk.is_deleted = false";
 
-    private static final String UPDATE_SQL =
+    private static final String UPDATE_SQL_NP =
             "UPDATE books SET " +
-                    "name = ?, " +
-                    "isbn = ?, " +
-                    "cover_id = (SELECT id FROM covers WHERE enum_value = ?), " +
-                    "author = ?, " +
-                    "published_year = ?, " +
-                    "price = ? " +
-                    "WHERE id = ?";
-    private static final String DELETE_BY_ID_SQL =
-            "DELETE FROM books WHERE id = ?";
+                    "name = :name, " +
+                    "isbn = :isbn, " +
+                    "cover_id = (SELECT id FROM covers WHERE enum_value = :cover), " +
+                    "author = :author, " +
+                    "published_year = :publishedYear, " +
+                    "price = :price, " +
+                    "is_deleted = :isDeleted " +
+                    "WHERE id = :id";
+
+    private static final String CLEAR_DELETED_ROWS_SQL_NP =
+            "DELETE FROM books WHERE is_deleted = :isDeleted";
 
     private static final String COUNT_ALL_SQL =
             "SELECT COUNT (id) FROM books";
 
+    private final NamedParameterJdbcTemplate template;
 
-    private final DataSource dataSource;
 
 
     @Override
     public Long save(Book book) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(ADD_BOOK_SQL);
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("name", book.getName())
+                .addValue("isbn", book.getIsbn())
+                .addValue("cover", book.getCover().toString())
+                .addValue("author", book.getAuthor())
+                .addValue("publishedYear", book.getPublishedYear())
+                .addValue("price", book.getPrice());
 
-                statement.setString(1, book.getName());
-                statement.setString(2, book.getIsbn());
-                statement.setString(3, book.getCover().toString());
-                statement.setString(4, book.getAuthor());
-                statement.setInt(5, book.getPublishedYear());
-                statement.setBigDecimal(6, book.getPrice());
-                statement.executeUpdate();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-            statement = connection.prepareStatement(GET_ID_ADD_SQL);
+        template.update(ADD_SQL_NP, parameterSource, keyHolder);
 
-
-                statement.setString(1, book.getIsbn());
-                ResultSet resultSet = statement.executeQuery();
-
-                log.debug("Query to database completed");
-
-                if (resultSet.next())
-                {
-                    book.setId(resultSet.getLong("id"));
-                    return book.getId();
-                }
-                return null;
-            }
-
-         catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
+        return (Long) Objects.requireNonNull(keyHolder.getKeys()).get("id");
     }
 
     @Override
     public List<Book> findAll() {
-
-        List<Book> books = new ArrayList<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
-
-
-            ResultSet resultSet = statement.executeQuery(GET_ALL_SQL);
-
-            log.debug("Query to database completed");
-
-            while (resultSet.next())
-            {
-                Book book = process(resultSet);
-                books.add(book);
-            }
-
-
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
-
-        return books;
+        return template.query(GET_ALL_SQL, this::mapRow);
     }
 
 
     @Override
     public Book findById(Long id) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_ID_SQL);
-            statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", id);
 
-            log.debug("Query to database completed");
-
-            if (resultSet.next())
-            {
-                return process(resultSet);
-            }
-            return null;
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-         }
+        return template.queryForObject(GET_BY_ID_SQL_NP, parameterSource, this::mapRow);
     }
 
     @Override
     public Book findByIsbn(String isbn) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_ISBN_SQL);
-            statement.setString(1, isbn);
-            ResultSet resultSet = statement.executeQuery();
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("isbn", isbn);
 
-            log.debug("Query to database completed");
-
-            if (resultSet.next())
-            {
-                return process(resultSet);
-            }
-            return null;
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
-
+        return template.queryForObject(GET_BY_ISBN_SQL_NP, parameterSource, this::mapRow);
     }
 
     @Override
     public List<Book> findByAuthor(String author) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("author", author);
 
-        List<Book> books = new ArrayList<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(GET_BY_AUTHOR_SQL);
-            statement.setString(1, author);
-            ResultSet resultSet = statement.executeQuery();
-
-            log.debug("Query to database completed");
-
-            while (resultSet.next())
-            {
-                Book book = process(resultSet);
-                books.add(book);
-            }
-
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
-        return books;
+        return template.query(GET_BY_AUTHOR_SQL_NP, parameterSource, this::mapRow);
     }
 
     @Override
     public Book update(Book book) {
-
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(UPDATE_SQL);
-
-            statement.setString(1, book.getName());
-            statement.setString(2, book.getIsbn());
-            statement.setString(3, book.getCover().toString());
-            statement.setString(4, book.getAuthor());
-            statement.setInt(5, book.getPublishedYear());
-            statement.setBigDecimal(6, book.getPrice());
-            statement.setLong(7, book.getId());
-
-            log.debug("Query to database completed");
-
-        if (statement.executeUpdate() > 0)
-        {
-            return book;
-        }
-            return null;
-
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
+        MapSqlUpdate(book);
+        return findById(book.getId());
     }
 
     @Override
-    public boolean deleteById(Long id) {
+    public void delete(Book book) {
+        MapSqlUpdate(book);
+    }
 
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID_SQL);
+    @Override
+    public long clearDeletedRows() {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("isDeleted", true);
 
-            statement.setLong(1, id);
-
-            log.debug("Query to database completed");
-
-            return (statement.executeUpdate() > 0);
-
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
+        return template.update(CLEAR_DELETED_ROWS_SQL_NP, parameterSource);
     }
 
     @Override
     public long countAll() {
-        try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery(COUNT_ALL_SQL);
-
-            log.debug("Query to database completed");
-
-            if (resultSet.next())
-            {
-               return resultSet.getLong(1);
-            }
-
-            return 0L;
-
-        } catch (SQLException exception){
-            throw new RuntimeException(exception);
-        }
-
+        return template.queryForObject(COUNT_ALL_SQL, new HashMap<>(), Long.class);
     }
 
-    private Book process (ResultSet resultSet) throws SQLException{
+    private Book mapRow(ResultSet resultSet, int rowNum) throws SQLException{
         Book book = new Book();
         book.setId(resultSet.getLong("id"));
         book.setName(resultSet.getString("name"));
@@ -257,8 +147,23 @@ public class BookDaoImpl implements BookDao {
         book.setAuthor(resultSet.getString("author"));
         book.setPublishedYear(resultSet.getInt("published_year"));
         book.setPrice(resultSet.getBigDecimal("price"));
+
         return book;
     }
+    private void MapSqlUpdate(Book book) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", book.getId())
+                .addValue("name", book.getName())
+                .addValue("isbn", book.getIsbn())
+                .addValue("cover", book.getCover().toString())
+                .addValue("author", book.getAuthor())
+                .addValue("publishedYear", book.getPublishedYear())
+                .addValue("price", book.getPrice())
+                .addValue("isDeleted", book.isDeleted());
 
-
+        template.update(UPDATE_SQL_NP, parameterSource);
+    }
 }
+
+
+

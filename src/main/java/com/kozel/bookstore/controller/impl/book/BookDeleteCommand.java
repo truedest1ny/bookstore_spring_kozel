@@ -18,7 +18,7 @@ public class BookDeleteCommand implements Command {
     public CommandResult process(HttpServletRequest req) {
         long id = Long.parseLong(req.getParameter("id"));
 
-        bookService.delete(id);
+        bookService.disable(id);
 
         return new CommandResult("index.jsp", HttpServletResponse.SC_OK);
     }

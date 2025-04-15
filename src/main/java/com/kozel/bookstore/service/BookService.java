@@ -12,7 +12,7 @@ public interface BookService {
     BookDto getById(Long id);
     Long create(BookDto bookDto);
     BookDto update(BookDto bookDto);
-    void delete(Long id);
+    void disable(Long id);
     BigDecimal getSumPriceByAuthor (String author);
 
 }

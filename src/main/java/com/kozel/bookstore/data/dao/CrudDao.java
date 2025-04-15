@@ -8,7 +8,8 @@ public interface CrudDao <V, T>{
     T findById(V id);
     List<T> findAll();
     T update(T object);
-    boolean deleteById (V id);
+    void delete(T object);
+    long clearDeletedRows();
 
 
 }

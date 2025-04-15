@@ -9,4 +9,5 @@ public interface BookDao extends CrudDao<Long, Book>{
     Book findByIsbn(String isbn);
     List<Book> findByAuthor(String author);
     long countAll();
+
 }
