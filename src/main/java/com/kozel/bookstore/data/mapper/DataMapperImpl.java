@@ -1,4 +1,4 @@
-package com.kozel.bookstore.service.mapper;
+package com.kozel.bookstore.data.mapper;
 
 import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.entity.User;
