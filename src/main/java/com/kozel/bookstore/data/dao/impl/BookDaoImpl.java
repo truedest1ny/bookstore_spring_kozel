@@ -49,7 +49,6 @@ public class BookDaoImpl implements BookDao {
     private static final String UPDATE_SQL_NP =
             "UPDATE books SET " +
                     "name = :name, " +
-                    "isbn = :isbn, " +
                     "cover_id = (SELECT id FROM covers WHERE enum_value = :cover), " +
                     "author = :author, " +
                     "published_year = :publishedYear, " +
@@ -154,7 +153,6 @@ public class BookDaoImpl implements BookDao {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", book.getId())
                 .addValue("name", book.getName())
-                .addValue("isbn", book.getIsbn())
                 .addValue("cover", book.getCover().toString())
                 .addValue("author", book.getAuthor())
                 .addValue("publishedYear", book.getPublishedYear())

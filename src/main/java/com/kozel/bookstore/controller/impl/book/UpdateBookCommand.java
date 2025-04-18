@@ -24,17 +24,17 @@ public class UpdateBookCommand implements Command {
         BookDto book = new BookDto();
 
         try {
-            book.setId(Long.parseLong(req.getParameter("id").trim()));
+            book.setId(Long.parseLong(req.getParameter("id")));
             book.setName(req.getParameter("name").trim());
-            book.setIsbn(req.getParameter("isbn").trim());
             book.setAuthor(req.getParameter("author").trim());
             book.setPublishedYear(Integer.parseInt(req.getParameter("published_year").trim()));
             book.setPrice(BigDecimal.valueOf(Double.parseDouble(req.getParameter("price").trim())));
-            book.setCover(BookDto.Cover.valueOf(req.getParameter("cover").trim()));
+            book.setCover(BookDto.Cover.valueOf(req.getParameter("cover")));
 
-            bookService.update(book);
+            BookDto savedBook = bookService.update(book);
+            req.setAttribute("book", savedBook);
 
-            return new CommandResult("index.jsp", HttpServletResponse.SC_OK);
+            return new CommandResult("jsp/book/book.jsp", HttpServletResponse.SC_OK);
         } catch (NumberFormatException e){
             throw new NumberFormatException(e.getMessage());
         }

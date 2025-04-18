@@ -17,8 +17,6 @@ public class UpdateUserCommand implements Command {
 
     @Override
     public CommandResult process(HttpServletRequest req) {
-
-
         UserDto user = new UserDto();
 
         try {
@@ -26,13 +24,13 @@ public class UpdateUserCommand implements Command {
             user.setFirstName(req.getParameter("first_name").trim());
             user.setLastName(req.getParameter("last_name").trim());
             user.setEmail(req.getParameter("email").trim());
-            user.setLogin(req.getParameter("login").trim());
             user.setPassword(req.getParameter("password").trim());
             user.setRole(UserDto.Role.valueOf(req.getParameter("role").trim()));
 
-            userService.update(user);
+            UserDto savedUser = userService.update(user);
+            req.setAttribute("user", savedUser);
 
-            return new CommandResult("index.jsp", HttpServletResponse.SC_OK);
+            return new CommandResult("jsp/user/user.jsp", HttpServletResponse.SC_OK);
         } catch (NumberFormatException e){
             throw new NumberFormatException(e.getMessage());
         }

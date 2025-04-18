@@ -56,7 +56,6 @@ public class UserDaoImpl implements UserDao {
                     "first_name = :firstName," +
                     "last_name = :lastName, " +
                     "email = :email, " +
-                    "login = :login, " +
                     "password = :password, " +
                     "role_id = (SELECT id FROM roles WHERE enum_value = :role), " +
                     "is_deleted = :isDeleted " +
@@ -170,11 +169,9 @@ public class UserDaoImpl implements UserDao {
                 .addValue("firstName", user.getFirstName())
                 .addValue("lastName", user.getLastName())
                 .addValue("email", user.getEmail())
-                .addValue("login", user.getLogin())
                 .addValue("password", user.getPassword())
                 .addValue("role", user.getRole().toString())
                 .addValue("isDeleted", user.isDeleted());
-
 
         template.update(UPDATE_SQL_NP, parameterSource);
     }
