@@ -1,9 +1,8 @@
-package com.kozel.bookstore.service.dto;
+package com.kozel.bookstore.data.dto;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
-
 
 @Data
 public class BookDto {
@@ -14,12 +13,12 @@ public class BookDto {
     private String author;
     private Integer publishedYear;
     private BigDecimal price;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public enum Cover {
+    public enum Cover
+    {
         SOFT,
         HARD,
         SPECIAL,
     }
-
 }

@@ -31,7 +31,7 @@
         Congratulations :)
       </p>
 
-      <p class="lead">The catalog includes a list of available books and catalog users. For now :)</p>
+      <p class="lead">The catalog includes a list of available books and catalog users. Added list of orders :)</p>
 
       <div class="box">
 
@@ -55,6 +55,17 @@
           </p>
           <a href="controller?command=users" class="stretched-link text-size">Go!</a>
         </div>
+      </div>
+
+      <div class="media position-relative box-margin">
+         <img src="images/icons/order_icon.png" class="mr-3" alt="Order icon" width="100px" height="100px"/>
+         <div class="media-body">
+             <h5 class="mt-0">Orders</h5>
+               <p>
+                 Actual orders catalog.
+               </p>
+                <a href="controller?command=orders" class="stretched-link text-size">Go!</a>
+         </div>
       </div>
     </div>
     </div>

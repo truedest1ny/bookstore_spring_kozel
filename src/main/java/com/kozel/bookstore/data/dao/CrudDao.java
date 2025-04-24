@@ -9,7 +9,6 @@ public interface CrudDao <V, T>{
     List<T> findAll();
     T update(T object);
     void delete(T object);
-    long clearDeletedRows();
 
 
 }

@@ -3,10 +3,13 @@ package com.kozel.bookstore.controller.impl.book;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.BookService;
+import com.kozel.bookstore.service.dto.ServiceBookShowingDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @Controller("deleteBook")
 @RequiredArgsConstructor
@@ -20,7 +23,9 @@ public class BookDeleteCommand implements Command {
 
         bookService.disable(id);
 
-        return new CommandResult("index.jsp", HttpServletResponse.SC_OK);
+        List<ServiceBookShowingDto> books = bookService.getBooksDtoShort();
+        req.setAttribute("books", books);
+        return new CommandResult("jsp/book/books.jsp", HttpServletResponse.SC_OK);
     }
 
     @Override

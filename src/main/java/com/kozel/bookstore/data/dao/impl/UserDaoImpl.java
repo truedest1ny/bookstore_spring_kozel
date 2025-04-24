@@ -1,9 +1,8 @@
 package com.kozel.bookstore.data.dao.impl;
 
 import com.kozel.bookstore.data.dao.UserDao;
-import com.kozel.bookstore.data.entity.User;
+import com.kozel.bookstore.data.dto.UserDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-@Slf4j
 @RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
@@ -56,7 +54,6 @@ public class UserDaoImpl implements UserDao {
                     "first_name = :firstName," +
                     "last_name = :lastName, " +
                     "email = :email, " +
-                    "login = :login, " +
                     "password = :password, " +
                     "role_id = (SELECT id FROM roles WHERE enum_value = :role), " +
                     "is_deleted = :isDeleted " +
@@ -72,7 +69,7 @@ public class UserDaoImpl implements UserDao {
 
 
     @Override
-    public Long save(User user) {
+    public Long save(UserDto user) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("firstName", user.getFirstName())
                 .addValue("lastName", user.getLastName())
@@ -89,7 +86,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findById(Long id) {
+    public UserDto findById(Long id) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", id);
 
@@ -97,19 +94,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserDto> findAll() {
         return template.query(GET_ALL_SQL, this::mapRow);
     }
 
     @Override
-    public User update(User user) {
+    public UserDto update(UserDto user) {
         MapSqlUpdate(user);
         return findById(user.getId());
     }
 
 
     @Override
-    public void delete(User user) {
+    public void delete(UserDto user) {
         MapSqlUpdate(user);
     }
 
@@ -122,7 +119,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByEmail(String email) {
+    public UserDto findByEmail(String email) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("email", email);
 
@@ -130,7 +127,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByLogin(String login) {
+    public UserDto findByLogin(String login) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("login", login);
 
@@ -138,7 +135,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findByLastName(String lastName) {
+    public List<UserDto> findByLastName(String lastName) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("lastName", lastName);
 
@@ -150,31 +147,29 @@ public class UserDaoImpl implements UserDao {
         return template.queryForObject(COUNT_ALL_SQL, new HashMap<>(), Long.class);
     }
 
-    private User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        User user = new User();
+    private UserDto mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        UserDto user = new UserDto();
         user.setId(resultSet.getLong("id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
         user.setEmail(resultSet.getString("email"));
         user.setLogin(resultSet.getString("login"));
         user.setPassword(resultSet.getString("password"));
-        user.setRole(User.Role.valueOf(resultSet.getString("enum_value")));
+        user.setRole(UserDto.Role.valueOf(resultSet.getString("enum_value")));
         return user;
     }
 
 
-    private void MapSqlUpdate(User user) {
+    private void MapSqlUpdate(UserDto user) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource
                 .addValue("id", user.getId())
                 .addValue("firstName", user.getFirstName())
                 .addValue("lastName", user.getLastName())
                 .addValue("email", user.getEmail())
-                .addValue("login", user.getLogin())
                 .addValue("password", user.getPassword())
                 .addValue("role", user.getRole().toString())
                 .addValue("isDeleted", user.isDeleted());
-
 
         template.update(UPDATE_SQL_NP, parameterSource);
     }

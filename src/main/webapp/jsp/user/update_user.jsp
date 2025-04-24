@@ -37,21 +37,24 @@
   <div class="form-group row element-padding">
     <label for="first_name" class="col-sm-2 col-form-label"><b><i>First Name</i></b></label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Now : ${user.firstName}" required>
+      <input type="text" class="form-control" id="first_name" name="first_name"
+      value="${user.firstName}" placeholder="Now : ${user.firstName}" required>
     </div>
   </div>
 
   <div class="form-group row element-padding">
     <label for="last_name" class="col-sm-2 col-form-label"><b><i>Last Name</i></b></label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Now : ${user.lastName}" required>
+      <input type="text" class="form-control" id="last_name" name="last_name"
+      value="${user.lastName}" placeholder="Now : ${user.lastName}" required>
     </div>
   </div>
 
   <div class="form-group row element-padding">
     <label for="email" class="col-sm-2 col-form-label"><i><b>E-Mail</i></b></label>
     <div class="col-sm-10">
-       <input type="text" class="form-control" id="email" name="email" pattern="^\S+@\S+\.\S+$" placeholder="Now : ${user.email}" required>
+       <input type="email" class="form-control" id="email" name="email"
+       value="${user.email}" placeholder="Now : ${user.email}" required>
        <small id="emailHelp" class="form-text text-muted help-text-size">Enter the valid E-Mail</small>
     </div>
   </div>
@@ -59,16 +62,18 @@
   <div class="form-group row element-padding">
     <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
     <div class="col-sm-10">
-       <input type="text" class="form-control" id="login" name="login" pattern="[A-Za-z0-9]{4,20}" placeholder="Now : ${user.login}" required>
-       <small id="loginHelp" class="form-text text-muted help-text-size">Enter the login. EN letters, from 4 to 20 symbols</small>
+       <input type="text" class="form-control" id="login" name="login" value="${user.login}" disabled>
+       <small id="loginHelp" class="form-text text-muted help-text-size">
+          Login is set once during registration and will remain unchanged.
+       </small>
     </div>
   </div>
 
   <div class="form-group row element-padding">
     <label for="password" class="col-sm-2 col-form-label"><b><i>Password</i></b></label>
     <div class="col-sm-10">
-       <input type="text" class="form-control" id="password" name="password" pattern="[A-Za-z0-9]{4,15}" placeholder="Now : ${user.password}" required>
-       <small id="loginHelp" class="form-text text-muted help-text-size">Enter the password. EN letters, from 4 to 15 symbols</small>
+       <input type="password" class="form-control" id="password" name="password" pattern="[A-Za-z0-9]{4,15}" required>
+       <small id="passwordHelp" class="form-text text-muted help-text-size">Enter the password. EN letters, from 4 to 15 symbols</small>
     </div>
   </div>
 

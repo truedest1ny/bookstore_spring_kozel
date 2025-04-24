@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.user;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserCreateDto;
+import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class UserCreateCommand implements Command {
     public CommandResult process(HttpServletRequest req) {
 
 
-        UserCreateDto user = new UserCreateDto();
+        ServiceUserCreateDto user = new ServiceUserCreateDto();
 
         try {
             user.setEmail(req.getParameter("email").trim());

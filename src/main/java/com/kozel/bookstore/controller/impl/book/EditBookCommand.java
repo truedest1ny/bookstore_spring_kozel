@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.book;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.BookService;
-import com.kozel.bookstore.service.dto.BookDto;
+import com.kozel.bookstore.service.dto.ServiceBookDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ public class EditBookCommand implements Command {
     public CommandResult process(HttpServletRequest req) {
         long id = Long.parseLong(req.getParameter("id"));
 
-        BookDto book = bookService.getById(id);
+        ServiceBookDto book = bookService.getById(id);
         req.setAttribute("book", book);
-        req.setAttribute("covers", BookDto.Cover.values());
+        req.setAttribute("covers", ServiceBookDto.Cover.values());
 
         return new CommandResult("jsp/book/update_book.jsp", HttpServletResponse.SC_OK);
     }

@@ -41,11 +41,11 @@ There is also an *interface* [BookDao](src/main/java/com/kozel/bookstore/data/da
 
 ## Hometask #1.2 (Service)
 
-There is a *Data Transfer Object* [BookDto](src/main/java/com/kozel/bookstore/service/dto/BookDto.java) Having a similar structure to `Book` data class and another *DTO* [BookDtoShowing](src/main/java/com/kozel/bookstore/service/dto/BookDtoShowing.java) providing an abbreviated representation of a `Book` object for display to the user.
+There is a *Data Transfer Object* `BookDto` Having a similar structure to `Book` data class and another *DTO* `BookDtoShowing` providing an abbreviated representation of a `Book` object for display to the user.
 
 Also, there is an *interface* [BookService](src/main/java/com/kozel/bookstore/service/BookService.java) implementing basic CRUD operations and its implementation [BookServiceImpl](src/main/java/com/kozel/bookstore/service/impl/BookServiceImpl.java).
 
-Interface [DataSource](src/main/java/com/kozel/bookstore/data/connection/DataSource.java) has a method `getConnection()`, which is implemented by class: [DataSourceImpl](src/main/java/com/kozel/bookstore/data/connection/impl/DataSourceImpl.java).
+Interface `DataSource` has a method `getConnection()`, which is implemented by class: `DataSourceImpl`.
 
 Connection parameters are read from the file [application.properties](src/main/resources/application.properties) (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the `ConnectionProperties` class.
 
@@ -105,3 +105,41 @@ Removed unused classes:
 - `CommandFactory`;
 - `ConnectionProperties` and its implementation `ConnectionPropertiesImpl`;
 - `IllegalCommandException`.
+
+## Hometask #2.2 (Spring JDBC Template)
+
+DAO classes have been redesigned: now they use `NamedParameterJdbcTemplate` and external `DataSource (Hikari Connection Pool)` optimizing code and performance.
+
+## Hometask #2.3 (Order. Complex Business Tier)
+
+Added [Order](src/main/java/com/kozel/bookstore/data/entity/Order.java) entity and auxiliary entity [OrderItem](src/main/java/com/kozel/bookstore/data/entity/OrderItem.java).
+
+Added a _**Repository**_ layer (related to the Data layer), which is an abstraction over the DAO. The necessity of its use is caused by the appearance of a complex Order object, the creation of which requires the use of different DAOs:
+
+- [BookRepository](src/main/java/com/kozel/bookstore/data/repository/BookRepository.java) - uses [BookDao](src/main/java/com/kozel/bookstore/data/dao/BookDao.java);
+- [UserRepository](src/main/java/com/kozel/bookstore/data/repository/UserRepository.java) - uses [UserDao](src/main/java/com/kozel/bookstore/data/dao/UserDao.java);
+- [OrderRepository](src/main/java/com/kozel/bookstore/data/repository/OrderRepository.java)- uses [BookDao](src/main/java/com/kozel/bookstore/data/dao/BookDao.java), [UserDao](src/main/java/com/kozel/bookstore/data/dao/UserDao.java), [OrderItemDao](src/main/java/com/kozel/bookstore/data/dao/OrderItemDao.java) and [OrderDao](src/main/java/com/kozel/bookstore/data/dao/OrderDao.java).
+
+Added **_DTO classes_** for the Data layer:
+
+- [BookDto](src/main/java/com/kozel/bookstore/data/dto/BookDto.java);
+- [OrderDto](src/main/java/com/kozel/bookstore/data/dto/OrderDto.java);
+- [OrderItemDto](src/main/java/com/kozel/bookstore/data/dto/OrderItemDto.java);
+- [UserDto](src/main/java/com/kozel/bookstore/data/dto/UserDto.java).
+
+The DTO classes of the service layer have been renamed to eliminate duplicate class names.
+
+Added **_commands_** for the controller to search for an order by ID, a list of all orders, and a list of all orders for a specific user:
+
+- [OrderCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrderCommand.java) displays an order by its ID;
+- [OrdersCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrdersCommand.java) displays a list of all orders;
+- [FilterOrdersByUserCommand](src/main/java/com/kozel/bookstore/controller/impl/order/FilterOrdersByUserCommand.java) displays a form with a selection of the user whose orders will be displayed;
+- [OrdersByUserCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrdersByUserCommand.java) displays the selected user's orders.
+
+Added **_JSP pages_** to these commands:
+
+- [order.jsp](src/main/webapp/jsp/order/order.jsp);
+- [orders.jsp](src/main/webapp/jsp/order/orders.jsp);
+- [orders_by_user.jsp](src/main/webapp/jsp/order/orders_by_user.jsp);
+- [filter_orders_by_user.jsp](src/main/webapp/jsp/order/filter_orders_by_user.jsp);
+- [order_not_found.jsp](src/main/webapp/jsp/error/404/order_not_found.jsp).

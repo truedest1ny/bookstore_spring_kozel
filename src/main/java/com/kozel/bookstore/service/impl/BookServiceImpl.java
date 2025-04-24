@@ -1,12 +1,12 @@
 package com.kozel.bookstore.service.impl;
 
-import com.kozel.bookstore.data.dao.BookDao;
 import com.kozel.bookstore.data.entity.Book;
+import com.kozel.bookstore.data.mapper.DataMapper;
+import com.kozel.bookstore.data.repository.BookRepository;
 import com.kozel.bookstore.service.BookService;
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.BookDtoShowing;
+import com.kozel.bookstore.service.dto.ServiceBookDto;
+import com.kozel.bookstore.service.dto.ServiceBookShowingDto;
 import com.kozel.bookstore.service.exception.BookNotFoundException;
-import com.kozel.bookstore.service.mapper.DataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -20,37 +20,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final BookDao bookDao;
+    private final BookRepository bookRepository;
     private final DataMapper dataMapper;
 
     @Override
-    public List<BookDto> getAll() {
+    public List<ServiceBookDto> getAll() {
         log.debug("Called getAll() method");
 
-        return bookDao.findAll()
+        return bookRepository.findAll()
                 .stream()
-                .map(dataMapper::toDto)
+                .map(dataMapper::toServiceDto)
                 .toList();
     }
 
     @Override
-    public List<BookDtoShowing> getBooksDtoShort() {
+    public List<ServiceBookShowingDto> getBooksDtoShort() {
         log.debug("Called getBooksDtoShort() method");
 
-        return bookDao.findAll()
+        return bookRepository.findAll()
                 .stream()
-                .map(dataMapper::toDtoShorted)
+                .map(dataMapper::toServiceShortedDto)
                 .toList();
     }
 
     @Override
-    public BookDto getById(Long id) {
+    public ServiceBookDto getById(Long id) {
         log.debug("Called getById() method");
         try {
+            Book book = bookRepository.findById(id);
 
-            Book book = bookDao.findById(id);
-
-            return dataMapper.toDto(book);
+            return dataMapper.toServiceDto(book);
         } catch (DataAccessException e) {
             throw new BookNotFoundException("Cannot find book by id " + id);
         }
@@ -58,30 +57,29 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Long create(BookDto bookDto) {
+    public Long create(ServiceBookDto serviceBookDto) {
         log.debug("Called create() method");
 
-        Book entity = dataMapper.toEntity(bookDto);
-        return bookDao.save(entity);
+        Book entity = dataMapper.toEntity(serviceBookDto);
+        return bookRepository.save(entity);
     }
 
     @Override
-    public BookDto update(BookDto bookDto) {
+    public ServiceBookDto update(ServiceBookDto serviceBookDto) {
         log.debug("Called update() method");
 
-        Book entity = dataMapper.toEntity(bookDto);
-        Book savedBook = bookDao.update(entity);
-        return dataMapper.toDto(savedBook);
+        Book entity = dataMapper.toEntity(serviceBookDto);
+        Book savedBook = bookRepository.update(entity);
+        return dataMapper.toServiceDto(savedBook);
     }
 
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-
         try {
-                BookDto book = dataMapper.toDto(bookDao.findById(id));
+                ServiceBookDto book = dataMapper.toServiceDto(bookRepository.findById(id));
                 book.setDeleted(true);
-                bookDao.delete(dataMapper.toEntity(book));
+                bookRepository.delete(dataMapper.toEntity(book));
 
         } catch (DataAccessException e){
             throw new RuntimeException("Cannot delete book (id = " + id + "): " + e.getMessage());
@@ -93,17 +91,16 @@ public class BookServiceImpl implements BookService {
         log.debug("Called getSumPriceByAuthor() method");
 
         BigDecimal SumPrice = BigDecimal.valueOf(0);
-        List<BookDto> bookDtos = bookDao.findByAuthor(author)
+        List<ServiceBookDto> serviceBookDtos = bookRepository.findByAuthor(author)
                 .stream()
-                .map(dataMapper::toDto)
+                .map(dataMapper::toServiceDto)
                 .toList();
-        if (bookDtos.isEmpty())
+        if (serviceBookDtos.isEmpty())
         {
             return SumPrice;
         }
-
-        for (BookDto bookDto : bookDtos) {
-            SumPrice = SumPrice.add(bookDto.getPrice());
+        for (ServiceBookDto serviceBookDto : serviceBookDtos) {
+            SumPrice = SumPrice.add(serviceBookDto.getPrice());
         }
         return SumPrice;
     }
