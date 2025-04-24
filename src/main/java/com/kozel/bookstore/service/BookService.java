@@ -1,17 +1,17 @@
 package com.kozel.bookstore.service;
 
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.BookDtoShowing;
+import com.kozel.bookstore.service.dto.ServiceBookDto;
+import com.kozel.bookstore.service.dto.ServiceBookShowingDto;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookService {
-    List<BookDto> getAll();
-    List<BookDtoShowing> getBooksDtoShort();
-    BookDto getById(Long id);
-    Long create(BookDto bookDto);
-    BookDto update(BookDto bookDto);
+    List<ServiceBookDto> getAll();
+    List<ServiceBookShowingDto> getBooksDtoShort();
+    ServiceBookDto getById(Long id);
+    Long create(ServiceBookDto serviceBookDto);
+    ServiceBookDto update(ServiceBookDto serviceBookDto);
     void disable(Long id);
     BigDecimal getSumPriceByAuthor (String author);
 

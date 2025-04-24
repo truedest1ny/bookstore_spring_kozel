@@ -35,6 +35,10 @@
       <li class="nav-item">
         <a class="nav-link" href="controller?command=books">Books</a>
       </li>
+
+       <li class="nav-item">
+         <a class="nav-link" href="controller?command=orders">Orders</a>
+       </li>
     </ul>
   </div>
 </nav>

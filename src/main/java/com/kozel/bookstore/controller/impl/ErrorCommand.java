@@ -3,6 +3,7 @@ package com.kozel.bookstore.controller.impl;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.exception.BookNotFoundException;
+import com.kozel.bookstore.service.exception.OrderNotFoundException;
 import com.kozel.bookstore.service.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +28,9 @@ public class ErrorCommand implements Command {
 
             case BookNotFoundException bookNotFoundException ->
                     new CommandResult("jsp/error/404/book_not_found.jsp", HttpServletResponse.SC_NOT_FOUND);
+
+            case OrderNotFoundException orderNotFoundException ->
+                    new CommandResult("jsp/error/404/order_not_found.jsp", HttpServletResponse.SC_NOT_FOUND);
 
             case DataAccessException dataAccessException ->
                     new CommandResult("jsp/error/sql_error.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

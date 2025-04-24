@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.user;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.ServiceUserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class UpdateUserCommand implements Command {
 
     @Override
     public CommandResult process(HttpServletRequest req) {
-        UserDto user = new UserDto();
+        ServiceUserDto user = new ServiceUserDto();
 
         try {
             user.setId(Long.parseLong(req.getParameter("id").trim()));
@@ -25,9 +25,9 @@ public class UpdateUserCommand implements Command {
             user.setLastName(req.getParameter("last_name").trim());
             user.setEmail(req.getParameter("email").trim());
             user.setPassword(req.getParameter("password").trim());
-            user.setRole(UserDto.Role.valueOf(req.getParameter("role").trim()));
+            user.setRole(ServiceUserDto.Role.valueOf(req.getParameter("role").trim()));
 
-            UserDto savedUser = userService.update(user);
+            ServiceUserDto savedUser = userService.update(user);
             req.setAttribute("user", savedUser);
 
             return new CommandResult("jsp/user/user.jsp", HttpServletResponse.SC_OK);

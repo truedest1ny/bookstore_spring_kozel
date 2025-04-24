@@ -49,6 +49,36 @@ CREATE UNIQUE INDEX unique_login_user_deleted
 ON users (login)
 WHERE is_deleted = false;
 
+=======================================================================================
+CREATE TABLE IF NOT EXISTS statuses(
+
+    id BIGSERIAL PRIMARY KEY,
+    enum_value VARCHAR(63) UNIQUE NOT NULL
+
+);
+
+
+CREATE TABLE IF NOT EXISTS orders (
+
+	id BIGSERIAL PRIMARY KEY,
+	date TIMESTAMP,
+	user_id BIGINT NOT NULL REFERENCES users,
+	status_id BIGINT NOT NULL REFERENCES statuses,
+	price DECIMAL(15,2)
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+
+	id BIGSERIAL PRIMARY KEY,
+	book_id BIGINT NOT NULL REFERENCES books,
+	quantity BIGINT,
+	price DECIMAL(15,2),
+	order_id BIGINT NOT NULL REFERENCES orders
+);
+
+
+
+
 
 
 

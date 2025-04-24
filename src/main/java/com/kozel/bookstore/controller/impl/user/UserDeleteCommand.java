@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.user;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserDtoShowing;
+import com.kozel.bookstore.service.dto.ServiceUserShowingDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class UserDeleteCommand implements Command {
 
         userService.disable(id);
 
-        List<UserDtoShowing> users = userService.getUsersDtoShort();
+        List<ServiceUserShowingDto> users = userService.getUsersDtoShort();
         req.setAttribute("users", users);
         return new CommandResult("jsp/user/users.jsp", HttpServletResponse.SC_OK);
     }

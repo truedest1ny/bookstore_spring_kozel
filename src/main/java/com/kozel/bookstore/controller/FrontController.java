@@ -33,7 +33,7 @@ public class FrontController extends HttpServlet {
             req.getRequestDispatcher(result.getPage()).forward(req, resp);
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             String id = req.getParameter("id");
 
             req.setAttribute("id", id);
