@@ -25,9 +25,4 @@ public class UsersCommand implements Command {
         req.setAttribute("users", users);
         return new CommandResult("jsp/user/users.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

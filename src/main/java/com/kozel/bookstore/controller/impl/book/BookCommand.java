@@ -14,12 +14,6 @@ public class BookCommand implements Command {
 
     private final BookService bookService;
 
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
-
     @Override
     public CommandResult process(HttpServletRequest req){
 

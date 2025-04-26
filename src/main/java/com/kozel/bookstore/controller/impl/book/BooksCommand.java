@@ -26,10 +26,5 @@ public class BooksCommand implements Command {
         return new CommandResult("jsp/book/books.jsp", HttpServletResponse.SC_OK);
 
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }
 

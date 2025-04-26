@@ -24,9 +24,4 @@ public class FilterOrdersByUserCommand implements Command {
         req.setAttribute("users", users);
         return new CommandResult("jsp/order/filter_orders_by_user.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

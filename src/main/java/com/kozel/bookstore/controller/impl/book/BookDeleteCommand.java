@@ -27,9 +27,4 @@ public class BookDeleteCommand implements Command {
         req.setAttribute("books", books);
         return new CommandResult("jsp/book/books.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

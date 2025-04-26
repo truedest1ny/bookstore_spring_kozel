@@ -31,9 +31,4 @@ public class OrdersByUserCommand implements Command {
         req.setAttribute("login", login);
         return new CommandResult("jsp/order/orders_by_user.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

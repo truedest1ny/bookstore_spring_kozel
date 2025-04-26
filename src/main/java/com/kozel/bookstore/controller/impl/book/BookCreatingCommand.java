@@ -17,9 +17,4 @@ public class BookCreatingCommand implements Command {
 
         return new CommandResult("jsp/book/create_book.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

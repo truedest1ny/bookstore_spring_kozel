@@ -24,9 +24,4 @@ public class OrdersCommand implements Command {
         req.setAttribute("orders", orders);
         return new CommandResult("jsp/order/orders.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

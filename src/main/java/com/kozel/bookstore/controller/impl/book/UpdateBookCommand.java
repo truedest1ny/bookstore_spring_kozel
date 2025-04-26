@@ -39,9 +39,4 @@ public class UpdateBookCommand implements Command {
             throw new NumberFormatException(e.getMessage());
         }
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-       return null;
-    }
 }

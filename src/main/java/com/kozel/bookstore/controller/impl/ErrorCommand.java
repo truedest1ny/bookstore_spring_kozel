@@ -1,7 +1,7 @@
 package com.kozel.bookstore.controller.impl;
 
-import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
+import com.kozel.bookstore.controller.ErrorHandler;
 import com.kozel.bookstore.service.exception.BookNotFoundException;
 import com.kozel.bookstore.service.exception.OrderNotFoundException;
 import com.kozel.bookstore.service.exception.UserNotFoundException;
@@ -13,12 +13,7 @@ import org.springframework.stereotype.Controller;
 
 
 @Controller("error")
-public class ErrorCommand implements Command {
-
-    @Override
-    public CommandResult process(HttpServletRequest req) {
-        return new CommandResult("jsp/error/error.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    }
+public class ErrorCommand implements ErrorHandler {
 
     @Override
     public CommandResult process(HttpServletRequest req, Exception e) {
@@ -40,9 +35,9 @@ public class ErrorCommand implements Command {
 
             case NumberFormatException numberFormatException ->
                     new CommandResult("jsp/error/incorrect_input.jsp", HttpServletResponse.SC_BAD_REQUEST);
-            default ->
-                    process(req);
 
+            default ->
+                    new CommandResult("jsp/error/error.jsp", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         };
     }
 }

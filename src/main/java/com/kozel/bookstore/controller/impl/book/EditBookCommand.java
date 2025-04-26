@@ -25,10 +25,5 @@ public class EditBookCommand implements Command {
 
         return new CommandResult("jsp/book/update_book.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }
 

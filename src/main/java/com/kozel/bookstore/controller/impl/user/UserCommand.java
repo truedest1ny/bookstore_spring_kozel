@@ -24,10 +24,5 @@ public class UserCommand implements Command {
         return new CommandResult("jsp/user/user.jsp", HttpServletResponse.SC_OK);
 
         }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-            return null;
-    }
 }
 
