@@ -2,7 +2,7 @@ package com.kozel.bookstore.controller.impl.book;
 
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
-import com.kozel.bookstore.service.dto.ServiceBookDto;
+import com.kozel.bookstore.service.dto.BookDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
@@ -13,13 +13,8 @@ public class BookCreatingCommand implements Command {
     @Override
     public CommandResult process(HttpServletRequest req) {
 
-        req.setAttribute("covers", ServiceBookDto.Cover.values());
+        req.setAttribute("covers", BookDto.Cover.values());
 
         return new CommandResult("jsp/book/create_book.jsp", HttpServletResponse.SC_OK);
-    }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
     }
 }

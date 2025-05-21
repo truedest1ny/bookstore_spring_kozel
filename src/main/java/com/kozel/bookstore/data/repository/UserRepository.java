@@ -3,11 +3,12 @@ package com.kozel.bookstore.data.repository;
 import com.kozel.bookstore.data.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<Long, User>{
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
     List<User> findByLastName(String lastName);
-    User findByLogin (String login);
+    Optional<User> findByLogin (String login);
     long countAll();
-    long clearDeletedRows();
+    void clearDeletedRows();
 }

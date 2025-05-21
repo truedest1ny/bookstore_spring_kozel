@@ -4,19 +4,21 @@ import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
-import com.kozel.bookstore.service.dto.ServiceUserDto;
-import com.kozel.bookstore.service.dto.ServiceUserLoginDto;
-import com.kozel.bookstore.service.dto.ServiceUserShowingDto;
+import com.kozel.bookstore.service.dto.UserCreateDto;
+import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserLoginDto;
+import com.kozel.bookstore.service.dto.UserShowingDto;
 import com.kozel.bookstore.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<ServiceUserDto> getAll() {
+    public List<UserDto> getAll() {
 
         log.debug("Called getAll() method");
 
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ServiceUserShowingDto> getUsersDtoShort() {
+    public List<UserShowingDto> getUsersDtoShort() {
 
         log.debug("Called getUsersDtoShort() method");
 
@@ -48,37 +50,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto getById(Long id) {
-        try {
+    public UserDto getById(Long id) {
             log.debug("Called getById() method");
 
-            User user = userRepository.findById(id);
+            User user = userRepository.findById(id).orElseThrow(
+                    () -> new UserNotFoundException("Cannot find user by id " + id)
+            );
             return dataMapper.toServiceDto(user);
 
-        } catch (DataAccessException e){
-            throw new UserNotFoundException("Cannot find user by id " + id);
-        }
 
     }
 
     @Override
-    public Long create(ServiceUserCreateDto serviceUserCreateDto) {
+    public UserDto create(UserCreateDto userCreateDto) {
 
         log.debug("Called create() method");
 
-        User entity = dataMapper.toEntity(serviceUserCreateDto);
+        User entity = dataMapper.toEntity(userCreateDto);
         entity.setRole(User.Role.CUSTOMER);
-        return userRepository.save(entity);
+        User savedUser = userRepository.save(entity);
+        return dataMapper.toServiceDto(savedUser);
 
     }
 
     @Override
-    public ServiceUserDto update(ServiceUserDto serviceUserDto) {
+    public UserDto update(UserDto userDto) {
 
         log.debug("Called update() method");
 
-        User entity = dataMapper.toEntity(serviceUserDto);
-        User savedUser = userRepository.update(entity);
+        User entity = dataMapper.toEntity(userDto);
+        User savedUser = userRepository.save(entity);
         return dataMapper.toServiceDto(savedUser);
     }
 
@@ -87,8 +88,11 @@ public class UserServiceImpl implements UserService {
         log.debug("Called disable() method");
 
         try {
-
-            ServiceUserDto user = dataMapper.toServiceDto(userRepository.findById(id));
+            UserDto user = dataMapper.toServiceDto(
+                    userRepository.findById(id).orElseThrow(
+                            () -> new RuntimeException("Cannot find user (id = " + id + ")." +
+                                    " There is nothing to delete. ")
+                    ));
             user.setDeleted(true);
             userRepository.delete(dataMapper.toEntity(user));
 
@@ -98,30 +102,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto login(ServiceUserLoginDto serviceUserLoginDto) {
-        try {
+    public UserDto login(UserLoginDto userLoginDto) {
             log.debug("Called login() method");
 
-            User user = userRepository.findByLogin(serviceUserLoginDto.getLogin());
-            if (!user.getPassword().equals(serviceUserLoginDto.getPassword())){
-                throw new RuntimeException("Incorrect password for user with login (" + serviceUserLoginDto.getLogin() + ")!");
+            User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
+                    () -> new UserNotFoundException(
+                            "No user with such login (" + userLoginDto.getLogin() +").")
+            );
+            if (!user.getPassword().equals(userLoginDto.getPassword())){
+                throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
             }
 
             return dataMapper.toServiceDto(user);
 
-        } catch (DataAccessException e){
-            throw new UserNotFoundException("No user with such login (" + serviceUserLoginDto.getLogin() +").");
-        }
 
     }
 
     @Override
-    public ServiceUserDto getByLogin(String login) {
-        User user = userRepository.findByLogin(login);
-
-        if (user == null){
-            throw new UserNotFoundException("Cannot find user by login: " + login);
-        }
+    public UserDto getByLogin(String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(
+                () -> new UserNotFoundException("No user with such login (" + login +").")
+        );
         return dataMapper.toServiceDto(user);
     }
 }

@@ -13,9 +13,4 @@ public class UserCreatingCommand implements Command {
     public CommandResult process(HttpServletRequest req) {
         return new CommandResult("jsp/user/create_user.jsp", HttpServletResponse.SC_OK);
     }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
-    }
 }

@@ -4,17 +4,18 @@ import com.kozel.bookstore.data.entity.Order;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.OrderRepository;
 import com.kozel.bookstore.service.OrderService;
-import com.kozel.bookstore.service.dto.ServiceOrderDto;
-import com.kozel.bookstore.service.dto.ServiceOrderShowingDto;
-import com.kozel.bookstore.service.exception.OrderNotFoundException;
+import com.kozel.bookstore.service.dto.OrderDto;
+import com.kozel.bookstore.service.dto.OrderShowingDto;
+import com.kozel.bookstore.service.exception.BookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -24,7 +25,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<ServiceOrderDto> getAll() {
+    public List<OrderDto> getAll() {
         log.debug("Called getAll() method");
 
         return orderRepository.findAll()
@@ -34,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ServiceOrderShowingDto> getOrdersDtoShort() {
+    public List<OrderShowingDto> getOrdersDtoShort() {
         log.debug("Called getOrdersDtoShort() method");
 
         return orderRepository.findAll()
@@ -44,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<ServiceOrderShowingDto> findByUserId(Long userId) {
+    public List<OrderShowingDto> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId)
                 .stream()
                 .map(dataMapper::toServiceShortedDto)
@@ -52,26 +53,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ServiceOrderDto getById(Long id) {
+    public OrderDto getById(Long id) {
         log.debug("Called getById() method");
-        try {
-            Order order = orderRepository.findById(id);
+            Order order = orderRepository.findById(id).orElseThrow(
+                    () -> new BookNotFoundException("Cannot find order by id " + id)
+            );
 
             return dataMapper.toServiceDto(order);
-        } catch (DataAccessException e) {
-            throw new OrderNotFoundException("Cannot find order by id " + id);
-        }
     }
 
     @Override
-    public Long create(ServiceOrderDto serviceOrderDto) {
+    public Long create(OrderDto orderDto) {
         log.debug("Called create() method");
         //TODO CREATE ORDER Service
         return 0L;
     }
 
     @Override
-    public ServiceOrderDto update(ServiceOrderDto serviceOrderDto) {
+    public OrderDto update(OrderDto orderDto) {
         log.debug("Called update() method");
         //TODO UPDATE ORDER Service
         return null;

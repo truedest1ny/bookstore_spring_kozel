@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ServiceOrderDto {
+public class OrderDto {
     private Long id;
     private LocalDateTime date;
     private User user;

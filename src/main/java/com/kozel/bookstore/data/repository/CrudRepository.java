@@ -1,11 +1,23 @@
 package com.kozel.bookstore.data.repository;
 
-import java.util.List;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 
-public interface CrudRepository <V, T> {
-    V save(T object);
-    T findById(V id);
+import java.util.List;
+import java.util.Optional;
+
+public interface CrudRepository <V, T>  {
+    T save(T object);
+    Optional<T> findById(V id);
     List<T> findAll();
-    T update(T object);
     void delete(T object);
+
+    default void disableDeletedFilter(Session session) {
+        session.disableFilter("isDeletedFilter");
+    }
+
+    default void activateDeletedFilter(Session session, boolean flag) {
+        Filter filter = session.enableFilter("isDeletedFilter");
+        filter.setParameter("isDeleted", flag);
+    }
 }

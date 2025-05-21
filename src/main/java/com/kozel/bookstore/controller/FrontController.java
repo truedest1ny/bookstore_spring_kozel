@@ -39,8 +39,8 @@ public class FrontController extends HttpServlet {
             req.setAttribute("id", id);
             req.setAttribute("command", commandParameter);
 
-            Command command = AppListener.getContext().getBean("error", Command.class);
-            CommandResult result = command.process(req, e);
+            ErrorHandler errorHandler = AppListener.getContext().getBean("error", ErrorHandler.class);
+            CommandResult result = errorHandler.process(req, e);
 
             resp.setStatus(result.getStatusCode());
             req.getRequestDispatcher(result.getPage()).forward(req, resp);

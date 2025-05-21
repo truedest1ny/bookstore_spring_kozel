@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.user;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
+import com.kozel.bookstore.service.dto.UserCreateDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class UserCreateCommand implements Command {
     public CommandResult process(HttpServletRequest req) {
 
 
-        ServiceUserCreateDto user = new ServiceUserCreateDto();
+        UserCreateDto user = new UserCreateDto();
 
         try {
             user.setEmail(req.getParameter("email").trim());
@@ -31,10 +31,5 @@ public class UserCreateCommand implements Command {
         } catch (NumberFormatException e){
             throw new NumberFormatException(e.getMessage());
         }
-    }
-
-    @Override
-    public CommandResult process(HttpServletRequest req, Exception e) {
-        return null;
     }
 }

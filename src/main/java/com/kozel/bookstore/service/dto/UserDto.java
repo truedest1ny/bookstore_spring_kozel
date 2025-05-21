@@ -1,9 +1,12 @@
-package com.kozel.bookstore.data.dto;
+package com.kozel.bookstore.service.dto;
+
 
 import lombok.Data;
 
+
 @Data
 public class UserDto {
+
     private Long id;
     private String firstName;
     private String lastName;
@@ -11,7 +14,7 @@ public class UserDto {
     private String login;
     private String password;
     private Role role;
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     public enum Role {
         SUPER_ADMIN,
@@ -19,4 +22,6 @@ public class UserDto {
         MANAGER,
         CUSTOMER,
     }
+
+
 }

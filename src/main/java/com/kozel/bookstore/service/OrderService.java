@@ -1,17 +1,17 @@
 package com.kozel.bookstore.service;
 
 
-import com.kozel.bookstore.service.dto.ServiceOrderDto;
-import com.kozel.bookstore.service.dto.ServiceOrderShowingDto;
+import com.kozel.bookstore.service.dto.OrderDto;
+import com.kozel.bookstore.service.dto.OrderShowingDto;
 
 import java.util.List;
 
 public interface OrderService {
-    List<ServiceOrderDto> getAll();
-    List<ServiceOrderShowingDto> getOrdersDtoShort();
-    ServiceOrderDto getById(Long id);
-    Long create(ServiceOrderDto serviceOrderDto);
-    ServiceOrderDto update(ServiceOrderDto serviceOrderDto);
+    List<OrderDto> getAll();
+    List<OrderShowingDto> getOrdersDtoShort();
+    OrderDto getById(Long id);
+    Long create(OrderDto orderDto);
+    OrderDto update(OrderDto orderDto);
     void disable(Long id);
-    List<ServiceOrderShowingDto> findByUserId(Long userId);
+    List<OrderShowingDto> findByUserId(Long userId);
 }

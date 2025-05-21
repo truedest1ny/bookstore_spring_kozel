@@ -1,4 +1,4 @@
-package com.kozel.bookstore.data.dto;
+package com.kozel.bookstore.service.dto;
 
 import lombok.Data;
 
@@ -6,12 +6,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class OrderDto {
+public class OrderShowingDto {
     private Long id;
     private LocalDateTime date;
-    private Long userId;
-    private Status status;
-    private BigDecimal price;
+    private String userLogin;
+    private OrderShowingDto.Status status;
+    private BigDecimal totalPrice;
 
     public enum Status {
         PENDING,
