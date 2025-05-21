@@ -143,3 +143,24 @@ Added **_JSP pages_** to these commands:
 - [orders_by_user.jsp](src/main/webapp/jsp/order/orders_by_user.jsp);
 - [filter_orders_by_user.jsp](src/main/webapp/jsp/order/filter_orders_by_user.jsp);
 - [order_not_found.jsp](src/main/webapp/jsp/error/404/order_not_found.jsp).
+
+## Hometask #2.4 (ORM. JPA. Hibernate)
+
+The project has been migrated to **_JPA (Hibernate)_** technology. Now Repository-layer will interact with the database directly, without using DAO-classes. 
+
+Because of this, the _DAO_ layer has been removed, as well as the _DTOs_ used for passing between the DAO and Repository:
+
+- ~~BookDto~~;
+- ~~OrderDto~~;
+- ~~OrderItemDto~~;
+- ~~UserDto~~;
+- **~~BookDao~~**;
+- **~~UserDao~~**;
+- **~~OrderItemDao~~**;
+- **~~OrderDao~~**.
+
+Added [persistence.xml](src/main/resources/META-INF/persistence.xml), which is the configuration file for JPA.
+
+The **Hibernate** project uses **_Hikari Connection Pool_** to manage connections to the database.
+
+To organise the structure of the displayed data in the Entity layer, the _‘Deleted’_ flag filter is used. Its declaration can be found in the file [package-info.java](src/main/java/com/kozel/bookstore/data/entity/package-info.java).
