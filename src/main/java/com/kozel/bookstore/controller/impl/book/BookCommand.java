@@ -2,7 +2,7 @@ package com.kozel.bookstore.controller.impl.book;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.BookService;
-import com.kozel.bookstore.service.dto.ServiceBookDto;
+import com.kozel.bookstore.service.dto.BookDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class BookCommand implements Command {
     public CommandResult process(HttpServletRequest req){
 
         long id = Long.parseLong(req.getParameter("id"));
-        ServiceBookDto book = bookService.getById(id);
+        BookDto book = bookService.getById(id);
         req.setAttribute("book", book);
 
         return new CommandResult("jsp/book/book.jsp", HttpServletResponse.SC_OK);

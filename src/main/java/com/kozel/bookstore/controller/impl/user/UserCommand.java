@@ -3,7 +3,7 @@ package com.kozel.bookstore.controller.impl.user;
 import com.kozel.bookstore.controller.Command;
 import com.kozel.bookstore.controller.CommandResult;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.ServiceUserDto;
+import com.kozel.bookstore.service.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class UserCommand implements Command {
     @Override
         public CommandResult process(HttpServletRequest req){
             long id = Long.parseLong(req.getParameter("id"));
-            ServiceUserDto user = userService.getById(id);
+            UserDto user = userService.getById(id);
             req.setAttribute("user", user);
         return new CommandResult("jsp/user/user.jsp", HttpServletResponse.SC_OK);
 

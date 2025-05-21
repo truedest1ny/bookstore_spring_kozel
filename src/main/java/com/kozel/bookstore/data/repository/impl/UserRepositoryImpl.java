@@ -116,7 +116,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> findAll() {
         Session session = manager.unwrap(Session.class);
-        activateDeletedFilter(session, true);
+        activateDeletedFilter(session, false);
 
         List<User> users = session.createQuery(GET_ALL, User.class).getResultList();
 

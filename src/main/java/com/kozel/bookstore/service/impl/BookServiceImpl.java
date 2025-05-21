@@ -4,8 +4,8 @@ import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.BookRepository;
 import com.kozel.bookstore.service.BookService;
-import com.kozel.bookstore.service.dto.ServiceBookDto;
-import com.kozel.bookstore.service.dto.ServiceBookShowingDto;
+import com.kozel.bookstore.service.dto.BookDto;
+import com.kozel.bookstore.service.dto.BookShowingDto;
 import com.kozel.bookstore.service.exception.BookNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class BookServiceImpl implements BookService {
     private final DataMapper dataMapper;
 
     @Override
-    public List<ServiceBookDto> getAll() {
+    public List<BookDto> getAll() {
         log.debug("Called getAll() method");
 
         return bookRepository.findAll()
@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<ServiceBookShowingDto> getBooksDtoShort() {
+    public List<BookShowingDto> getBooksDtoShort() {
         log.debug("Called getBooksDtoShort() method");
 
         return bookRepository.findAll()
@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ServiceBookDto getById(Long id) {
+    public BookDto getById(Long id) {
         log.debug("Called getById() method");
             Book book = bookRepository.findById(id).orElseThrow(
                     () -> new BookNotFoundException("Cannot find book by id " + id)
@@ -56,19 +56,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ServiceBookDto create(ServiceBookDto serviceBookDto) {
+    public BookDto create(BookDto bookDto) {
         log.debug("Called create() method");
 
-        Book entity = dataMapper.toEntity(serviceBookDto);
+        Book entity = dataMapper.toEntity(bookDto);
         Book savedBook = bookRepository.save(entity);
         return dataMapper.toServiceDto(savedBook);
     }
 
     @Override
-    public ServiceBookDto update(ServiceBookDto serviceBookDto) {
+    public BookDto update(BookDto bookDto) {
         log.debug("Called update() method");
 
-        Book entity = dataMapper.toEntity(serviceBookDto);
+        Book entity = dataMapper.toEntity(bookDto);
         Book savedBook = bookRepository.save(entity);
         return dataMapper.toServiceDto(savedBook);
     }
@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
     public void disable(Long id) {
         log.debug("Called disable() method");
         try {
-                ServiceBookDto book = dataMapper.toServiceDto(
+                BookDto book = dataMapper.toServiceDto(
                         bookRepository.findById(id).orElseThrow(
                                 () -> new RuntimeException("Cannot find book (id = " + id + ")." +
                                         " There is nothing to delete. ")
@@ -95,16 +95,16 @@ public class BookServiceImpl implements BookService {
         log.debug("Called getSumPriceByAuthor() method");
 
         BigDecimal SumPrice = BigDecimal.valueOf(0);
-        List<ServiceBookDto> serviceBookDtos = bookRepository.findByAuthor(author)
+        List<BookDto> bookDtos = bookRepository.findByAuthor(author)
                 .stream()
                 .map(dataMapper::toServiceDto)
                 .toList();
-        if (serviceBookDtos.isEmpty())
+        if (bookDtos.isEmpty())
         {
             return SumPrice;
         }
-        for (ServiceBookDto serviceBookDto : serviceBookDtos) {
-            SumPrice = SumPrice.add(serviceBookDto.getPrice());
+        for (BookDto bookDto : bookDtos) {
+            SumPrice = SumPrice.add(bookDto.getPrice());
         }
         return SumPrice;
     }

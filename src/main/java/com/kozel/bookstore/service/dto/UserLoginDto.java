@@ -4,9 +4,8 @@ import lombok.Data;
 
 
 @Data
-public class ServiceUserCreateDto {
+public class UserLoginDto {
 
-    private String email;
     private String login;
     private String password;
 

@@ -4,10 +4,10 @@ import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
-import com.kozel.bookstore.service.dto.ServiceUserDto;
-import com.kozel.bookstore.service.dto.ServiceUserLoginDto;
-import com.kozel.bookstore.service.dto.ServiceUserShowingDto;
+import com.kozel.bookstore.service.dto.UserCreateDto;
+import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserLoginDto;
+import com.kozel.bookstore.service.dto.UserShowingDto;
 import com.kozel.bookstore.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<ServiceUserDto> getAll() {
+    public List<UserDto> getAll() {
 
         log.debug("Called getAll() method");
 
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ServiceUserShowingDto> getUsersDtoShort() {
+    public List<UserShowingDto> getUsersDtoShort() {
 
         log.debug("Called getUsersDtoShort() method");
 
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto getById(Long id) {
+    public UserDto getById(Long id) {
             log.debug("Called getById() method");
 
             User user = userRepository.findById(id).orElseThrow(
@@ -62,11 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto create(ServiceUserCreateDto serviceUserCreateDto) {
+    public UserDto create(UserCreateDto userCreateDto) {
 
         log.debug("Called create() method");
 
-        User entity = dataMapper.toEntity(serviceUserCreateDto);
+        User entity = dataMapper.toEntity(userCreateDto);
         entity.setRole(User.Role.CUSTOMER);
         User savedUser = userRepository.save(entity);
         return dataMapper.toServiceDto(savedUser);
@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto update(ServiceUserDto serviceUserDto) {
+    public UserDto update(UserDto userDto) {
 
         log.debug("Called update() method");
 
-        User entity = dataMapper.toEntity(serviceUserDto);
+        User entity = dataMapper.toEntity(userDto);
         User savedUser = userRepository.save(entity);
         return dataMapper.toServiceDto(savedUser);
     }
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Called disable() method");
 
         try {
-            ServiceUserDto user = dataMapper.toServiceDto(
+            UserDto user = dataMapper.toServiceDto(
                     userRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Cannot find user (id = " + id + ")." +
                                     " There is nothing to delete. ")
@@ -102,15 +102,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto login(ServiceUserLoginDto serviceUserLoginDto) {
+    public UserDto login(UserLoginDto userLoginDto) {
             log.debug("Called login() method");
 
-            User user = userRepository.findByLogin(serviceUserLoginDto.getLogin()).orElseThrow(
+            User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
                     () -> new UserNotFoundException(
-                            "No user with such login (" + serviceUserLoginDto.getLogin() +").")
+                            "No user with such login (" + userLoginDto.getLogin() +").")
             );
-            if (!user.getPassword().equals(serviceUserLoginDto.getPassword())){
-                throw new RuntimeException("Incorrect password for user with login (" + serviceUserLoginDto.getLogin() + ")!");
+            if (!user.getPassword().equals(userLoginDto.getPassword())){
+                throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
             }
 
             return dataMapper.toServiceDto(user);
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceUserDto getByLogin(String login) {
+    public UserDto getByLogin(String login) {
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException("No user with such login (" + login +").")
         );

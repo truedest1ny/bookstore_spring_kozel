@@ -1,16 +1,20 @@
 package com.kozel.bookstore.service.dto;
 
+import com.kozel.bookstore.data.entity.OrderItem;
+import com.kozel.bookstore.data.entity.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class ServiceOrderShowingDto {
+public class OrderDto {
     private Long id;
     private LocalDateTime date;
-    private String userLogin;
-    private ServiceOrderShowingDto.Status status;
+    private User user;
+    private List<OrderItem> items;
+    private Status status;
     private BigDecimal totalPrice;
 
     public enum Status {

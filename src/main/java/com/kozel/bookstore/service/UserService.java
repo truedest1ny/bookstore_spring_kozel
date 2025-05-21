@@ -1,20 +1,20 @@
 package com.kozel.bookstore.service;
 
-import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
-import com.kozel.bookstore.service.dto.ServiceUserDto;
-import com.kozel.bookstore.service.dto.ServiceUserLoginDto;
-import com.kozel.bookstore.service.dto.ServiceUserShowingDto;
+import com.kozel.bookstore.service.dto.UserCreateDto;
+import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserLoginDto;
+import com.kozel.bookstore.service.dto.UserShowingDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<ServiceUserDto> getAll();
-    List<ServiceUserShowingDto> getUsersDtoShort();
-    ServiceUserDto getById(Long id);
-    ServiceUserDto create(ServiceUserCreateDto serviceUserCreateDto);
-    ServiceUserDto update(ServiceUserDto serviceUserDto);
+    List<UserDto> getAll();
+    List<UserShowingDto> getUsersDtoShort();
+    UserDto getById(Long id);
+    UserDto create(UserCreateDto userCreateDto);
+    UserDto update(UserDto userDto);
     void disable(Long id);
-    ServiceUserDto login(ServiceUserLoginDto serviceUserLoginDto);
-    ServiceUserDto getByLogin(String login);
+    UserDto login(UserLoginDto userLoginDto);
+    UserDto getByLogin(String login);
 
 }
