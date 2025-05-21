@@ -13,10 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -49,26 +51,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ServiceUserDto getById(Long id) {
-        try {
             log.debug("Called getById() method");
 
-            User user = userRepository.findById(id);
+            User user = userRepository.findById(id).orElseThrow(
+                    () -> new UserNotFoundException("Cannot find user by id " + id)
+            );
             return dataMapper.toServiceDto(user);
 
-        } catch (DataAccessException e){
-            throw new UserNotFoundException("Cannot find user by id " + id);
-        }
 
     }
 
     @Override
-    public Long create(ServiceUserCreateDto serviceUserCreateDto) {
+    public ServiceUserDto create(ServiceUserCreateDto serviceUserCreateDto) {
 
         log.debug("Called create() method");
 
         User entity = dataMapper.toEntity(serviceUserCreateDto);
         entity.setRole(User.Role.CUSTOMER);
-        return userRepository.save(entity);
+        User savedUser = userRepository.save(entity);
+        return dataMapper.toServiceDto(savedUser);
 
     }
 
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Called update() method");
 
         User entity = dataMapper.toEntity(serviceUserDto);
-        User savedUser = userRepository.update(entity);
+        User savedUser = userRepository.save(entity);
         return dataMapper.toServiceDto(savedUser);
     }
 
@@ -87,8 +88,11 @@ public class UserServiceImpl implements UserService {
         log.debug("Called disable() method");
 
         try {
-
-            ServiceUserDto user = dataMapper.toServiceDto(userRepository.findById(id));
+            ServiceUserDto user = dataMapper.toServiceDto(
+                    userRepository.findById(id).orElseThrow(
+                            () -> new RuntimeException("Cannot find user (id = " + id + ")." +
+                                    " There is nothing to delete. ")
+                    ));
             user.setDeleted(true);
             userRepository.delete(dataMapper.toEntity(user));
 
@@ -99,29 +103,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ServiceUserDto login(ServiceUserLoginDto serviceUserLoginDto) {
-        try {
             log.debug("Called login() method");
 
-            User user = userRepository.findByLogin(serviceUserLoginDto.getLogin());
+            User user = userRepository.findByLogin(serviceUserLoginDto.getLogin()).orElseThrow(
+                    () -> new UserNotFoundException(
+                            "No user with such login (" + serviceUserLoginDto.getLogin() +").")
+            );
             if (!user.getPassword().equals(serviceUserLoginDto.getPassword())){
                 throw new RuntimeException("Incorrect password for user with login (" + serviceUserLoginDto.getLogin() + ")!");
             }
 
             return dataMapper.toServiceDto(user);
 
-        } catch (DataAccessException e){
-            throw new UserNotFoundException("No user with such login (" + serviceUserLoginDto.getLogin() +").");
-        }
 
     }
 
     @Override
     public ServiceUserDto getByLogin(String login) {
-        User user = userRepository.findByLogin(login);
-
-        if (user == null){
-            throw new UserNotFoundException("Cannot find user by login: " + login);
-        }
+        User user = userRepository.findByLogin(login).orElseThrow(
+                () -> new UserNotFoundException("No user with such login (" + login +").")
+        );
         return dataMapper.toServiceDto(user);
     }
 }

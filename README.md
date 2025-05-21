@@ -23,7 +23,7 @@ There is a *data class* [Book](src/main/java/com/kozel/bookstore/data/entity/Boo
 - (required) *Integer* field `published_year`;
 - *BigDecimal* field `price`.
 
-There is also an *interface* [BookDao](src/main/java/com/kozel/bookstore/data/dao/BookDao.java) that interacts with the database and includes CRUD and some other methods:
+There is also an *interface* `BookDao` that interacts with the database and includes CRUD and some other methods:
 
 - `Long addBook(Book book)` that adds a book to a database;
 - `Book getById(Long id)` that finds a book by its *id* in a database;
@@ -36,7 +36,7 @@ There is also an *interface* [BookDao](src/main/java/com/kozel/bookstore/data/da
 - `void createRS(Book book)` that adds a book to a database using ***ResultSet*** methods;
 - `void printTableInfo()` that displays information of a database table ***books***;
 
-*Class* [BookDaoImpl](src/main/java/com/kozel/bookstore/data/dao/impl/BookDaoImpl.java) implements interface `BookDao` and carries out the methods described above.
+*Class* `BookDaoImpl` implements interface `BookDao` and carries out the methods described above.
 
 
 ## Hometask #1.2 (Service)
@@ -47,7 +47,7 @@ Also, there is an *interface* [BookService](src/main/java/com/kozel/bookstore/se
 
 Interface `DataSource` has a method `getConnection()`, which is implemented by class: `DataSourceImpl`.
 
-Connection parameters are read from the file [application.properties](src/main/resources/application.properties) (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the `ConnectionProperties` class.
+Connection parameters are read from the file `application.properties` (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the `ConnectionProperties` class.
 
 ## Hometask #1.3 (User)
 
@@ -116,16 +116,16 @@ Added [Order](src/main/java/com/kozel/bookstore/data/entity/Order.java) entity a
 
 Added a _**Repository**_ layer (related to the Data layer), which is an abstraction over the DAO. The necessity of its use is caused by the appearance of a complex Order object, the creation of which requires the use of different DAOs:
 
-- [BookRepository](src/main/java/com/kozel/bookstore/data/repository/BookRepository.java) - uses [BookDao](src/main/java/com/kozel/bookstore/data/dao/BookDao.java);
-- [UserRepository](src/main/java/com/kozel/bookstore/data/repository/UserRepository.java) - uses [UserDao](src/main/java/com/kozel/bookstore/data/dao/UserDao.java);
-- [OrderRepository](src/main/java/com/kozel/bookstore/data/repository/OrderRepository.java)- uses [BookDao](src/main/java/com/kozel/bookstore/data/dao/BookDao.java), [UserDao](src/main/java/com/kozel/bookstore/data/dao/UserDao.java), [OrderItemDao](src/main/java/com/kozel/bookstore/data/dao/OrderItemDao.java) and [OrderDao](src/main/java/com/kozel/bookstore/data/dao/OrderDao.java).
+- [BookRepository](src/main/java/com/kozel/bookstore/data/repository/BookRepository.java) - uses `BookDao`;
+- [UserRepository](src/main/java/com/kozel/bookstore/data/repository/UserRepository.java) - uses `UserDao`;
+- [OrderRepository](src/main/java/com/kozel/bookstore/data/repository/OrderRepository.java)- uses `BookDao`, `UserDao`, `OrderItemDao` and `OrderDao`.
 
 Added **_DTO classes_** for the Data layer:
 
-- [BookDto](src/main/java/com/kozel/bookstore/data/dto/BookDto.java);
-- [OrderDto](src/main/java/com/kozel/bookstore/data/dto/OrderDto.java);
-- [OrderItemDto](src/main/java/com/kozel/bookstore/data/dto/OrderItemDto.java);
-- [UserDto](src/main/java/com/kozel/bookstore/data/dto/UserDto.java).
+- `BookDto`;
+- `OrderDto`;
+- `OrderItemDto`;
+- `UserDto`.
 
 The DTO classes of the service layer have been renamed to eliminate duplicate class names.
 

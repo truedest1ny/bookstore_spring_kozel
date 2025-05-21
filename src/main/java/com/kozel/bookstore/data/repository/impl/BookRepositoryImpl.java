@@ -1,73 +1,118 @@
 package com.kozel.bookstore.data.repository.impl;
 
-import com.kozel.bookstore.data.dao.BookDao;
-import com.kozel.bookstore.data.dto.BookDto;
 import com.kozel.bookstore.data.entity.Book;
-import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.BookRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
+@Transactional
 public class BookRepositoryImpl implements BookRepository {
 
-    private final BookDao bookDao;
-    private final DataMapper dataMapper;
+    private static final String GET_ALL =
+            "SELECT b FROM Book b";
+    private static final String DELETE =
+            "DELETE FROM Book";
+    private static final String COUNT_ALL =
+            "SELECT COUNT(b) from Book b";
+    private static final String GET_BY_AUTHOR =
+            "SELECT b FROM Book b WHERE b.author = :author";
+
+    @PersistenceContext
+    private EntityManager manager;
 
     @Override
-    public Book findByIsbn(String isbn) {
-        return dataMapper.toEntity(bookDao.findByIsbn(isbn));
+    public Optional<Book> findByIsbn(String isbn) {
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        Optional<Book> book = Optional.ofNullable(
+                session.find(Book.class, isbn));
+
+        disableDeletedFilter(session);
+        return book;
     }
 
     @Override
     public List<Book> findByAuthor(String author) {
-        return bookDao.findByAuthor(author)
-                .stream()
-                .map(dataMapper::toEntity)
-                .toList();
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        List<Book> books = session.createQuery(GET_BY_AUTHOR, Book.class)
+                            .setParameter("author", author)
+                            .getResultList();
+
+        disableDeletedFilter(session);
+        return books;
     }
 
     @Override
     public long countAll() {
-        return bookDao.countAll();
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        long result = session.createQuery(COUNT_ALL, Long.class).getSingleResult();
+
+        disableDeletedFilter(session);
+        return result;
     }
 
     @Override
-    public long clearDeletedRows() {
-        return bookDao.clearDeletedRows();
+    public void clearDeletedRows() {
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, true);
+
+        session.createQuery(DELETE, Book.class);
+
+        disableDeletedFilter(session);
     }
 
     @Override
-    public Long save(Book book) {
-        return bookDao.save(dataMapper.toDto(book));
+    public Book save(Book book) {
+        if (book.getId() != null){
+            manager.merge(book);
+        }
+        else {
+            manager.persist(book);
+        }
+        return book;
     }
 
     @Override
-    public Book findById(Long id) {
-        return dataMapper.toEntity(bookDao.findById(id));
+    public Optional<Book> findById(Long id) {
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        Optional<Book> book = Optional.ofNullable(
+                session.find(Book.class, id));
+
+        disableDeletedFilter(session);
+        return book;
     }
 
     @Override
     public List<Book> findAll() {
-        return bookDao.findAll()
-                .stream()
-                .map(dataMapper::toEntity)
-                .toList();
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        List<Book> books = session.createQuery(GET_ALL, Book.class).getResultList();
+
+        disableDeletedFilter(session);
+
+        return books;
     }
 
-    @Override
-    public Book update(Book book) {
-        BookDto bookDto = dataMapper.toDto(book);
-        BookDto savedBookDto = bookDao.update(bookDto);
-
-        return dataMapper.toEntity(savedBookDto);
-    }
 
     @Override
     public void delete(Book book) {
-        bookDao.delete(dataMapper.toDto(book));
+        book.setDeleted(true);
+        manager.merge(book);
     }
+
 }

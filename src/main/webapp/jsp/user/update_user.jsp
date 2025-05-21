@@ -62,7 +62,7 @@
   <div class="form-group row element-padding">
     <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
     <div class="col-sm-10">
-       <input type="text" class="form-control" id="login" name="login" value="${user.login}" disabled>
+       <input type="text" class="form-control" id="login" name="login" value="${user.login}" readonly>
        <small id="loginHelp" class="form-text text-muted help-text-size">
           Login is set once during registration and will remain unchanged.
        </small>

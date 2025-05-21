@@ -11,7 +11,7 @@ public interface UserService {
     List<ServiceUserDto> getAll();
     List<ServiceUserShowingDto> getUsersDtoShort();
     ServiceUserDto getById(Long id);
-    Long create(ServiceUserCreateDto serviceUserCreateDto);
+    ServiceUserDto create(ServiceUserCreateDto serviceUserCreateDto);
     ServiceUserDto update(ServiceUserDto serviceUserDto);
     void disable(Long id);
     ServiceUserDto login(ServiceUserLoginDto serviceUserLoginDto);

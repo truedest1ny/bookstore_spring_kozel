@@ -45,7 +45,7 @@
   <div class="form-group row element-padding">
     <label for="isbn" class="col-sm-2 col-form-label"><i><b>ISBN</i></b></label>
     <div class="col-sm-10">
-       <input type="text" class="form-control" id="isbn" name="isbn" value="${book.isbn}" disabled>
+       <input type="text" class="form-control" id="isbn" name="isbn" value="${book.isbn}" readonly>
        <small id="isbnHelp" class="form-text text-muted help-text-size">ISBN - a unique number - remains constant the entire time the book is in the catalog</small>
     </div>
 

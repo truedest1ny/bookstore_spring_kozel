@@ -26,6 +26,7 @@ public class UpdateBookCommand implements Command {
         try {
             book.setId(Long.parseLong(req.getParameter("id")));
             book.setName(req.getParameter("name").trim());
+            book.setIsbn(req.getParameter("isbn").trim());
             book.setAuthor(req.getParameter("author").trim());
             book.setPublishedYear(Integer.parseInt(req.getParameter("published_year").trim()));
             book.setPrice(BigDecimal.valueOf(Double.parseDouble(req.getParameter("price").trim())));

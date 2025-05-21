@@ -1,11 +1,15 @@
 package com.kozel.bookstore.data.mapper;
 
-import com.kozel.bookstore.data.dto.BookDto;
-import com.kozel.bookstore.data.dto.UserDto;
 import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.entity.Order;
 import com.kozel.bookstore.data.entity.User;
-import com.kozel.bookstore.service.dto.*;
+import com.kozel.bookstore.service.dto.ServiceBookDto;
+import com.kozel.bookstore.service.dto.ServiceBookShowingDto;
+import com.kozel.bookstore.service.dto.ServiceOrderDto;
+import com.kozel.bookstore.service.dto.ServiceOrderShowingDto;
+import com.kozel.bookstore.service.dto.ServiceUserCreateDto;
+import com.kozel.bookstore.service.dto.ServiceUserDto;
+import com.kozel.bookstore.service.dto.ServiceUserShowingDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -147,65 +151,5 @@ public class DataMapperImpl implements DataMapper {
         dto.setTotalPrice(orderEntity.getTotalPrice());
 
         return dto;
-    }
-
-    @Override
-    public Book toEntity(BookDto bookDto) {
-        Book book = new Book();
-        book.setId(bookDto.getId());
-        book.setName(bookDto.getName());
-        book.setIsbn(bookDto.getIsbn());
-        book.setCover(Book.Cover.valueOf(bookDto.getCover().toString()));
-        book.setAuthor(bookDto.getAuthor());
-        book.setPublishedYear(bookDto.getPublishedYear());
-        book.setPrice(bookDto.getPrice());
-        book.setDeleted(bookDto.isDeleted());
-        return book;
-    }
-
-    @Override
-    public User toEntity(UserDto userDto) {
-        User user = new User();
-
-        user.setId(userDto.getId());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setLogin(userDto.getLogin());
-        user.setPassword(userDto.getPassword());
-        user.setRole(User.Role.valueOf(userDto.getRole().toString()));
-        user.setDeleted(userDto.isDeleted());
-
-        return user;
-    }
-
-    @Override
-    public BookDto toDto(Book bookEntity) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(bookEntity.getId());
-        bookDto.setName(bookEntity.getName());
-        bookDto.setIsbn(bookEntity.getIsbn());
-        bookDto.setCover(BookDto.Cover.valueOf(bookEntity.getCover().toString()));
-        bookDto.setAuthor(bookEntity.getAuthor());
-        bookDto.setPublishedYear(bookEntity.getPublishedYear());
-        bookDto.setPrice(bookEntity.getPrice());
-        bookDto.setDeleted(bookEntity.isDeleted());
-        return bookDto;
-    }
-
-    @Override
-    public UserDto toDto(User userEntity) {
-        UserDto userDto = new UserDto();
-
-        userDto.setId(userEntity.getId());
-        userDto.setFirstName(userEntity.getFirstName());
-        userDto.setLastName(userEntity.getLastName());
-        userDto.setEmail(userEntity.getEmail());
-        userDto.setLogin(userEntity.getLogin());
-        userDto.setPassword(userEntity.getPassword());
-        userDto.setRole(UserDto.Role.valueOf(userEntity.getRole().toString()));
-        userDto.setDeleted(userEntity.isDeleted());
-
-        return userDto;
     }
 }

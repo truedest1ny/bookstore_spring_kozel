@@ -23,6 +23,7 @@ public class UpdateUserCommand implements Command {
             user.setId(Long.parseLong(req.getParameter("id").trim()));
             user.setFirstName(req.getParameter("first_name").trim());
             user.setLastName(req.getParameter("last_name").trim());
+            user.setLogin(req.getParameter("login"));
             user.setEmail(req.getParameter("email").trim());
             user.setPassword(req.getParameter("password").trim());
             user.setRole(ServiceUserDto.Role.valueOf(req.getParameter("role").trim()));

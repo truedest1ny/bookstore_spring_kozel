@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.2">
+    <persistence-unit name="project_persistence" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <properties>
+
+            <property name="hibernate.connection.provider_class"
+                      value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>
+
+            <property name="hibernate.hikari.dataSourceClassName"
+                      value="org.postgresql.ds.PGSimpleDataSource"/>
+            <property name="hibernate.hikari.dataSource.url"
+                      value="jdbc:postgresql://accurately-loved-cobra.data-1.use1.tembo.io:5432/postgres"/>
+            <property name="hibernate.hikari.dataSource.user"
+                      value="postgres"/>
+            <property name="hibernate.hikari.dataSource.password"
+                      value="jtNvLaQ0AUM563CH"/>
+
+            <property name="hibernate.hikari.maximumPoolSize" value="10"/>
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.idleTimeout" value="600000"/>
+
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.show_sql" value="true"/>
+<!--
+            <property name="hibernate.format_sql" value="true"/>
+-->
+
+            <property name="hibernate.transaction.manager_lookup_class"
+                      value="org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform"/>
+        </properties>
+    </persistence-unit>
+</persistence>

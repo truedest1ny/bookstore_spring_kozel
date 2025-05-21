@@ -11,11 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -46,22 +48,20 @@ public class BookServiceImpl implements BookService {
     @Override
     public ServiceBookDto getById(Long id) {
         log.debug("Called getById() method");
-        try {
-            Book book = bookRepository.findById(id);
+            Book book = bookRepository.findById(id).orElseThrow(
+                    () -> new BookNotFoundException("Cannot find book by id " + id)
+            );
 
             return dataMapper.toServiceDto(book);
-        } catch (DataAccessException e) {
-            throw new BookNotFoundException("Cannot find book by id " + id);
-        }
-
     }
 
     @Override
-    public Long create(ServiceBookDto serviceBookDto) {
+    public ServiceBookDto create(ServiceBookDto serviceBookDto) {
         log.debug("Called create() method");
 
         Book entity = dataMapper.toEntity(serviceBookDto);
-        return bookRepository.save(entity);
+        Book savedBook = bookRepository.save(entity);
+        return dataMapper.toServiceDto(savedBook);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
         log.debug("Called update() method");
 
         Book entity = dataMapper.toEntity(serviceBookDto);
-        Book savedBook = bookRepository.update(entity);
+        Book savedBook = bookRepository.save(entity);
         return dataMapper.toServiceDto(savedBook);
     }
 
@@ -77,7 +77,11 @@ public class BookServiceImpl implements BookService {
     public void disable(Long id) {
         log.debug("Called disable() method");
         try {
-                ServiceBookDto book = dataMapper.toServiceDto(bookRepository.findById(id));
+                ServiceBookDto book = dataMapper.toServiceDto(
+                        bookRepository.findById(id).orElseThrow(
+                                () -> new RuntimeException("Cannot find book (id = " + id + ")." +
+                                        " There is nothing to delete. ")
+                        ));
                 book.setDeleted(true);
                 bookRepository.delete(dataMapper.toEntity(book));
 

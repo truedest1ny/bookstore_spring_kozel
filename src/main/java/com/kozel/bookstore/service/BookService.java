@@ -10,7 +10,7 @@ public interface BookService {
     List<ServiceBookDto> getAll();
     List<ServiceBookShowingDto> getBooksDtoShort();
     ServiceBookDto getById(Long id);
-    Long create(ServiceBookDto serviceBookDto);
+    ServiceBookDto create(ServiceBookDto serviceBookDto);
     ServiceBookDto update(ServiceBookDto serviceBookDto);
     void disable(Long id);
     BigDecimal getSumPriceByAuthor (String author);
