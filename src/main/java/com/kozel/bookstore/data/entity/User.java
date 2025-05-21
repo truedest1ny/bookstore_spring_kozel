@@ -13,12 +13,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Filter;
 
 import java.util.Objects;
 
 
 @Entity
 @Table(name = "users")
+
+@Filter(name = "isDeletedFilter", condition = "is_deleted = :isDeleted")
 
 @Getter
 @Setter
