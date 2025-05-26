@@ -3,7 +3,7 @@
 
     <Properties>
         <Property name = "stdPattern" >%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{5} - %msg%n</Property>
-        <Property name = "LOG_DIR" >logs</Property>
+        <Property name = "LOG_DIR" >D:\Java - профессиональный уровень\Project\bookstore_spring_kozel\logs</Property>
         <Property name = "ARCHIVE_LOG_DIR" >${LOG_DIR}/archive</Property>
     </Properties>
 
