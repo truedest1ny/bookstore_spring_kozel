@@ -4,6 +4,7 @@ import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.repository.BookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
 
     private static final String GET_ALL =
@@ -68,7 +70,7 @@ public class BookRepositoryImpl implements BookRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, true);
 
-        session.createQuery(DELETE, Book.class);
+        session.createQuery(DELETE, Book.class).executeUpdate();
 
         disableDeletedFilter(session);
     }

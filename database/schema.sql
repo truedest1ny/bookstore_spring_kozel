@@ -1,4 +1,4 @@
-=================================================================================================
+
 CREATE TABLE IF NOT EXISTS covers (
 
     id BIGSERIAL PRIMARY KEY,
@@ -23,7 +23,8 @@ CREATE UNIQUE INDEX unique_isbn_book_deleted
 ON books (isbn)
 WHERE is_deleted = false;
 
-=================================================================================================
+
+
 CREATE TABLE IF NOT EXISTS roles (
 
     id BIGSERIAL PRIMARY KEY,
@@ -39,9 +40,17 @@ CREATE TABLE IF NOT EXISTS users (
 	last_name VARCHAR(255),
 	email VARCHAR(255),
 	login VARCHAR(255) NOT NULL,
-	password VARCHAR(255) NOT NULL,
 	role_id BIGINT NOT NULL REFERENCES roles,
 	is_deleted BOOLEAN DEFAULT FALSE
+
+);
+
+CREATE TABLE IF NOT EXISTS user_hash (
+
+	id BIGSERIAL PRIMARY KEY,
+	user_id BIGINT REFERENCES users,
+	salt VARCHAR(255),
+	hashed_password VARCHAR(255)
 
 );
 
@@ -49,7 +58,7 @@ CREATE UNIQUE INDEX unique_login_user_deleted
 ON users (login)
 WHERE is_deleted = false;
 
-=======================================================================================
+
 CREATE TABLE IF NOT EXISTS statuses(
 
     id BIGSERIAL PRIMARY KEY,

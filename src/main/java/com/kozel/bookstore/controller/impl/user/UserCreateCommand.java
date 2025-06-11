@@ -17,10 +17,8 @@ public class UserCreateCommand implements Command {
     @Override
     public CommandResult process(HttpServletRequest req) {
 
-
         UserCreateDto user = new UserCreateDto();
 
-        try {
             user.setEmail(req.getParameter("email").trim());
             user.setLogin(req.getParameter("login").trim());
             user.setPassword(req.getParameter("password").trim());
@@ -28,8 +26,5 @@ public class UserCreateCommand implements Command {
             userService.create(user);
 
             return new CommandResult("index.jsp", HttpServletResponse.SC_OK);
-        } catch (NumberFormatException e){
-            throw new NumberFormatException(e.getMessage());
-        }
     }
 }

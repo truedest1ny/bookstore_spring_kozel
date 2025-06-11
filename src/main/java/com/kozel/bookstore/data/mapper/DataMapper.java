@@ -12,14 +12,14 @@ import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 
 public interface DataMapper {
-    BookDto toServiceDto(Book bookEntity);
+    BookDto toDto(Book bookEntity);
     Book toEntity(BookDto bookDto);
-    UserDto toServiceDto(User userEntity);
+    UserDto toDto(User userEntity);
     User toEntity (UserDto userDto);
     User toEntity (UserCreateDto userCreateDto);
-    UserShowingDto toServiceShortedDto(User userEntity);
-    BookShowingDto toServiceShortedDto(Book bookEntity);
+    UserShowingDto toShortedDto(User userEntity);
+    BookShowingDto toShortedDto(Book bookEntity);
     Order toEntity (OrderDto orderDto);
-    OrderDto toServiceDto(Order orderEntity);
-    OrderShowingDto toServiceShortedDto(Order orderEntity);
+    OrderDto toDto(Order orderEntity);
+    OrderShowingDto toShortedDto(Order orderEntity);
 }

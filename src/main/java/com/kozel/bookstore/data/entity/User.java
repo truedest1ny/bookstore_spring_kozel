@@ -1,13 +1,17 @@
 package com.kozel.bookstore.data.entity;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Converter;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,8 +48,11 @@ public class User {
     @Column(name = "login", updatable = false)
     private String login;
 
-    @Column(name = "password")
-    private String password;
+    @OneToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    @JoinColumn(name = "id", referencedColumnName = "user_id", updatable = false)
+    private UserHash hash;
 
     @Convert(converter = RoleConverter.class)
     @Column(name = "role_id", nullable = false)

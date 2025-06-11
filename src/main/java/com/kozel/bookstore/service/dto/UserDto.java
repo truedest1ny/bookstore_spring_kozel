@@ -12,7 +12,6 @@ public class UserDto {
     private String lastName;
     private String email;
     private String login;
-    private String password;
     private Role role;
     private boolean isDeleted;
 

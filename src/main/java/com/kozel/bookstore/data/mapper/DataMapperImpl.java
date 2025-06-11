@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataMapperImpl implements DataMapper {
     @Override
-    public UserDto toServiceDto(User userEntity) {
+    public UserDto toDto(User userEntity) {
         UserDto userDto = new UserDto();
 
         userDto.setId(userEntity.getId());
@@ -23,7 +23,6 @@ public class DataMapperImpl implements DataMapper {
         userDto.setLastName(userEntity.getLastName());
         userDto.setEmail(userEntity.getEmail());
         userDto.setLogin(userEntity.getLogin());
-        userDto.setPassword(userEntity.getPassword());
         userDto.setRole(UserDto.Role.valueOf(userEntity.getRole().toString()));
         userDto.setDeleted(userEntity.isDeleted());
 
@@ -39,7 +38,6 @@ public class DataMapperImpl implements DataMapper {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setLogin(userDto.getLogin());
-        user.setPassword(userDto.getPassword());
         user.setRole(User.Role.valueOf(userDto.getRole().toString()));
         user.setDeleted(userDto.isDeleted());
 
@@ -54,7 +52,6 @@ public class DataMapperImpl implements DataMapper {
 
         user.setEmail(userCreateDto.getEmail());
         user.setLogin(userCreateDto.getLogin());
-        user.setPassword(userCreateDto.getPassword());
 
         return user;
     }
@@ -62,7 +59,7 @@ public class DataMapperImpl implements DataMapper {
 
 
     @Override
-    public BookDto toServiceDto(Book bookEntity) {
+    public BookDto toDto(Book bookEntity) {
         BookDto bookDto = new BookDto();
         bookDto.setId(bookEntity.getId());
         bookDto.setName(bookEntity.getName());
@@ -90,7 +87,7 @@ public class DataMapperImpl implements DataMapper {
     }
 
     @Override
-    public UserShowingDto toServiceShortedDto(User userEntity) {
+    public UserShowingDto toShortedDto(User userEntity) {
 
         UserShowingDto userShowingDto = new UserShowingDto();
 
@@ -103,7 +100,7 @@ public class DataMapperImpl implements DataMapper {
     }
 
     @Override
-    public BookShowingDto toServiceShortedDto(Book bookEntity) {
+    public BookShowingDto toShortedDto(Book bookEntity) {
         BookShowingDto bookShowingDto = new BookShowingDto();
         bookShowingDto.setId(bookEntity.getId());
         bookShowingDto.setName(bookEntity.getName());
@@ -127,7 +124,7 @@ public class DataMapperImpl implements DataMapper {
     }
 
     @Override
-    public OrderDto toServiceDto(Order orderEntity) {
+    public OrderDto toDto(Order orderEntity) {
         OrderDto dto = new OrderDto();
 
         dto.setId(orderEntity.getId());
@@ -141,7 +138,7 @@ public class DataMapperImpl implements DataMapper {
     }
 
     @Override
-    public OrderShowingDto toServiceShortedDto(Order orderEntity) {
+    public OrderShowingDto toShortedDto(Order orderEntity) {
         OrderShowingDto dto = new OrderShowingDto();
 
         dto.setId(orderEntity.getId());

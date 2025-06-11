@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService {
 
         return bookRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceDto)
+                .map(dataMapper::toDto)
                 .toList();
     }
 
@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
 
         return bookRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceShortedDto)
+                .map(dataMapper::toShortedDto)
                 .toList();
     }
 
@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
                     () -> new BookNotFoundException("Cannot find book by id " + id)
             );
 
-            return dataMapper.toServiceDto(book);
+            return dataMapper.toDto(book);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BookServiceImpl implements BookService {
 
         Book entity = dataMapper.toEntity(bookDto);
         Book savedBook = bookRepository.save(entity);
-        return dataMapper.toServiceDto(savedBook);
+        return dataMapper.toDto(savedBook);
     }
 
     @Override
@@ -70,14 +70,14 @@ public class BookServiceImpl implements BookService {
 
         Book entity = dataMapper.toEntity(bookDto);
         Book savedBook = bookRepository.save(entity);
-        return dataMapper.toServiceDto(savedBook);
+        return dataMapper.toDto(savedBook);
     }
 
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
         try {
-                BookDto book = dataMapper.toServiceDto(
+                BookDto book = dataMapper.toDto(
                         bookRepository.findById(id).orElseThrow(
                                 () -> new RuntimeException("Cannot find book (id = " + id + ")." +
                                         " There is nothing to delete. ")
@@ -97,7 +97,7 @@ public class BookServiceImpl implements BookService {
         BigDecimal SumPrice = BigDecimal.valueOf(0);
         List<BookDto> bookDtos = bookRepository.findByAuthor(author)
                 .stream()
-                .map(dataMapper::toServiceDto)
+                .map(dataMapper::toDto)
                 .toList();
         if (bookDtos.isEmpty())
         {

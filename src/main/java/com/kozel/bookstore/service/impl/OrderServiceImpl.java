@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceDto)
+                .map(dataMapper::toDto)
                 .toList();
     }
 
@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceShortedDto)
+                .map(dataMapper::toShortedDto)
                 .toList();
     }
 
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderShowingDto> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId)
                 .stream()
-                .map(dataMapper::toServiceShortedDto)
+                .map(dataMapper::toShortedDto)
                 .toList();
     }
 
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
                     () -> new BookNotFoundException("Cannot find order by id " + id)
             );
 
-            return dataMapper.toServiceDto(order);
+            return dataMapper.toDto(order);
     }
 
     @Override

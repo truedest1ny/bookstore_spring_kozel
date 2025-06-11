@@ -38,30 +38,6 @@
         ('MANAGER'),
         ('CUSTOMER');
 
-
-    INSERT INTO users (first_name, last_name, email, login, password, role_id) VALUES
-
-    	('Donald', 'Roberson', 'donaldroberson@gmail.com', 'RoadTrip', '123456789', (SELECT id FROM roles WHERE enum_value = 'SUPER_ADMIN')),
-    	('Clinton', 'Smith', 'clintonsmith@gmail.com', 'GhostRider', '342345', (SELECT id FROM roles WHERE enum_value = 'ADMIN')),
-    	('Marion', 'Rowe', 'marionrowe1122@gmail.com', 'user001', '33355543', (SELECT id FROM roles WHERE enum_value = 'MANAGER')),
-    	('Douglas', 'Brown', 'douglasbrown23@gmail.com', 'farmer', 'varsus34', (SELECT id FROM roles WHERE enum_value = 'MANAGER')),
-        ('Kevin', 'Townsend', 'kevintownsendddd@gmail.com', 'ooofaloooo', 'frdewws34', (SELECT id FROM roles WHERE enum_value = 'MANAGER')),
-        ('Eric', 'Johnson', 'ericjohnsoon@gmail.com', 'gefesting', 'oberst', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Sam', 'Moore', 'sammoore345@gmail.com', 'byte45676', 'bytresfvy', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Randall', 'Norton', 'randallnnnnorton@gmail.com', 'revolution64', 'fvfvfgtgr', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Albert', 'James', 'albertjames453@gmail.com', 'variable42', 'instant12', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Carl', 'Flores', 'carlflores321@gmail.com', 'Billion222', 'v5g52dcc', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Gerald', 'Morgan', 'geraldmorgan234@gmail.com', 'Vm443x', 'codepass12', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Donald', 'Rivera', 'donaldrivera@gmail.com', 'BYTEFACE445', 'gdfgdgd', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Richard', 'Guzman', 'richardguzman567@gmail.com', 'NUMLONGC122', 'bydfgdsf', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Harry', 'Ruiz', 'harryruizgbf@gmail.com', 'vebm765', '12345677789', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Allen', 'Yates', 'allenyates@gmail.com', 'MELENIAL', 'fgsddwwqqq', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('David', 'Wilson', 'davidwilson@gmail.com', 'NEMBERTATE', 'bnghdss4445', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Travis', 'Bailey', 'travis_b_ailey@gmail.com', 'TERRA756', '56563321', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Thomas', 'Ward', 'thomas_ward_556@gmail.com', 'LongBoy', '67884432', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('Tony', 'Ward', 'tonyqward322@gmail.com', 'MArriedLaStChance', '6743234566', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER')),
-        ('David', 'Peterson', 'davidpeterson@gmail.com', 'sadyboyyyy', '56776644', (SELECT id FROM roles WHERE enum_value = 'CUSTOMER'));
-
         -----------------------------------------------------------------------------------------------------------------------------------
 
         INSERT INTO statuses (enum_value) VALUES

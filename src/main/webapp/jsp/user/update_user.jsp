@@ -69,14 +69,6 @@
     </div>
   </div>
 
-  <div class="form-group row element-padding">
-    <label for="password" class="col-sm-2 col-form-label"><b><i>Password</i></b></label>
-    <div class="col-sm-10">
-       <input type="password" class="form-control" id="password" name="password" pattern="[A-Za-z0-9]{4,15}" required>
-       <small id="passwordHelp" class="form-text text-muted help-text-size">Enter the password. EN letters, from 4 to 15 symbols</small>
-    </div>
-  </div>
-
   <fieldset class="form-group element-padding">
     <div class="row">
       <legend class="col-form-label col-sm-2 pt-0"><b><i>Role</i></b></legend>

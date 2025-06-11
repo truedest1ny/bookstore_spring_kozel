@@ -1,8 +1,10 @@
 package com.kozel.bookstore.service.impl;
 
 import com.kozel.bookstore.data.entity.User;
+import com.kozel.bookstore.data.entity.UserHash;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
+import com.kozel.bookstore.service.PasswordHasher;
 import com.kozel.bookstore.service.UserService;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceDto)
+                .map(dataMapper::toDto)
                 .toList();
     }
 
@@ -45,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll()
                 .stream()
-                .map(dataMapper::toServiceShortedDto)
+                .map(dataMapper::toShortedDto)
                 .toList();
     }
 
@@ -56,9 +58,7 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findById(id).orElseThrow(
                     () -> new UserNotFoundException("Cannot find user by id " + id)
             );
-            return dataMapper.toServiceDto(user);
-
-
+            return dataMapper.toDto(user);
     }
 
     @Override
@@ -66,10 +66,33 @@ public class UserServiceImpl implements UserService {
 
         log.debug("Called create() method");
 
-        User entity = dataMapper.toEntity(userCreateDto);
+        User entity = new User();
+
+        entity.setEmail(userCreateDto.getEmail());
+        entity.setLogin(userCreateDto.getLogin());
+
+
         entity.setRole(User.Role.CUSTOMER);
-        User savedUser = userRepository.save(entity);
-        return dataMapper.toServiceDto(savedUser);
+
+
+        UserHash hash = new UserHash();
+
+        String salt = PasswordHasher.generateSalt();
+        String password = userCreateDto.getPassword();
+
+        String hashedPassword = PasswordHasher.hashPassword(password, salt);
+
+        hash.setSalt(salt);
+        hash.setHashedPassword(hashedPassword);
+
+        entity.setHash(hash);
+
+        User user = userRepository.save(entity);
+
+        hash.setUserId(user.getId());
+
+        User savedUser = userRepository.save(user);
+        return dataMapper.toDto(savedUser);
 
     }
 
@@ -78,9 +101,13 @@ public class UserServiceImpl implements UserService {
 
         log.debug("Called update() method");
 
+        //TODO UPDATE USER
         User entity = dataMapper.toEntity(userDto);
+
+
+
         User savedUser = userRepository.save(entity);
-        return dataMapper.toServiceDto(savedUser);
+        return dataMapper.toDto(savedUser);
     }
 
     @Override
@@ -88,12 +115,11 @@ public class UserServiceImpl implements UserService {
         log.debug("Called disable() method");
 
         try {
-            UserDto user = dataMapper.toServiceDto(
+            UserDto user = dataMapper.toDto(
                     userRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Cannot find user (id = " + id + ")." +
                                     " There is nothing to delete. ")
                     ));
-            user.setDeleted(true);
             userRepository.delete(dataMapper.toEntity(user));
 
         } catch (DataAccessException e){
@@ -109,11 +135,11 @@ public class UserServiceImpl implements UserService {
                     () -> new UserNotFoundException(
                             "No user with such login (" + userLoginDto.getLogin() +").")
             );
-            if (!user.getPassword().equals(userLoginDto.getPassword())){
+/*            if (!user.getPassword().equals(userLoginDto.getPassword())){
                 throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
-            }
+            }*/
 
-            return dataMapper.toServiceDto(user);
+            return dataMapper.toDto(user);
 
 
     }
@@ -123,6 +149,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException("No user with such login (" + login +").")
         );
-        return dataMapper.toServiceDto(user);
+        return dataMapper.toDto(user);
     }
 }
+
+
