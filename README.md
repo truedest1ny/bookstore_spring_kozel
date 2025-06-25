@@ -138,11 +138,11 @@ Added **_commands_** for the controller to search for an order by ID, a list of 
 
 Added **_JSP pages_** to these commands:
 
-- [order.jsp](src/main/webapp/jsp/order/order.jsp);
-- [orders.jsp](src/main/webapp/jsp/order/orders.jsp);
-- [orders_by_user.jsp](src/main/webapp/jsp/order/orders_by_user.jsp);
-- [filter_orders_by_user.jsp](src/main/webapp/jsp/order/filter_orders_by_user.jsp);
-- [order_not_found.jsp](src/main/webapp/jsp/error/404/order_not_found.jsp).
+- [order.jsp](src/main/webapp/WEB-INF/jsp/order/order.jsp);
+- [orders.jsp](src/main/webapp/WEB-INF/jsp/order/orders.jsp);
+- [orders_by_user.jsp](src/main/webapp/WEB-INF/jsp/order/orders_by_user.jsp);
+- [filter_orders_by_user.jsp](src/main/webapp/WEB-INF/jsp/order/filter_orders_by_user.jsp);
+- [order_not_found.jsp](src/main/webapp/WEB-INF/jsp/error/404/order_not_found.jsp).
 
 ## Hometask #2.4 (ORM. JPA. Hibernate)
 

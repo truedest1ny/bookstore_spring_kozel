@@ -10,7 +10,7 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
-import com.kozel.bookstore.service.exception.UserNotFoundException;
+import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             log.debug("Called getById() method");
 
             User user = userRepository.findById(id).orElseThrow(
-                    () -> new UserNotFoundException("Cannot find user by id " + id)
+                    () -> new ResourceNotFoundException("Cannot find user by id " + id)
             );
             return dataMapper.toDto(user);
     }
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
             userRepository.delete(dataMapper.toEntity(user));
 
         } catch (DataAccessException e){
-            throw new RuntimeException("Cannot delete user (id = " + id + ")");
+            throw new RuntimeException("Cannot delete user (id = " + id + ")", e);
         }
     }
 
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             log.debug("Called login() method");
 
             User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
-                    () -> new UserNotFoundException(
+                    () -> new ResourceNotFoundException(
                             "No user with such login (" + userLoginDto.getLogin() +").")
             );
 /*            if (!user.getPassword().equals(userLoginDto.getPassword())){
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getByLogin(String login) {
         User user = userRepository.findByLogin(login).orElseThrow(
-                () -> new UserNotFoundException("No user with such login (" + login +").")
+                () -> new ResourceNotFoundException("No user with such login (" + login +").")
         );
         return dataMapper.toDto(user);
     }

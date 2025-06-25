@@ -6,7 +6,7 @@ import com.kozel.bookstore.data.repository.BookRepository;
 import com.kozel.bookstore.service.BookService;
 import com.kozel.bookstore.service.dto.BookDto;
 import com.kozel.bookstore.service.dto.BookShowingDto;
-import com.kozel.bookstore.service.exception.BookNotFoundException;
+import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
     public BookDto getById(Long id) {
         log.debug("Called getById() method");
             Book book = bookRepository.findById(id).orElseThrow(
-                    () -> new BookNotFoundException("Cannot find book by id " + id)
+                    () -> new ResourceNotFoundException("Cannot find book by id " + id)
             );
 
             return dataMapper.toDto(book);
@@ -86,7 +86,7 @@ public class BookServiceImpl implements BookService {
                 bookRepository.delete(dataMapper.toEntity(book));
 
         } catch (DataAccessException e){
-            throw new RuntimeException("Cannot delete book (id = " + id + "): " + e.getMessage());
+            throw new RuntimeException("Cannot delete book (id = " + id + "): ", e);
         }
     }
 

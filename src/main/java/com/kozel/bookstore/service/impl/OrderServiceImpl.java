@@ -6,7 +6,7 @@ import com.kozel.bookstore.data.repository.OrderRepository;
 import com.kozel.bookstore.service.OrderService;
 import com.kozel.bookstore.service.dto.OrderDto;
 import com.kozel.bookstore.service.dto.OrderShowingDto;
-import com.kozel.bookstore.service.exception.BookNotFoundException;
+import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto getById(Long id) {
         log.debug("Called getById() method");
             Order order = orderRepository.findById(id).orElseThrow(
-                    () -> new BookNotFoundException("Cannot find order by id " + id)
+                    () -> new ResourceNotFoundException("Cannot find order by id " + id)
             );
 
             return dataMapper.toDto(order);
