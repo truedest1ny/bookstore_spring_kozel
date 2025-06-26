@@ -28,7 +28,7 @@
     <div class="container text-center my-5">
       <p class="display-1 text-margin">Error :(</p>
       <p class="display-6">
-       Something went wrong with the input. Please try your request again.
+       Request <b style="color:hsla(200,100%,40%,0.9)">${url}</b> is incorrect. Please try your request again.
       </p>
         <a
           href="/"

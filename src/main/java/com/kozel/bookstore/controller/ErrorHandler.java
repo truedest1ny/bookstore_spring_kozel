@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 
 @ControllerAdvice(annotations = Controller.class)
 @Slf4j
@@ -18,16 +20,16 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Exception e){
-        log.error("Error occurred: ", e);
+        log(e);
         return "error/error";
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFoundException(HttpServletRequest request,
                                           Model model,
-                                          Exception e){
-        log.error("Error occurred: ", e);
+                                          ResourceNotFoundException e){
+        log(e);
         model.addAttribute("url", request.getRequestURI());
         return "error/not_found";
     }
@@ -35,7 +37,21 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleSqlException(DataAccessException e){
-        log.error("Error occurred: ", e);
+        log(e);
         return "error/sql_error";
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleTypeMismatchException (HttpServletRequest request,
+                                               Model model,
+                                               MethodArgumentTypeMismatchException e){
+        log(e);
+        model.addAttribute("url", request.getRequestURI());
+        return "error/incorrect_input";
+    }
+
+    private void log(Throwable e) {
+        log.error("Error occurred: ", e);
     }
 }
