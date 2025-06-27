@@ -1,6 +1,5 @@
 package com.kozel.bookstore.data.repository.impl;
 
-import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -61,12 +60,13 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, false);
 
-        Optional<User> user = Optional.ofNullable(session.createQuery(GET_BY_LOGIN, User.class)
+        List<User> users = session.createQuery(GET_BY_LOGIN, User.class)
                 .setParameter("login", login)
-                .getSingleResult());
+                .setMaxResults(1)
+                .getResultList();
 
         disableDeletedFilter(session);
-        return user;
+        return users.stream().findFirst();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, true);
 
-        session.createQuery(DELETE, Book.class);
+        session.createQuery(DELETE, User.class).executeUpdate();
 
         disableDeletedFilter(session);
     }

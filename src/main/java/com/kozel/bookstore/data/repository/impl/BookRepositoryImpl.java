@@ -25,6 +25,8 @@ public class BookRepositoryImpl implements BookRepository {
             "SELECT COUNT(b) from Book b";
     private static final String GET_BY_AUTHOR =
             "SELECT b FROM Book b WHERE b.author = :author";
+    private static final String GET_BY_ISBN =
+            "SELECT b FROM Book b WHERE b.isbn = :isbn";
 
     @PersistenceContext
     private EntityManager manager;
@@ -34,11 +36,13 @@ public class BookRepositoryImpl implements BookRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, false);
 
-        Optional<Book> book = Optional.ofNullable(
-                session.find(Book.class, isbn));
+        List<Book> books = session.createQuery(GET_BY_ISBN,Book.class)
+                .setParameter("isbn", isbn)
+                .setMaxResults(1)
+                .getResultList();
 
         disableDeletedFilter(session);
-        return book;
+        return books.stream().findFirst();
     }
 
     @Override
