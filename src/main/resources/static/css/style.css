@@ -11,6 +11,15 @@
   font-size: 28px;
 }
 
+.login-error-style {
+  font-size: 15px;
+  color: red;
+}
+
+.sign-up-label {
+  font-size: 19px;
+}
+
 .top-text-size{
   font-size: 37px;
 }

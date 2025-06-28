@@ -9,6 +9,7 @@ import com.kozel.bookstore.service.dto.OrderDto;
 import com.kozel.bookstore.service.dto.OrderShowingDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 
 public interface DataMapper {
@@ -18,6 +19,7 @@ public interface DataMapper {
     User toEntity (UserDto userDto);
     User toEntity (UserCreateDto userCreateDto);
     UserShowingDto toShortedDto(User userEntity);
+    UserSessionDto toSessionDto(UserDto userDto);
     BookShowingDto toShortedDto(Book bookEntity);
     Order toEntity (OrderDto orderDto);
     OrderDto toDto(Order orderEntity);

@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,7 +22,7 @@
   </head>
   <body>
 
-     <%@ include file="\WEB-INF\jsp\navbar.jsp" %>
+     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <p class="img-align">
       <img src="/images/icons/brand_icon.png" width="200px" height="200px " />
@@ -31,7 +33,12 @@
         Congratulations :)
       </p>
 
-      <p class="lead">The catalog includes a list of available books and catalog users. Added list of orders :)</p>
+      <c:if test="${empty sessionScope.user}">
+      <p class="lead">
+       The catalog includes a list of available books.
+       To place an order you need to <a href = "/login">authenticate yourself</a> :)
+      </p>
+      </c:if>
 
       <div class="box">
 
@@ -40,18 +47,19 @@
         <div class="media-body">
           <h5 class="mt-0">Books</h5>
           <p>
-            Current books catalog.
+            Current books catalog
           </p>
           <a href="/books" class="stretched-link text-size">Go!</a>
         </div>
       </div>
 
+      <c:if test="${not empty sessionScope.user}">
       <div class="media position-relative box-margin">
         <img src="/images/icons/user_icon.png" class="mr-3" alt="Book icon" width="100px" height="100px"/>
         <div class="media-body">
           <h5 class="mt-0">Users</h5>
           <p>
-            Actual users catalog.
+            Actual users catalog
           </p>
           <a href="/users" class="stretched-link text-size">Go!</a>
         </div>
@@ -62,11 +70,12 @@
          <div class="media-body">
              <h5 class="mt-0">Orders</h5>
                <p>
-                 Actual orders catalog.
+                 Actual orders catalog
                </p>
                 <a href="/orders" class="stretched-link text-size">Go!</a>
          </div>
       </div>
+      </c:if>
     </div>
     </div>
   </body>

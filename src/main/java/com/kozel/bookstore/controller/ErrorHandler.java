@@ -1,5 +1,6 @@
 package com.kozel.bookstore.controller;
 
+import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,17 @@ public class ErrorHandler {
         model.addAttribute("url", request.getRequestURI());
         return "error/incorrect_input";
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleAuthentificationException (Model model, AuthentificationException e){
+        log(e);
+        model.addAttribute("message",
+                "Oops! Incorrect login or password. Please check your login details");
+        return "user/login";
+    }
+
+
 
     private void log(Throwable e) {
         log.error("Error occurred: ", e);

@@ -4,6 +4,7 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public interface UserService {
     void disable(Long id);
     UserDto login(UserLoginDto userLoginDto);
     UserDto getByLogin(String login);
+    void logout(HttpSession session);
 
 }

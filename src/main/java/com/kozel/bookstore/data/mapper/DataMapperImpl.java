@@ -9,6 +9,7 @@ import com.kozel.bookstore.service.dto.OrderDto;
 import com.kozel.bookstore.service.dto.OrderShowingDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,6 @@ public class DataMapperImpl implements DataMapper {
         user.setDeleted(userDto.isDeleted());
 
         return user;
-
     }
 
     @Override
@@ -56,7 +56,14 @@ public class DataMapperImpl implements DataMapper {
         return user;
     }
 
-
+    @Override
+    public UserSessionDto toSessionDto(UserDto userDto) {
+        UserSessionDto sessionDto = new UserSessionDto();
+        sessionDto.setId(userDto.getId());
+        sessionDto.setLogin(userDto.getLogin());
+        sessionDto.setRole(UserSessionDto.Role.valueOf(userDto.getRole().toString()));
+        return sessionDto;
+    }
 
     @Override
     public BookDto toDto(Book bookEntity) {

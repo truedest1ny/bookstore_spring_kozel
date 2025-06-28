@@ -10,7 +10,9 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -132,12 +134,18 @@ public class UserServiceImpl implements UserService {
             log.debug("Called login() method");
 
             User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
-                    () -> new ResourceNotFoundException(
+                    () -> new AuthentificationException(
                             "No user with such login (" + userLoginDto.getLogin() +").")
             );
-/*            if (!user.getPassword().equals(userLoginDto.getPassword())){
-                throw new RuntimeException("Incorrect password for user with login (" + userLoginDto.getLogin() + ")!");
-            }*/
+
+            String userSalt = user.getHash().getSalt();
+            String inputtedPassword = userLoginDto.getPassword();
+            String userHashedPassword = user.getHash().getHashedPassword();
+
+            if(!PasswordHasher.hashPassword(inputtedPassword, userSalt)
+                    .equals(userHashedPassword)) {
+             throw new AuthentificationException("Incorrect password for user (" + user.getLogin() + ")");
+            }
 
             return dataMapper.toDto(user);
 
@@ -150,6 +158,11 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException("No user with such login (" + login +").")
         );
         return dataMapper.toDto(user);
+    }
+
+    @Override
+    public void logout(HttpSession session) {
+        session.invalidate();
     }
 }
 
