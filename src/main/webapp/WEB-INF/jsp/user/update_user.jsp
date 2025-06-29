@@ -23,7 +23,7 @@
 
 <body>
 
-<%@ include file="\WEB-INF\jsp\navbar.jsp" %>
+<%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
 <div class="container mt-4 container-position label-text-size">
 <p class="display-4">Edit User #${user.id}</p>

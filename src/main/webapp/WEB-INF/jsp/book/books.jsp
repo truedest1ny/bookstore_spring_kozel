@@ -21,12 +21,15 @@
     </style>
   </head>
   <body>
-    <%@ include file="\WEB-INF\jsp\navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <div class="container text-center my-5">
       <p class="display-4">Books list</p>
       <p class="lead">The catalog includes a list of books.</p>
-      <a href="/books/add" class="btn btn-primary btn-lg">Add Book</a>
+
+      <c:if test="${not empty sessionScope.user}">
+        <a href="/books/add" class="btn btn-primary btn-lg">Add Book</a>
+      </c:if>
     </div>
 
 

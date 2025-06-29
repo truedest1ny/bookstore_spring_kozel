@@ -23,7 +23,7 @@
   </head>
 
   <body>
-    <%@ include file="\WEB-INF\jsp\navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <div class="container text-center my-5">
       <p class="display-4">Users list</p>

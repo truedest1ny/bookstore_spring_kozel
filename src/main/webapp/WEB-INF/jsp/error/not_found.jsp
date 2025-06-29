@@ -21,7 +21,7 @@
     </style>
   </head>
   <body>
-    <%@ include file="\WEB-INF\jsp\navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <p class="img-align">
       <img src="/images/icons/error_404_icon.png" width="130px" height="130px " />
