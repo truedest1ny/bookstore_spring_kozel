@@ -1,7 +1,6 @@
-package com.kozel.bookstore.controller;
+package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 import lombok.RequiredArgsConstructor;
@@ -44,17 +43,6 @@ public class UserController {
             userService.update(user);
             return "redirect:/users/" + user.getId();
 
-    }
-
-    @PostMapping("/add")
-    public String addUser(@ModelAttribute UserCreateDto user) {
-        userService.create(user);
-        return "redirect:/users";
-    }
-
-    @GetMapping("/add")
-    public String getAddingUserForm() {
-        return "user/create_user";
     }
 
     @PostMapping("/delete/{id}")

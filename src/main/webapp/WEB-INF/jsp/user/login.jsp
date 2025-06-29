@@ -51,7 +51,7 @@
          <a href="/" class="btn btn-secondary box-margin">Back to main page</a>
     </div>
     <p class="display-4 sign-up-label lead">
-         Do not have an account? <a href = "/users/add">Sign up.</a>
+         Do not have an account? <a href = "/register">Sign up.</a>
     </p>
 </form>
 </div>

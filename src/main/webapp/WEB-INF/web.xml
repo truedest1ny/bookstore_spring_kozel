@@ -14,4 +14,55 @@
         <location>/not_found</location>
     </error-page>
 
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>com.kozel.bookstore.web.filter.WebAuthenticationFilter</filter-class>
+        <init-param>
+            <param-name>publicPaths</param-name>
+            <param-value>
+                /,
+                /books, /books/,
+                /books/\d+, /books/\d+/,
+                /register, /register/
+            </param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>privatePaths</param-name>
+            <param-value>
+                /logout,
+                /users, /users/.*,
+                /orders, /orders/.*,
+                /books/add, /books/add/,
+                /books/\d+/edit, /books/\d+/edit/,
+                /books/\d+/delete, /books/\d+/delete/
+            </param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>authPaths</param-name>
+            <param-value>
+                /login, /login/,
+            </param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>staticResources</param-name>
+            <param-value>
+                /images/.*,
+                /css/.*,
+                /js/.*,
+                .*\.css,
+                .*\.js,
+                .*\.png,
+                .*\.jpg,
+                .*\.bmp
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>

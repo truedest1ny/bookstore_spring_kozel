@@ -1,4 +1,4 @@
-package com.kozel.bookstore.controller;
+package com.kozel.bookstore.web.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -17,9 +17,14 @@ public class ErrorController {
 
     @RequestMapping("/not_found")
     public String handleNotFoundException(HttpServletRequest request, Model model){
-        model.addAttribute("url", request.getAttribute("jakarta.servlet.error.request_uri"));
+        String url = (String) request.getAttribute("authFilterUrl");
+
+        if (url == null) {
+            url = (String) request.getAttribute("jakarta.servlet.error.request_uri");
+        }
+
+        model.addAttribute("url", url);
         return "error/not_found";
     }
-
 
 }

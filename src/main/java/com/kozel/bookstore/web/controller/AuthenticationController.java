@@ -1,9 +1,11 @@
-package com.kozel.bookstore.controller;
+package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
-public class LoginController {
+public class AuthenticationController {
 
     private final DataMapper mapper;
 
@@ -27,9 +29,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute UserLoginDto user, HttpSession session){
+    public String login(@ModelAttribute UserLoginDto user, HttpServletRequest request){
         UserDto userDto = service.login(user);
+        HttpSession session = request.getSession();
         session.setAttribute("user", mapper.toSessionDto(userDto));
+        request.changeSessionId();
         return "redirect:/";
     }
 
@@ -37,5 +41,16 @@ public class LoginController {
     public String logout(HttpSession session){
         service.logout(session);
         return "redirect:/";
+    }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute UserCreateDto user) {
+        service.create(user);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/register")
+    public String getRegisterForm() {
+        return "user/create_user";
     }
 }

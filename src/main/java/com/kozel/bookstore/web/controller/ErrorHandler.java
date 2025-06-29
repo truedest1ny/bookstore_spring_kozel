@@ -1,4 +1,4 @@
-package com.kozel.bookstore.controller;
+package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;

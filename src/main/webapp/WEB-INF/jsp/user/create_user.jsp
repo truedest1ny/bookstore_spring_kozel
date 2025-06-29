@@ -27,7 +27,7 @@
 
 <div class="container mt-4 container-position label-text-size">
 <p class="display-4">Add User</p>
-<form action="/users/add" method="post">
+<form action="/register" method="post">
 
   <div class="form-group row element-padding">
     <label for="email" class="col-sm-2 col-form-label"><i><b>E-Mail</i></b></label>

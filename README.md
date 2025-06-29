@@ -77,24 +77,24 @@ Previous controller classes were reworked: the *Front Controller* design pattern
 A `FrontController` class of the same name was created, which is the only servlet of the application, the remaining classes were reworked into commands:
 
 1. **Book** entity:
-   - [BookCommand](src/main/java/com/kozel/bookstore/controller/impl/book/BookCommand.java) processes requests for information about a specific book;
-   - [BookCreateCommand](src/main/java/com/kozel/bookstore/controller/impl/book/BookCreateCommand.java) creates a new book;
-   - [BookCreatingCommand](src/main/java/com/kozel/bookstore/controller/impl/book/BookCreatingCommand.java) redirects to the page for creating a new book;
-   - [BookDeleteCommand](src/main/java/com/kozel/bookstore/controller/impl/book/BookDeleteCommand.java) deletes a book;
-   - [BooksCommand](src/main/java/com/kozel/bookstore/controller/impl/book/BooksCommand.java) displays a list of all books;
-   - [EditBookCommand](src/main/java/com/kozel/bookstore/controller/impl/book/EditBookCommand.java) directs to the book information change page;
-   - [UpdateBookCommand](src/main/java/com/kozel/bookstore/controller/impl/book/UpdateBookCommand.java) modifies information about the book.
+   - [BookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCommand.java) processes requests for information about a specific book;
+   - [BookCreateCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCreateCommand.java) creates a new book;
+   - [BookCreatingCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCreatingCommand.java) redirects to the page for creating a new book;
+   - [BookDeleteCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookDeleteCommand.java) deletes a book;
+   - [BooksCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BooksCommand.java) displays a list of all books;
+   - [EditBookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/EditBookCommand.java) directs to the book information change page;
+   - [UpdateBookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/UpdateBookCommand.java) modifies information about the book.
 
 
 2. The commands for the **User** entity are similar to the commands for the **Book** entity:
 
-   - [EditUserCommand](src/main/java/com/kozel/bookstore/controller/impl/user/EditUserCommand.java);
-   - [UpdateUserCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UpdateUserCommand.java);
-   - [UserCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UserCommand.java);
-   - [UserCreateCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UserCreateCommand.java);
-   - [UserCreatingCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UserCreatingCommand.java);
-   - [UserDeleteCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UserDeleteCommand.java);
-   - [UsersCommand](src/main/java/com/kozel/bookstore/controller/impl/user/UsersCommand.java).
+   - [EditUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/EditUserCommand.java);
+   - [UpdateUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UpdateUserCommand.java);
+   - [UserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCommand.java);
+   - [UserCreateCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCreateCommand.java);
+   - [UserCreatingCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCreatingCommand.java);
+   - [UserDeleteCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserDeleteCommand.java);
+   - [UsersCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UsersCommand.java).
 
 The creation of all the main components of the application takes place in the `CommandFactory` class, which implements two design patterns at once: `Factory` and `Singleton`.
 
@@ -131,10 +131,10 @@ The DTO classes of the service layer have been renamed to eliminate duplicate cl
 
 Added **_commands_** for the controller to search for an order by ID, a list of all orders, and a list of all orders for a specific user:
 
-- [OrderCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrderCommand.java) displays an order by its ID;
-- [OrdersCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrdersCommand.java) displays a list of all orders;
-- [FilterOrdersByUserCommand](src/main/java/com/kozel/bookstore/controller/impl/order/FilterOrdersByUserCommand.java) displays a form with a selection of the user whose orders will be displayed;
-- [OrdersByUserCommand](src/main/java/com/kozel/bookstore/controller/impl/order/OrdersByUserCommand.java) displays the selected user's orders.
+- [OrderCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrderCommand.java) displays an order by its ID;
+- [OrdersCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrdersCommand.java) displays a list of all orders;
+- [FilterOrdersByUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/FilterOrdersByUserCommand.java) displays a form with a selection of the user whose orders will be displayed;
+- [OrdersByUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrdersByUserCommand.java) displays the selected user's orders.
 
 Added **_JSP pages_** to these commands:
 

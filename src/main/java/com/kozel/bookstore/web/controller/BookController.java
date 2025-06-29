@@ -1,4 +1,4 @@
-package com.kozel.bookstore.controller;
+package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.BookService;
 import com.kozel.bookstore.service.dto.BookDto;

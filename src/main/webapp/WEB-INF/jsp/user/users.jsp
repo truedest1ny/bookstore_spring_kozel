@@ -28,7 +28,7 @@
     <div class="container text-center my-5">
       <p class="display-4">Users list</p>
       <p class="lead">The catalog includes a list of users.</p>
-      <a href="/users/add" class="btn btn-primary btn-lg">Add User</a>
+      <a href="/register" class="btn btn-primary btn-lg">Add User</a>
     </div>
 
     <table class="table table-position">
