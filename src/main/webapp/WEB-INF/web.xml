@@ -10,6 +10,11 @@
     </error-page>
 
     <error-page>
+        <error-code>403</error-code>
+        <location>/forbidden</location>
+    </error-page>
+
+    <error-page>
         <error-code>404</error-code>
         <location>/not_found</location>
     </error-page>
@@ -60,9 +65,72 @@
             </param-value>
         </init-param>
     </filter>
+
+    <filter>
+        <filter-name>AuthorizationFilter</filter-name>
+        <filter-class>com.kozel.bookstore.web.filter.WebAuthorizationFilter</filter-class>
+
+        <init-param>
+            <param-name>superAdminPaths</param-name>
+            <param-value>
+                ^/users/delete/.*
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>superAdminRoles</param-name>
+            <param-value>SUPER_ADMIN</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>adminPaths</param-name>
+            <param-value>
+                ^/users/edit/.*,
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>adminRoles</param-name>
+            <param-value>SUPER_ADMIN,ADMIN</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>managerPaths</param-name>
+            <param-value>
+                ^/books/edit/.*,
+                ^/books/delete/.*,
+                ^/books/add?, ^/books/add/.*,
+                ^/orders/?, ^/orders/.*,
+                ^/users/?, ^/users/\d+/?
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>managerRoles</param-name>
+            <param-value>MANAGER,ADMIN,SUPER_ADMIN</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>customerPaths</param-name>
+            <param-value>
+                ^/profile/.*,
+                ^/orders/my
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>customerRoles</param-name>
+            <param-value>CUSTOMER,MANAGER,ADMIN,SUPER_ADMIN</param-value>
+        </init-param>
+    </filter>
+
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
         <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AuthorizationFilter</filter-name>
+        <url-pattern>/orders/*</url-pattern>
+        <url-pattern>/users/*</url-pattern>
+        <url-pattern>/books/*</url-pattern>
+        <url-pattern>/profile/*</url-pattern>
     </filter-mapping>
 
 </web-app>

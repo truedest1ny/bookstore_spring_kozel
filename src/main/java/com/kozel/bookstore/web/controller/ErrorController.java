@@ -15,8 +15,13 @@ public class ErrorController {
             return "error/servlet_error";
     }
 
+    @RequestMapping("/forbidden")
+    public String handleForbiddenError(){
+        return "error/forbidden";
+    }
+
     @RequestMapping("/not_found")
-    public String handleNotFoundException(HttpServletRequest request, Model model){
+    public String handleNotFoundError(HttpServletRequest request, Model model){
         String url = (String) request.getAttribute("authFilterUrl");
 
         if (url == null) {
