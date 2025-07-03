@@ -9,7 +9,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <link href="/css/tablestyle.css" rel="stylesheet" />
 
     <style>
      body {
@@ -28,7 +27,9 @@
     <div class="container text-center my-5">
       <p class="display-4">Users list</p>
       <p class="lead">The catalog includes a list of users.</p>
-      <a href="/register" class="btn btn-primary btn-lg">Add User</a>
+            <c:if test="${sessionScope.user.role.name() != 'MANAGER'}">
+                 <a href="/users/add" class="btn btn-primary btn-lg">Add User</a>
+            </c:if>
     </div>
 
     <table class="table table-position">
@@ -52,11 +53,16 @@
             <td>${user.login}</td>
             <td>${user.role}</td>
             <td>
-              <a class="btn btn-primary btn-sm" href="/users/edit/${user.id}">Edit</button>
+              <c:if test="${sessionScope.user.role.name() != 'MANAGER'}">
+                 <a class="btn btn-primary btn-sm" href="/users/edit/${user.id}">Edit</button>
+              </c:if>
             </td>
             <td>
-              <form action="/users/delete/${user.id}" method="post" style="display: inline;">
-              <button type="submit" class="btn btn-secondary btn-sm">Delete</button>
+            <c:if test="${sessionScope.user.role.name() == 'SUPER_ADMIN'}">
+                <form action="/users/delete/${user.id}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-secondary btn-sm">Delete</button>
+            </c:if>
+
             </td>
           </tr>
         </c:forEach>

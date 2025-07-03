@@ -5,11 +5,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add User</title>
+
+    <c:choose>
+      <c:when test="${empty sessionScope.user}">
+         <title>Sign Up</title>
+      </c:when>
+      <c:otherwise>
+        <title>Add user</title>
+      </c:otherwise>
+    </c:choose>
+
+    <title>Sign Up</title>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <link href="/css/form_style.css" rel="stylesheet" />
     <style>
       body {
         background-image: url(/images/background.jpg);
@@ -26,8 +35,17 @@
 <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
 <div class="container mt-4 container-position label-text-size">
-<p class="display-4">Add User</p>
-<form action="/register" method="post">
+
+<c:choose>
+   <c:when test="${empty sessionScope.user}">
+      <p class="display-4">Sign Up</p>
+      <form action="/register" method="post">
+   </c:when>
+   <c:otherwise>
+      <p class="display-4">Add user</p>
+      <form action="/users/add" method="post">
+   </c:otherwise>
+</c:choose>
 
   <div class="form-group row element-padding">
     <label for="email" class="col-sm-2 col-form-label"><i><b>E-Mail</i></b></label>
@@ -54,8 +72,16 @@
     </div>
 
     <div class="box button-padding">
-         <button type="submit" class="btn btn-primary">Add</button>
-         <a href="/users" class="btn btn-secondary box-margin">Back to users page</a>
+
+    <c:choose>
+       <c:when test="${empty sessionScope.user}">
+          <button type="submit" class="btn btn-primary">Register</button>
+       </c:when>
+       <c:otherwise>
+          <button type="submit" class="btn btn-primary">Add</button>
+          <a href="/users" class="btn btn-secondary box-margin">Back to users page</a>
+       </c:otherwise>
+    </c:choose>
     </div>
 
 </form>

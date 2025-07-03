@@ -25,16 +25,25 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <c:if test="${not empty sessionScope.user}">
+         <c:if test="${sessionScope.user.role.name() != 'CUSTOMER'}">
           <li class="nav-item px-2">
             <a class="nav-link fs-5" href="/users">Users</a>
           </li>
+         </c:if>
         </c:if>
         <li class="nav-item px-2">
           <a class="nav-link fs-5" href="/books">Books</a>
         </li>
         <c:if test="${not empty sessionScope.user}">
           <li class="nav-item px-2">
-            <a class="nav-link fs-5" href="/orders">Orders</a>
+           <c:choose>
+                <c:when test="${sessionScope.user.role.name() == 'CUSTOMER'}">
+                    <a class="nav-link fs-5" href="/ordered">Orders</a>
+                </c:when>
+                <c:otherwise>
+                    <a class="nav-link fs-5" href="/orders">Orders</a>
+                </c:otherwise>
+           </c:choose>
           </li>
         </c:if>
       </ul>

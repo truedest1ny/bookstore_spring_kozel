@@ -9,7 +9,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <link href="/css/tablestyle.css" rel="stylesheet" />
 
     <style>
      body {
@@ -28,7 +27,11 @@
     <div class="container text-center my-5">
       <p class="display-4">Orders list</p>
       <p class="lead">The catalog includes a list of orders made by users.</p>
-      <a href="/orders/find_by_user" class="btn btn-primary btn-lg">Find orders by user</a>
+      <c:if test="${not empty sessionScope.user}">
+         <c:if test="${sessionScope.user.role.name() != 'CUSTOMER'}">
+            <a href="/orders/find_by_user" class="btn btn-primary btn-lg">Find orders by user</a>
+         </c:if>
+      </c:if>
     </div>
 
 

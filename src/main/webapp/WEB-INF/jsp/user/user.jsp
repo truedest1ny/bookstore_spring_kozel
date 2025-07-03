@@ -9,7 +9,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <link href="/css/tablestyle.css" rel="stylesheet" />
     <style>
     body {
       background-image: url(/images/background.jpg);

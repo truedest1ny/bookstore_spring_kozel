@@ -44,3 +44,39 @@
   text-align: center;
 }
 
+
+table {
+  margin: auto;
+}
+
+th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+  .container-position{
+    width: 45%;
+  }
+
+  .element-padding {
+    padding: 0.3em 0.3em 0.3em 0.3em;
+  }
+
+  .button-padding {
+   padding: 1.5em 1.5em 1.5em 1.5em;
+  }
+
+  .label-text-size {
+    font-size: 17px;
+  }
+
+  .help-text-size {
+    font-size: 11px;
+  }
+

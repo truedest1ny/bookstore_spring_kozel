@@ -85,6 +85,7 @@
             <param-name>adminPaths</param-name>
             <param-value>
                 ^/users/edit/.*,
+                ^/users/add/.*
             </param-value>
         </init-param>
         <init-param>
@@ -129,7 +130,8 @@
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/orders/*</url-pattern>
         <url-pattern>/users/*</url-pattern>
-        <url-pattern>/books/*</url-pattern>
+        <url-pattern>/books/add/*</url-pattern>
+        <url-pattern>/books/\d+/*</url-pattern>
         <url-pattern>/profile/*</url-pattern>
     </filter-mapping>
 
