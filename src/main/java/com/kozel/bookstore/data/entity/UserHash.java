@@ -5,10 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -18,7 +20,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 public class UserHash {
 
     @Id
@@ -26,13 +27,15 @@ public class UserHash {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "salt", updatable = false)
+    @Column(name = "salt")
     private String salt;
 
-    @Column(name = "hashed_password", updatable = false)
+    @Column(name = "hashed_password")
     private String hashedPassword;
 
     public boolean equals(Object o) {
@@ -46,4 +49,5 @@ public class UserHash {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }
