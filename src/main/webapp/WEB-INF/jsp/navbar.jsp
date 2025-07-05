@@ -66,15 +66,15 @@
             </c:when>
             <c:otherwise>
               <li class="nav-item px-3">
-                <span class="nav-link text-dark fs-5">${sessionScope.user.login}
-                <img
+                    <a class="nav-link text-dark fs-5" href="/profile">${sessionScope.user.login}
+                    <img
                         src="/images/icons/navbar_user_icon.png"
                         width="30"
                         height="30"
                         class="d-inline-block align-top"
                         alt="User Icon"
                       />
-                </span>
+                    </a>
               </li>
               <li class="nav-item px-3">
                 <a class="nav-link fs-5" href="/logout">Logout</a>

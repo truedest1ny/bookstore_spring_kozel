@@ -1,100 +1,139 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit user #${user.id}</title>
+    <c:choose>
+        <c:when test="${isOwnerProfile}">
+            <title>Edit profile</title>
+        </c:when>
+        <c:otherwise>
+            <title>Edit user #${user.id}</title>
+        </c:otherwise>
+    </c:choose>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
     <style>
-      body {
-        background-image: url(/images/background.jpg);
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-attachment: fixed;
-        background-size: auto;
-      }
+        body {
+            background-image: url(/images/background.jpg);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: auto;
+        }
+        .btn-password {
+            width: 80px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .button-padding {
+            padding-top: 15px;
+        }
+        .box-margin {
+            margin-left: 10px;
+        }
     </style>
-  </head>
+</head>
 
 <body>
+    <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
-<%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <div class="container mt-4 container-position label-text-size">
+        <c:choose>
+            <c:when test="${isOwnerProfile}">
+                <p class="display-4">Edit profile</p>
+                <form action="/profile/edit" method="post">
+            </c:when>
+            <c:otherwise>
+                <p class="display-4">Edit User [ID: ${user.id}]</p>
+                <form action="/users/edit/${user.id}" method="post">
+            </c:otherwise>
+        </c:choose>
 
-<div class="container mt-4 container-position label-text-size">
-<p class="display-4">Edit User #${user.id}</p>
-<form action="/users/edit/${user.id}" method="post">
+        <input type="hidden" name="id" value="${user.id}">
 
-  <div class="form-group row">
-    <input type="hidden" name="id" value="${user.id}">
-  </div>
-
-  <div class="form-group row element-padding">
-    <label for="first_name" class="col-sm-2 col-form-label"><b><i>First Name</i></b></label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="firstName" name="firstName"
-      value="${user.firstName}" placeholder="Now : ${user.firstName}" required>
-    </div>
-  </div>
-
-  <div class="form-group row element-padding">
-    <label for="last_name" class="col-sm-2 col-form-label"><b><i>Last Name</i></b></label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="lastName" name="lastName"
-      value="${user.lastName}" placeholder="Now : ${user.lastName}" required>
-    </div>
-  </div>
-
-  <div class="form-group row element-padding">
-    <label for="email" class="col-sm-2 col-form-label"><i><b>E-Mail</i></b></label>
-    <div class="col-sm-10">
-       <input type="email" class="form-control" id="email" name="email"
-       value="${user.email}" placeholder="Now : ${user.email}" required>
-       <small id="emailHelp" class="form-text text-muted help-text-size">Enter the valid E-Mail</small>
-    </div>
-  </div>
-
-  <div class="form-group row element-padding">
-    <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
-    <div class="col-sm-10">
-       <input type="text" class="form-control" id="login" name="login" value="${user.login}" readonly>
-       <small id="loginHelp" class="form-text text-muted help-text-size">
-          Login is set once during registration and will remain unchanged.
-       </small>
-    </div>
-  </div>
-
-  <fieldset class="form-group element-padding">
-    <div class="row">
-      <legend class="col-form-label col-sm-2 pt-0"><b><i>Role</i></b></legend>
-
-      <div class="col-sm-10">
-
-        <c:forEach items="${roles}" var="role">
-
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="role" id="${role}" value="${role}" checked>
-          <label class="form-check-label" for="${role}">
-            ${role}
-          </label>
+        <div class="form-group row">
+            <label for="first_name" class="col-sm-2 col-form-label"><b><i>First Name</i></b></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="firstName" name="firstName"
+                    value="${user.firstName}" placeholder="Now : ${user.firstName}" required>
+            </div>
         </div>
 
-        </c:forEach>
-
+        <div class="form-group row">
+            <label for="last_name" class="col-sm-2 col-form-label"><b><i>Last Name</i></b></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="lastName" name="lastName"
+                    value="${user.lastName}" placeholder="Now : ${user.lastName}" required>
+            </div>
         </div>
+
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label"><b><i>E-Mail</i></b></label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" name="email"
+                    value="${user.email}" placeholder="Now : ${user.email}" required>
+                <small class="form-text text-muted help-text-size">Enter the valid E-Mail</small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="login" name="login"
+                    value="${user.login}" readonly>
+                <small class="form-text text-muted help-text-size">
+                    Login is set once during registration and will remain unchanged.
+                </small>
+            </div>
+        </div>
+
+        <c:if test="${not isOwnerProfile}">
+            <fieldset class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-2 pt-0"><b><i>Role</i></b></legend>
+                    <div class="col-sm-10">
+                        <c:forEach items="${roles}" var="role">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="role"
+                                    id="role_${role}" value="${role}"
+                                    ${user.role eq role ? 'checked' : ''}>
+                                <label class="form-check-label" for="role_${role}">
+                                    ${role}
+                                </label>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </div>
+            </fieldset>
+        </c:if>
+
+        <c:if test="${isOwnerProfile}">
+            <div class="form-group row">
+                <label for="password" class="col-sm-2 col-form-label"><b><i>Password</i></b></label>
+                <div class="col-sm-10 text-left">
+                    <a href="/profile/edit/password" class="btn btn-primary btn-password">Change</a>
+                </div>
+            </div>
+        </c:if>
+
         <div class="box button-padding">
-                <button type="submit" class="btn btn-primary">Update</button>
-                <a
-                href="/users"
-                class="btn btn-secondary box-margin"
-                >Back to users page</a>
+            <button type="submit" class="btn btn-primary">Update</button>
+            <c:choose>
+                <c:when test="${isOwnerProfile}">
+                    <a href="/profile" class="btn btn-secondary box-margin">Back to profile</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/users" class="btn btn-secondary box-margin">Back to users page</a>
+                </c:otherwise>
+            </c:choose>
         </div>
+        </form>
     </div>
-  </fieldset>
-</form>
-</div>
 </body>
 </html>

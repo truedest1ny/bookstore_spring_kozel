@@ -35,6 +35,7 @@
         <init-param>
             <param-name>privatePaths</param-name>
             <param-value>
+                /profile, /profile/.*,
                 /logout,
                 /users, /users/.*,
                 /orders, /orders/.*,
