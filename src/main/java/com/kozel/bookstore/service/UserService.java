@@ -1,5 +1,6 @@
 package com.kozel.bookstore.service;
 
+import com.kozel.bookstore.service.dto.UserChangePasswordDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
@@ -17,7 +18,7 @@ public interface UserService {
     UserDto update(UserUpdateDto dto);
     void disable(Long id);
     UserDto login(UserLoginDto userLoginDto);
-    UserDto getByLogin(String login);
+    void changePassword(UserChangePasswordDto changePasswordDto);
     void logout(HttpSession session);
-
+    UserDto getByLogin(String login);
 }

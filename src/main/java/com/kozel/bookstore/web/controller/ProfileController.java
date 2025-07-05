@@ -1,6 +1,7 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.dto.UserChangePasswordDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserUpdateDto;
@@ -44,6 +45,14 @@ public class ProfileController {
     @GetMapping("/edit/password")
     public String getChangePasswordForm(){
         return "user/change_password";
+    }
+
+    @PostMapping("/edit/password")
+    public String changePassword(@ModelAttribute UserChangePasswordDto passwordDto,
+                                 @SessionAttribute(name = "user") UserSessionDto userSessionDto){
+        passwordDto.setId(userSessionDto.getId());
+        service.changePassword(passwordDto);
+        return "redirect:/profile";
     }
 
     

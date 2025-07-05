@@ -1,6 +1,7 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.exception.AuthentificationException;
+import com.kozel.bookstore.service.exception.InvalidPasswordException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,14 @@ public class ErrorHandler {
         model.addAttribute("message",
                 "Oops! Incorrect login or password. Please check your login details");
         return "user/login";
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleInvalidPasswordException (Model model, InvalidPasswordException e){
+        log(e);
+        model.addAttribute("message", e.getMessage());
+        return "user/change_password";
     }
 
 

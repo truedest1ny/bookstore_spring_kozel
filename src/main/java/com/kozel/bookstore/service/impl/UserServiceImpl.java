@@ -6,12 +6,14 @@ import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
 import com.kozel.bookstore.service.PasswordHasher;
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.dto.UserChangePasswordDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 import com.kozel.bookstore.service.dto.UserUpdateDto;
 import com.kozel.bookstore.service.exception.AuthentificationException;
+import com.kozel.bookstore.service.exception.InvalidPasswordException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -154,6 +156,42 @@ public class UserServiceImpl implements UserService {
             }
 
             return dataMapper.toDto(user);
+    }
+
+    public void changePassword(UserChangePasswordDto changePasswordDto){
+        User user = userRepository.findById(changePasswordDto.getId()).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "No user with such ID (" + changePasswordDto.getId() +").")
+        );
+
+        String currentHashedPassword = user.getHash().getHashedPassword();
+
+        String formHashedCurrentPassword = PasswordHasher.hashPassword(
+                changePasswordDto.getCurrentPassword(),
+                user.getHash().getSalt());
+
+        String formHashedNewPassword = PasswordHasher.hashPassword(
+                changePasswordDto.getNewPassword(),
+                user.getHash().getSalt());
+
+        if (!changePasswordDto.getNewPassword().
+                equals(changePasswordDto.getConfirmPassword())){
+            throw new InvalidPasswordException("The entered passwords do not match!");
+
+        } else if (!currentHashedPassword.equals(formHashedCurrentPassword)){
+            throw new InvalidPasswordException("Typed wrong current password!");
+
+        } else if (currentHashedPassword.equals(formHashedNewPassword)){
+            throw new InvalidPasswordException("The password entered matches the current one!");
+        }
+
+        String newSalt = PasswordHasher.generateSalt();
+        user.getHash().setSalt(newSalt);
+
+        String newHashedPassword = PasswordHasher.hashPassword(
+                changePasswordDto.getNewPassword(), newSalt);
+        user.getHash().setHashedPassword(newHashedPassword);
+        userRepository.save(user);
     }
 
     @Override
