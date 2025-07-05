@@ -29,7 +29,6 @@
 <form action="/users/edit/${user.id}" method="post">
 
   <div class="form-group row">
-    <input type="hidden" name="command" value="updateUser">
     <input type="hidden" name="id" value="${user.id}">
   </div>
 

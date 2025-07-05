@@ -11,6 +11,7 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import com.kozel.bookstore.service.dto.UserUpdateDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -155,5 +156,12 @@ public class DataMapperImpl implements DataMapper {
         dto.setTotalPrice(orderEntity.getTotalPrice());
 
         return dto;
+    }
+
+    public void mapToEntity(UserUpdateDto dto, User user) {
+        user.setEmail(dto.getEmail());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setRole(User.Role.valueOf(dto.getRole().toString()));
     }
 }

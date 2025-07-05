@@ -3,6 +3,7 @@ package com.kozel.bookstore.web.controller;
 import com.kozel.bookstore.service.UserService;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import com.kozel.bookstore.service.dto.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,11 +39,10 @@ public class UserController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateUser(@PathVariable long id, @ModelAttribute UserDto user) {
-            user.setId(id);
-            userService.update(user);
-            return "redirect:/users/" + user.getId();
-
+    public String updateUser(@PathVariable long id, @ModelAttribute UserUpdateDto user) {
+        user.setId(id);
+        userService.update(user);
+        return "redirect:/users/" + user.getId();
     }
 
     @PostMapping("/delete/{id}")

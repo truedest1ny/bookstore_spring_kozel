@@ -10,6 +10,7 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import com.kozel.bookstore.service.dto.UserUpdateDto;
 import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -64,6 +65,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getByLogin(String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(
+                () -> new ResourceNotFoundException("No user with such login (" + login +").")
+        );
+        return dataMapper.toDto(user);
+    }
+
+    @Override
     public UserDto create(UserCreateDto userCreateDto) {
 
         log.debug("Called create() method");
@@ -88,28 +97,25 @@ public class UserServiceImpl implements UserService {
         hash.setHashedPassword(hashedPassword);
 
         entity.setHash(hash);
+        hash.setUser(entity);
 
         User user = userRepository.save(entity);
 
-        hash.setUserId(user.getId());
-
-        User savedUser = userRepository.save(user);
-        return dataMapper.toDto(savedUser);
+        return dataMapper.toDto(user);
 
     }
 
     @Override
-    public UserDto update(UserDto userDto) {
+    public UserDto update(UserUpdateDto dto) {
 
         log.debug("Called update() method");
 
-        //TODO UPDATE USER
-        User entity = dataMapper.toEntity(userDto);
+        User user = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User " + dto.getId() + " not found"));
 
+        dataMapper.mapToEntity(dto, user);
 
-
-        User savedUser = userRepository.save(entity);
-        return dataMapper.toDto(savedUser);
+        return dataMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -148,22 +154,14 @@ public class UserServiceImpl implements UserService {
             }
 
             return dataMapper.toDto(user);
-
-
-    }
-
-    @Override
-    public UserDto getByLogin(String login) {
-        User user = userRepository.findByLogin(login).orElseThrow(
-                () -> new ResourceNotFoundException("No user with such login (" + login +").")
-        );
-        return dataMapper.toDto(user);
     }
 
     @Override
     public void logout(HttpSession session) {
         session.invalidate();
     }
+
+    
 }
 
 

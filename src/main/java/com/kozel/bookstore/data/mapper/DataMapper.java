@@ -11,6 +11,7 @@ import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
+import com.kozel.bookstore.service.dto.UserUpdateDto;
 
 public interface DataMapper {
     BookDto toDto(Book bookEntity);
@@ -24,4 +25,5 @@ public interface DataMapper {
     Order toEntity (OrderDto orderDto);
     OrderDto toDto(Order orderEntity);
     OrderShowingDto toShortedDto(Order orderEntity);
+    void mapToEntity(UserUpdateDto dto, User user);
 }
