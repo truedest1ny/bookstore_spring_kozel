@@ -9,38 +9,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <style>
-        body {
-            background-image: url(/images/background.jpg);
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-size: cover;
-        }
-        .error-message {
-            color: #dc3545;
-            font-size: 0.9rem;
-            margin-top: 0.25rem;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-        .password-rules {
-            font-size: 0.6rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-        .form-label {
-            min-width: 180px;
-            margin-bottom: 0;
-            padding-right: 15px;
-        }
-        .form-control-container {
-            flex: 1;
-        }
-    </style>
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>

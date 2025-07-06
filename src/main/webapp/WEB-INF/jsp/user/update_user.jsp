@@ -15,29 +15,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <style>
-        body {
-            background-image: url(/images/background.jpg);
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-size: auto;
-        }
-        .btn-password {
-            width: 80px;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-        .button-padding {
-            padding-top: 15px;
-        }
-        .box-margin {
-            margin-left: 10px;
-        }
-    </style>
 </head>
 
 <body>
@@ -57,23 +34,23 @@
 
         <input type="hidden" name="id" value="${user.id}">
 
-        <div class="form-group row">
-            <label for="first_name" class="col-sm-2 col-form-label"><b><i>First Name</i></b></label>
+        <div class="form-group row element-padding">
+            <label for="firstName" class="col-sm-2 col-form-label"><b><i>First Name</i></b></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="firstName" name="firstName"
                     value="${user.firstName}" placeholder="Now : ${user.firstName}" required>
             </div>
         </div>
 
-        <div class="form-group row">
-            <label for="last_name" class="col-sm-2 col-form-label"><b><i>Last Name</i></b></label>
+        <div class="form-group row element-padding">
+            <label for="lastName" class="col-sm-2 col-form-label"><b><i>Last Name</i></b></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="lastName" name="lastName"
                     value="${user.lastName}" placeholder="Now : ${user.lastName}" required>
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row element-padding">
             <label for="email" class="col-sm-2 col-form-label"><b><i>E-Mail</i></b></label>
             <div class="col-sm-10">
                 <input type="email" class="form-control" id="email" name="email"
@@ -82,7 +59,7 @@
             </div>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row element-padding">
             <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="login" name="login"
@@ -94,27 +71,29 @@
         </div>
 
         <c:if test="${not isOwnerProfile}">
-            <fieldset class="form-group">
+            <fieldset class="form-group element-padding">
                 <div class="row">
                     <legend class="col-form-label col-sm-2 pt-0"><b><i>Role</i></b></legend>
                     <div class="col-sm-10">
-                        <c:forEach items="${roles}" var="role">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="role"
-                                    id="role_${role}" value="${role}"
-                                    ${user.role eq role ? 'checked' : ''}>
-                                <label class="form-check-label" for="role_${role}">
-                                    ${role}
-                                </label>
-                            </div>
-                        </c:forEach>
+                        <div class="d-flex flex-column">
+                            <c:forEach items="${roles}" var="role">
+                                <div class="form-check align-items-start">
+                                    <input class="form-check-input" type="radio" name="role"
+                                        id="role_${role}" value="${role}"
+                                        ${user.role eq role ? 'checked' : ''}>
+                                    <label class="form-check-label" for="role_${role}">
+                                        ${role}
+                                    </label>
+                                </div>
+                            </c:forEach>
+                        </div>
                     </div>
                 </div>
             </fieldset>
         </c:if>
 
         <c:if test="${isOwnerProfile}">
-            <div class="form-group row">
+            <div class="form-group row element-padding">
                 <label for="password" class="col-sm-2 col-form-label"><b><i>Password</i></b></label>
                 <div class="col-sm-10 text-left">
                     <a href="/profile/edit/password" class="btn btn-primary btn-password">Change</a>

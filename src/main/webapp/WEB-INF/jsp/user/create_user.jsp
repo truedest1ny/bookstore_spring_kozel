@@ -1,90 +1,75 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <c:choose>
-      <c:when test="${empty sessionScope.user}">
-         <title>Sign Up</title>
-      </c:when>
-      <c:otherwise>
-        <title>Add user</title>
-      </c:otherwise>
-    </c:choose>
-
-    <title>Sign Up</title>
+    <title>
+        <c:choose>
+            <c:when test="${empty sessionScope.user}">
+                Sign Up
+            </c:when>
+            <c:otherwise>
+                Add user
+            </c:otherwise>
+        </c:choose>
+    </title>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <style>
-      body {
-        background-image: url(/images/background.jpg);
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-attachment: fixed;
-        background-size: auto;
-      }
-    </style>
-  </head>
+</head>
 
 <body>
+    <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
-<%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <div class="container mt-4 container-position label-text-size">
+        <p class="display-4">
+            <c:choose>
+                <c:when test="${empty sessionScope.user}">Sign Up</c:when>
+                <c:otherwise>Add user</c:otherwise>
+            </c:choose>
+        </p>
 
-<div class="container mt-4 container-position label-text-size">
+        <form action="<c:choose><c:when test="${empty sessionScope.user}">/register</c:when><c:otherwise>/users/add</c:otherwise></c:choose>" method="post">
+            <div class="form-group row element-padding align-items-center">
+                <label for="email" class="col-sm-2 col-form-label font-weight-bold font-italic">E-Mail</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="email" name="email"
+                           pattern="^\S+@\S+\.\S+$" placeholder="Email..." required>
+                    <small id="emailHelp" class="form-text text-muted help-text-size">Enter a valid email address</small>
+                </div>
+            </div>
 
-<c:choose>
-   <c:when test="${empty sessionScope.user}">
-      <p class="display-4">Sign Up</p>
-      <form action="/register" method="post">
-   </c:when>
-   <c:otherwise>
-      <p class="display-4">Add user</p>
-      <form action="/users/add" method="post">
-   </c:otherwise>
-</c:choose>
+            <div class="form-group row element-padding align-items-center">
+                <label for="login" class="col-sm-2 col-form-label font-weight-bold font-italic">Login</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="login" name="login"
+                           pattern="[A-Za-z0-9]{4,20}" placeholder="Login..." required>
+                    <small id="loginHelp" class="form-text text-muted help-text-size">4-20 characters (letters and numbers only)</small>
+                </div>
+            </div>
 
-  <div class="form-group row element-padding">
-    <label for="email" class="col-sm-2 col-form-label"><i><b>E-Mail</i></b></label>
-    <div class="col-sm-10">
-       <input type="text" class="form-control" id="email" name="email" pattern="^\S+@\S+\.\S+$" placeholder="Email..." required>
-       <small id="emailHelp" class="form-text text-muted help-text-size">Enter the valid E-Mail</small>
+            <div class="form-group row element-padding align-items-center">
+                <label for="password" class="col-sm-2 col-form-label font-weight-bold font-italic">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="password" name="password"
+                           pattern="[A-Za-z0-9]{4,15}" placeholder="Password..." required>
+                    <small id="passwordHelp" class="form-text text-muted help-text-size">4-15 characters (letters and numbers only)</small>
+                </div>
+            </div>
+
+            <div class="box button-padding">
+                <button type="submit" class="btn btn-primary">
+                    <c:choose>
+                        <c:when test="${empty sessionScope.user}">Register</c:when>
+                        <c:otherwise>Add</c:otherwise>
+                    </c:choose>
+                </button>
+                <c:if test="${not empty sessionScope.user}">
+                    <a href="/users" class="btn btn-secondary box-margin">Back to users</a>
+                </c:if>
+            </div>
+        </form>
     </div>
-  </div>
-
-  <div class="form-group row element-padding">
-      <label for="login" class="col-sm-2 col-form-label"><b><i>Login</i></b></label>
-      <div class="col-sm-10">
-         <input type="text" class="form-control" id="login" name="login" pattern="[A-Za-z0-9]{4,20}" placeholder="Login..." required>
-         <small id="loginHelp" class="form-text text-muted help-text-size">Enter the login. EN letters, from 4 to 20 symbols</small>
-      </div>
-    </div>
-
-    <div class="form-group row element-padding">
-      <label for="password" class="col-sm-2 col-form-label"><b><i>Password</i></b></label>
-      <div class="col-sm-10">
-         <input type="text" class="form-control" id="password" name="password" pattern="[A-Za-z0-9]{4,15}" placeholder="Password..." required>
-         <small id="loginHelp" class="form-text text-muted help-text-size">Enter the password. EN letters, from 4 to 15 symbols</small>
-      </div>
-    </div>
-
-    <div class="box button-padding">
-
-    <c:choose>
-       <c:when test="${empty sessionScope.user}">
-          <button type="submit" class="btn btn-primary">Register</button>
-       </c:when>
-       <c:otherwise>
-          <button type="submit" class="btn btn-primary">Add</button>
-          <a href="/users" class="btn btn-secondary box-margin">Back to users page</a>
-       </c:otherwise>
-    </c:choose>
-    </div>
-
-</form>
-</div>
 </body>
 </html>
