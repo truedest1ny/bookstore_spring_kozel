@@ -46,7 +46,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public String register(@ModelAttribute UserCreateDto user) {
         service.create(user);
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @GetMapping("/register")

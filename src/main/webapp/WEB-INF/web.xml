@@ -40,8 +40,7 @@
                 /users, /users/.*,
                 /orders, /orders/.*,
                 /books/add, /books/add/,
-                /books/\d+/edit, /books/\d+/edit/,
-                /books/\d+/delete, /books/\d+/delete/
+                /books/edit/.*, /books/delete/.*
             </param-value>
         </init-param>
 

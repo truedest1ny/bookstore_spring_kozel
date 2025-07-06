@@ -1,6 +1,7 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 import com.kozel.bookstore.service.dto.UserUpdateDto;
@@ -21,6 +22,17 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/add")
+    public String getAddUserForm() {
+        return "user/create_user";
+    }
+
+    @PostMapping("/add")
+    public String addUser(@ModelAttribute UserCreateDto user) {
+        userService.create(user);
+        return "redirect:/users";
+    }
 
     @GetMapping("/{id}")
     public String getUser(@PathVariable long id, Model model) {
