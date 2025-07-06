@@ -8,23 +8,19 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
+    <style>
+        .card-icon {
+            margin-bottom: 1.5rem; /* Увеличенный отступ под иконкой */
+        }
+        .card-title {
+            font-size: 1.25rem; /* Увеличенный размер текста */
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
     <%@ include file="/WEB-INF/jsp/notification.jsp" %>
-
-    <c:if test="${not empty success}">
-        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1050;">
-            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" style="animation: fadeOut 5s ease-in forwards;">
-                <div class="toast-header bg-success text-white">
-                    <strong class="me-auto">Success!</strong>
-                </div>
-                <div class="toast-body">
-                    ${success}
-                </div>
-            </div>
-        </div>
-    </c:if>
 
     <div class="text-center my-4">
         <img src="/images/icons/brand_icon.png" width="200" height="200" alt="Bookstore Logo" class="img-fluid">
@@ -42,32 +38,29 @@
             </p>
         </c:if>
 
-        <div class="d-flex justify-content-center flex-wrap gap-4">
-            <div class="media position-relative" style="width: 300px;">
-                <img src="/images/icons/book_icon.png" class="mr-3" alt="Book icon" width="100" height="100">
+        <div class="d-flex justify-content-center flex-wrap gap-5">
+            <div class="media position-relative" style="width: 180px;">
+                <img src="/images/icons/book_icon.png" class="mr-3 card-icon" alt="Book icon" width="100" height="100">
                 <div class="media-body text-left">
-                    <h5 class="mt-0">Books</h5>
-                    <p>Current books catalog</p>
-                    <a href="/books" class="stretched-link text-size">Go!</a>
+                    <h5 class="mt-0 card-title">Books</h5>
+                    <a href="/books" class="stretched-link text-size"></a>
                 </div>
             </div>
 
             <c:if test="${not empty sessionScope.user}">
-                <div class="media position-relative" style="width: 300px;">
-                    <img src="/images/icons/user_icon.png" class="mr-3" alt="User icon" width="100" height="100">
+                <div class="media position-relative" style="width: 180px;">
+                    <img src="/images/icons/user_icon.png" class="mr-3 card-icon" alt="User icon" width="100" height="100">
                     <div class="media-body text-left">
-                        <h5 class="mt-0">Users</h5>
-                        <p>Actual users catalog</p>
-                        <a href="/users" class="stretched-link text-size">Go!</a>
+                        <h5 class="mt-0 card-title">Users</h5>
+                        <a href="/users" class="stretched-link text-size"></a>
                     </div>
                 </div>
 
-                <div class="media position-relative" style="width: 300px;">
-                    <img src="/images/icons/order_icon.png" class="mr-3" alt="Order icon" width="100" height="100">
+                <div class="media position-relative" style="width: 180px;">
+                    <img src="/images/icons/order_icon.png" class="mr-3 card-icon" alt="Order icon" width="100" height="100">
                     <div class="media-body text-left">
-                        <h5 class="mt-0">Orders</h5>
-                        <p>Actual orders catalog</p>
-                        <a href="/orders" class="stretched-link text-size">Go!</a>
+                        <h5 class="mt-0 card-title">Orders</h5>
+                        <a href="/orders" class="stretched-link text-size"></a>
                     </div>
                 </div>
             </c:if>

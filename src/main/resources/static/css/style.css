@@ -4,7 +4,7 @@ body {
     background-size: cover;
 }
 
-/*Message styles*/
+/* Message styles */
 .fade-out {
     animation: fadeOut 5s ease-in forwards;
 }
@@ -13,6 +13,16 @@ body {
     40% { opacity: 1; }
     100% { opacity: 0; display: none; }
 }
+
+/* Card Styles */
+ .card-icon {
+    margin-bottom: 1.3rem;
+ }
+ .card-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+ }
+
 
 /* Layout and positioning */
 .box {
