@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -35,14 +36,20 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public String addBook(@ModelAttribute BookDto book) {
+    public String addBook(@ModelAttribute BookDto book,
+                          RedirectAttributes attributes) {
         BookDto savedBook = service.create(book);
+        attributes.addFlashAttribute("success",
+                "The book has been successfully added! It is now available in the catalog.");
         return "redirect:/books/" + savedBook.getId();
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteBook(@PathVariable long id) {
+    public String deleteBook(@PathVariable long id,
+                             RedirectAttributes attributes) {
         service.disable(id);
+        attributes.addFlashAttribute("success",
+                "The book has been successfully deleted.");
         return "redirect:/books";
     }
 
@@ -63,9 +70,13 @@ public class BookController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateBook(@PathVariable long id, @ModelAttribute BookDto book) {
+    public String updateBook(@PathVariable long id,
+                             @ModelAttribute BookDto book,
+                             RedirectAttributes attributes) {
         book.setId(id);
         service.update(book);
+        attributes.addFlashAttribute("success",
+                "Changes have been applied successfully.");
         return "redirect:/books/" + book.getId();
     }
 }

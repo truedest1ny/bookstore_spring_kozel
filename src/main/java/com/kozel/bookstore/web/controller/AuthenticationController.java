@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthenticationController {
 
     private final DataMapper mapper;
-
     private final UserService service;
 
     @GetMapping("/login")
@@ -44,8 +44,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute UserCreateDto user) {
+    public String register(@ModelAttribute UserCreateDto user,
+                           RedirectAttributes attributes) {
         service.create(user);
+        attributes.addFlashAttribute("success",
+                "You have successfully registered!" +
+                        " To access the system, use the parameters you specified.");
         return "redirect:/";
     }
 

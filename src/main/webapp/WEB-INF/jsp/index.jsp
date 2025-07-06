@@ -11,6 +11,20 @@
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/notification.jsp" %>
+
+    <c:if test="${not empty success}">
+        <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1050;">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" style="animation: fadeOut 5s ease-in forwards;">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Success!</strong>
+                </div>
+                <div class="toast-body">
+                    ${success}
+                </div>
+            </div>
+        </div>
+    </c:if>
 
     <div class="text-center my-4">
         <img src="/images/icons/brand_icon.png" width="200" height="200" alt="Bookstore Logo" class="img-fluid">

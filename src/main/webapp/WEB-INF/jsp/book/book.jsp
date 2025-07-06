@@ -11,6 +11,7 @@
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
     <div class="profile-container">
         <h1 class="display-4 mb-4">Book Details [ID: ${book.id}]</h1>

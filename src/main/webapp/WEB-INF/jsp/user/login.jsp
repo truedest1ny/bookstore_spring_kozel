@@ -12,17 +12,12 @@
 
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
     <div class="container mt-4 container-position label-text-size">
         <p class="display-4">Sign in</p>
 
         <form action="/login" method="post">
-            <c:if test="${not empty message}">
-                <p class="login-error-style lead mb-4">
-                    <c:out value="${message}" />
-                </p>
-            </c:if>
-
             <div class="form-group row element-padding">
                 <label for="login" class="col-sm-2 col-form-label font-italic font-weight-bold">Login</label>
                 <div class="col-sm-10">

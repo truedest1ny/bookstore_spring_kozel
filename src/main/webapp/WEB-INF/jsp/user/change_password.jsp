@@ -12,12 +12,10 @@
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
     <div class="container mt-4 container-position label-text-size">
         <p class="display-4">Change Password</p>
-        <p class="display-4 login-error-style lead">
-             <c:out value="${message}" />
-        </p>
 
         <form action="/profile/edit/password" method="post">
             <div class="form-group">

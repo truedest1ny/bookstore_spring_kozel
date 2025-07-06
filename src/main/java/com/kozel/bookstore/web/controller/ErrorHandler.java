@@ -70,8 +70,6 @@ public class ErrorHandler {
         return "user/change_password";
     }
 
-
-
     private void log(Throwable e) {
         log.error("Error occurred: ", e);
     }

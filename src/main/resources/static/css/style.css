@@ -4,6 +4,16 @@ body {
     background-size: cover;
 }
 
+/*Message styles*/
+.fade-out {
+    animation: fadeOut 5s ease-in forwards;
+}
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    40% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
 /* Layout and positioning */
 .box {
     display: flex;

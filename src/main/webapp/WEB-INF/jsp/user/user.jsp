@@ -18,6 +18,7 @@
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
+    <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
     <div class="profile-container">
         <c:choose>

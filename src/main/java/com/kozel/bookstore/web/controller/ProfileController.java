@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/profile")
@@ -35,10 +36,13 @@ public class ProfileController {
 
     @PostMapping("/edit")
     public String updateProfile(@ModelAttribute UserUpdateDto user,
-                                @SessionAttribute(name = "user") UserSessionDto sessionDto){
+                                @SessionAttribute(name = "user") UserSessionDto sessionDto,
+                                RedirectAttributes attributes){
         user.setId(sessionDto.getId());
         user.setRole(UserUpdateDto.Role.valueOf(sessionDto.getRole().toString()));
         service.update(user);
+        attributes.addFlashAttribute("success",
+                "Changes have been applied successfully.");
         return "redirect:/profile";
     }
 
@@ -49,9 +53,12 @@ public class ProfileController {
 
     @PostMapping("/edit/password")
     public String changePassword(@ModelAttribute UserChangePasswordDto passwordDto,
-                                 @SessionAttribute(name = "user") UserSessionDto userSessionDto){
+                                 @SessionAttribute(name = "user") UserSessionDto userSessionDto,
+                                 RedirectAttributes attributes){
         passwordDto.setId(userSessionDto.getId());
         service.changePassword(passwordDto);
+        attributes.addFlashAttribute("success",
+                "Password has been changed successfully.");
         return "redirect:/profile";
     }
 
