@@ -25,7 +25,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
         <c:if test="${not empty sessionScope.user}">
-         <c:if test="${sessionScope.user.role.name() != 'CUSTOMER'}">
+         <c:if test="${sessionScope.user.role.name() ne 'CUSTOMER'}">
           <li class="nav-item px-2">
             <a class="nav-link fs-5" href="/users">Users</a>
           </li>
@@ -37,7 +37,7 @@
         <c:if test="${not empty sessionScope.user}">
           <li class="nav-item px-2">
            <c:choose>
-                <c:when test="${sessionScope.user.role.name() == 'CUSTOMER'}">
+                <c:when test="${sessionScope.user.role.name() eq 'CUSTOMER'}">
                     <a class="nav-link fs-5" href="/ordered">Orders</a>
                 </c:when>
                 <c:otherwise>
@@ -66,7 +66,7 @@
             </c:when>
             <c:otherwise>
               <li class="nav-item px-3">
-                    <a class="nav-link text-dark fs-5" href="/profile">${sessionScope.user.login}
+                    <a class="nav-link text-dark fs-5" href="/profile"><c:out value="${sessionScope.user.login}"/>
                     <img
                         src="/images/icons/navbar_user_icon.png"
                         width="30"

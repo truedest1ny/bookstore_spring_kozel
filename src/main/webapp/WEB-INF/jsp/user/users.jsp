@@ -14,10 +14,12 @@
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
     <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
+    <c:set var="isNotManager" value="${sessionScope.user.role.name() ne 'MANAGER'}"/>
+
     <div class="container text-center my-5">
         <p class="display-4">Users list</p>
         <p class="lead">The catalog includes a list of users.</p>
-        <c:if test="${sessionScope.user.role.name() != 'MANAGER'}">
+        <c:if test="${isNotManager}">
             <a href="/users/add" class="btn btn-primary btn-lg">Add User</a>
         </c:if>
     </div>
@@ -36,18 +38,18 @@
         <tbody>
             <c:forEach items="${users}" var="user" varStatus="counter">
                 <tr>
-                    <td><a href="/users/${user.id}">${user.id}</a></td>
-                    <td>${user.email}</td>
-                    <td>${user.login}</td>
-                    <td>${user.role}</td>
+                    <td><a href="/users/<c:out value='${user.id}'/>"><c:out value="${user.id}"/></a></td>
+                    <td><c:out value="${user.email}"/></td>
+                    <td><c:out value="${user.login}"/></td>
+                    <td><c:out value="${user.role}"/></td>
                     <td>
-                        <c:if test="${sessionScope.user.role.name() != 'MANAGER'}">
-                            <a href="/users/edit/${user.id}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <c:if test="${isNotManager}">
+                            <a href="/users/edit/<c:out value='${user.id}'/>" class="btn btn-sm btn-outline-primary">Edit</a>
                         </c:if>
                     </td>
                     <td>
-                        <c:if test="${sessionScope.user.role.name() == 'SUPER_ADMIN'}">
-                            <form action="/users/delete/${user.id}" method="post" class="d-inline">
+                        <c:if test="${sessionScope.user.role.name() eq 'SUPER_ADMIN'}">
+                            <form action="/users/delete/<c:out value='${user.id}'/>" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
                         </c:if>

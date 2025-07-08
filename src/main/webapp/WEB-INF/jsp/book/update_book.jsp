@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit book #${book.id}</title>
+    <title>Edit book #<c:out value="${book.id}"/></title>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
@@ -13,16 +13,16 @@
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <div class="container mt-4 container-position label-text-size">
-        <p class="display-4">Edit Book #${book.id}</p>
-        <form action="/books/edit/${book.id}" method="post">
+        <p class="display-4">Edit Book #<c:out value="${book.id}"/></p>
+        <form action="/books/edit/<c:out value='${book.id}'/>" method="post">
 
-            <input type="hidden" name="id" value="${book.id}">
+            <input type="hidden" name="id" value="<c:out value='${book.id}'/>">
 
             <div class="form-group row element-padding">
                 <label for="name" class="col-sm-2 col-form-label"><b><i>Name</i></b></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="name" name="name"
-                           value="${book.name}" placeholder="Now : ${book.name}" required>
+                           value="<c:out value='${book.name}'/>" placeholder="Input title..." required>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                 <label for="isbn" class="col-sm-2 col-form-label"><i><b>ISBN</i></b></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="isbn" name="isbn"
-                           value="${book.isbn}" readonly>
+                           value="<c:out value='${book.isbn}'/>" readonly>
                     <small class="form-text text-muted help-text-size">
                         ISBN - a unique number - remains constant the entire time the book is in the catalog
                     </small>
@@ -41,7 +41,7 @@
                 <label for="author" class="col-sm-2 col-form-label"><b><i>Author</i></b></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" name="author"
-                           value="${book.author}" placeholder="Now : ${book.author}" required>
+                           value="<c:out value='${book.author}'/>" placeholder="Input author..." required>
                 </div>
             </div>
 
@@ -50,8 +50,8 @@
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="publishedYear" name="publishedYear"
                            pattern="[0-9]{4}" title="Enter a 4-digit positive number"
-                           value="${book.publishedYear}"
-                           placeholder="Now : ${book.publishedYear}" required>
+                           value="<c:out value='${book.publishedYear}'/>"
+                           placeholder="Input published year..." required>
                 </div>
             </div>
 
@@ -59,7 +59,8 @@
                 <label for="price" class="col-sm-2 col-form-label"><b><i>Price</i></b></label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="price" name="price"
-                           value="${book.price}" placeholder="Now : ${book.price}"
+                           value="<c:out value='${book.price}' />"
+                           placeholder="Input price..."
                            pattern="^(0|[1-9][0-9]*)(.[0-9]{1,2})?$"
                            title="Enter a positive number (up to 2 decimal places)" required>
                 </div>
@@ -73,10 +74,10 @@
                             <c:forEach items="${covers}" var="cover">
                                 <div class="form-check align-items-start">
                                     <input class="form-check-input" type="radio"
-                                           name="cover" id="${cover}" value="${cover}"
+                                           name="cover" id="<c:out value='${cover}'/>" value="<c:out value='${cover}'/>"
                                            ${book.cover == cover ? 'checked' : ''}>
-                                    <label class="form-check-label" for="${cover}">
-                                        ${cover}
+                                    <label class="form-check-label" for="<c:out value='${cover}'/>">
+                                        <c:out value="${cover}"/>
                                     </label>
                                 </div>
                             </c:forEach>

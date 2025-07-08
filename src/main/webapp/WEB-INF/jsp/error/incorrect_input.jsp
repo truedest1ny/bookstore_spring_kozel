@@ -22,7 +22,7 @@
     <div class="container text-center my-5">
         <p class="display-1">Bad Request :(</p>
         <p class="display-6">
-            The request <span class="text-primary">${url}</span> contains invalid data.
+            The request <span class="text-primary"><c:out value="${url}"/></span> contains invalid data.
             Please try again.
         </p>
         <a href="/" class="btn btn-secondary btn-lg mt-3">

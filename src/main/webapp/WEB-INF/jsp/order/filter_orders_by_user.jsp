@@ -22,8 +22,9 @@
                 <label for="userFilter" class="font-weight-bold font-italic">Choose User:</label>
                 <select class="form-control" id="userFilter" name="userFilter">
                     <c:forEach items="${users}" var="user" varStatus="counter">
-                        <option value="${user.login}">
-                            ${counter.index + 1}. Login - ${user.login}. Email - ${user.email}.
+                        <option value="<c:out value='${user.login}'/>">
+                            ${counter.index + 1}. Login - <c:out value="${user.login}"/>.
+                            Email - <c:out value="${user.email}"/>.
                         </option>
                     </c:forEach>
                 </select>

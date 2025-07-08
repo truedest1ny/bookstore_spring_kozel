@@ -23,9 +23,9 @@
         <h1 class="display-4 mb-4">Error :(</h1>
         <div class="error-details mb-4">
             <p class="lead">Something went wrong with the server:</p>
-            <p class="lead"><strong>Status:</strong> ${status}</p>
+            <p class="lead"><strong>Status:</strong> <c:out value="${status}"/></p>
             <c:if test="${not empty reason}">
-                <p class="lead"><strong>Reason:</strong> ${reason}</p>
+                <p class="lead"><strong>Reason:</strong> <c:out value="${reason}"/></p>
             </c:if>
         </div>
         <a href="/" class="btn btn-secondary btn-lg mt-3">

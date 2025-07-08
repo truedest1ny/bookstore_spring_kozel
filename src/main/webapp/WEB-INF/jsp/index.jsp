@@ -8,15 +8,6 @@
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <style>
-        .card-icon {
-            margin-bottom: 1.5rem; /* Увеличенный отступ под иконкой */
-        }
-        .card-title {
-            font-size: 1.25rem; /* Увеличенный размер текста */
-            font-weight: 500;
-        }
-    </style>
 </head>
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>

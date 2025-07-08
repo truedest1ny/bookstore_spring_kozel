@@ -13,12 +13,15 @@
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
     <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
+    <c:set var="isEmployee"
+        value="${not empty sessionScope.user && sessionScope.user.role.name() ne 'CUSTOMER'}"/>
+
     <div class="container my-5">
         <div class="text-center">
             <h1 class="display-4 mb-3">Books Catalog</h1>
             <p class="lead text-muted mb-4">List of available books in our library</p>
 
-            <c:if test="${not empty sessionScope.user && sessionScope.user.role.name() != 'CUSTOMER'}">
+            <c:if test="${isEmployee}">
                 <a href="/books/add" class="btn btn-primary btn-lg mb-4">
                     Add New Book
                 </a>
@@ -32,7 +35,7 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Year</th>
-                    <c:if test="${not empty sessionScope.user && sessionScope.user.role.name() != 'CUSTOMER'}">
+                    <c:if test="${isEmployee}">
                         <th colspan="2">Actions</th>
                     </c:if>
                 </tr>
@@ -40,19 +43,19 @@
             <tbody>
                 <c:forEach items="${books}" var="book">
                     <tr>
-                        <td><a href="/books/${book.id}">${book.id}</a></td>
-                        <td>${book.name}</td>
-                        <td>${book.author}</td>
-                        <td>${book.publishedYear}</td>
+                        <td><a href="/books/<c:out value='${book.id}'/>"><c:out value="${book.id}"/></a></td>
+                        <td><c:out value="${book.name}"/></td>
+                        <td><c:out value="${book.author}"/></td>
+                        <td><c:out value="${book.publishedYear}"/></td>
 
-                        <c:if test="${not empty sessionScope.user && sessionScope.user.role.name() != 'CUSTOMER'}">
+                        <c:if test="${isEmployee}">
                             <td>
-                                <a href="/books/edit/${book.id}" class="btn btn-sm btn-outline-primary">
+                                <a href="/books/edit/<c:out value='${book.id}'/>" class="btn btn-sm btn-outline-primary">
                                     Edit
                                 </a>
                             </td>
                             <td>
-                                <form action="/books/delete/${book.id}" method="post" class="d-inline">
+                                <form action="/books/delete/<c:out value='${book.id}'/>" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         Delete
                                     </button>

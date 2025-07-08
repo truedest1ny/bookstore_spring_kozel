@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,13 +33,15 @@
         <tbody>
             <c:forEach items="${orders}" var="order" varStatus="counter">
                 <tr>
-                    <td>${order.id}</td>
-                    <td>${order.date}</td>
-                    <td>${order.userLogin}</td>
-                    <td>${order.totalPrice}</td>
-                    <td>${order.status}</td>
+                    <td><c:out value="${order.id}"/></td>
+                    <td><c:out value="${order.date}"/></td>
+                    <td><c:out value="${order.userLogin}"/></td>
+                    <td><fmt:formatNumber value="${order.totalPrice}" type="currency" currencyCode="USD"/></td>
+                    <td><c:out value="${order.status}"/></td>
                     <td>
-                        <a href="/orders/${order.id}" class="btn btn-primary btn-sm">Details</a>
+                        <a href="/orders/<c:out value='${order.id}'/>" class="btn btn-primary btn-sm">
+                            Details
+                        </a>
                     </td>
                 </tr>
             </c:forEach>

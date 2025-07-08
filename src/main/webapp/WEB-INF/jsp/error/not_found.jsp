@@ -22,7 +22,7 @@
     <div class="container text-center my-5">
         <p class="display-1">Error :(</p>
         <p class="display-6">
-            Requested resource <span class="text-primary">${url}</span> was not found.
+            Requested resource <span class="text-primary"><c:out value="${url}"/></span> was not found.
             Please adjust your request.
         </p>
         <a href="/" class="btn btn-secondary btn-lg mt-3">

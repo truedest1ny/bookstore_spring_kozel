@@ -1,10 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order #${order.id}</title>
+    <title>Order #<c:out value="${order.id}"/></title>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
@@ -13,26 +14,28 @@
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
     <div class="container text-center my-5">
-        <h1 class="display-4">Order #${order.id}</h1>
+        <h1 class="display-4">Order #<c:out value="${order.id}"/></h1>
 
         <div class="order-info mb-5">
             <table class="table table-bordered text-font-size mx-auto" style="max-width: 500px;">
                 <tbody>
                     <tr>
                         <td class="font-weight-bold">Date:</td>
-                        <td>${order.date}</td>
+                        <td><c:out value="${order.date}"/></td>
                     </tr>
                     <tr>
                         <td class="font-weight-bold">User login:</td>
-                        <td><a href="/orders/${order.user.id}">${order.user.login}</a></td>
+                        <td><a href="/orders/<c:out value='${order.user.id}'/>">
+                                <c:out value="${order.user.login}"/>
+                            </a></td>
                     </tr>
                     <tr>
                         <td class="font-weight-bold">Status:</td>
-                        <td>${order.status}</td>
+                        <td><c:out value="${order.status}"/></td>
                     </tr>
                     <tr>
                         <td class="font-weight-bold">Total price:</td>
-                        <td>${order.totalPrice}</td>
+                        <td><fmt:formatNumber value="${order.totalPrice}" type="currency" currencyCode="USD"/></td>
                     </tr>
                 </tbody>
             </table>
@@ -51,9 +54,9 @@
             <tbody>
                 <c:forEach items="${items}" var="item" varStatus="counter">
                     <tr>
-                        <td>${item.book.name}</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.price}</td>
+                        <td><c:out value="${item.book.name}"/></td>
+                        <td><c:out value="${item.quantity}"/></td>
+                        <td><fmt:formatNumber value="${item.price}" type="currency" currencyCode="USD"/></td>
                     </tr>
                 </c:forEach>
             </tbody>

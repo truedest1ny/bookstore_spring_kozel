@@ -63,9 +63,10 @@
                             <c:forEach items="${covers}" var="cover">
                                 <div class="form-check align-items-start">
                                     <input class="form-check-input" type="radio"
-                                           name="cover" id="${cover}" value="${cover}" checked>
-                                    <label class="form-check-label" for="${cover}">
-                                        ${cover}
+                                           name="cover" id="<c:out value='${cover}'/>"
+                                           value="<c:out value='${cover}'/>" checked>
+                                    <label class="form-check-label" for="<c:out value='${cover}'/>">
+                                        <c:out value="${cover}"/>
                                     </label>
                                 </div>
                             </c:forEach>
