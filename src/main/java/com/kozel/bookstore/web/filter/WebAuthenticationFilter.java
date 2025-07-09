@@ -62,6 +62,9 @@ public class WebAuthenticationFilter extends HttpFilter {
             if (isAuthenticated) {
                 chain.doFilter(request, response);
             } else {
+                HttpSession messageSession = request.getSession(true);
+                messageSession.setAttribute("loginMessage",
+                        "Authorization is required to access resources. Please Sign in");
                 response.sendRedirect(request.getContextPath() + "/login");
             }
             return;

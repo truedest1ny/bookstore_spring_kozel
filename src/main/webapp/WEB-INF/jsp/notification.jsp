@@ -24,4 +24,15 @@
     </div>
 </c:if>
 
+<c:if test="${not empty warn}">
+    <div class="toast-container position-fixed top-3 end-0 p-3" style="z-index: 1050;">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" style="animation: fadeOut 5s ease-in forwards;">
+            <div class="toast-header bg-warning text-dark">
+                <strong class="me-auto">Warning!</strong>
+            </div>
+            <div class="toast-body">${warn}</div>
+        </div>
+    </div>
+</c:if>
+
 
