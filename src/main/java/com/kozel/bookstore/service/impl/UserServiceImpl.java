@@ -4,7 +4,7 @@ import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.entity.UserHash;
 import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
-import com.kozel.bookstore.service.PasswordHasher;
+import com.kozel.bookstore.service.Hasher;
 import com.kozel.bookstore.service.UserService;
 import com.kozel.bookstore.service.dto.UserChangePasswordDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final DataMapper dataMapper;
+    private final Hasher hasher;
 
 
     @Override
@@ -90,10 +91,10 @@ public class UserServiceImpl implements UserService {
 
         UserHash hash = new UserHash();
 
-        String salt = PasswordHasher.generateSalt();
+        String salt = hasher.generateSalt();
         String password = userCreateDto.getPassword();
 
-        String hashedPassword = PasswordHasher.hashPassword(password, salt);
+        String hashedPassword = hasher.hashPassword(password, salt);
 
         hash.setSalt(salt);
         hash.setHashedPassword(hashedPassword);
@@ -150,7 +151,7 @@ public class UserServiceImpl implements UserService {
             String inputtedPassword = userLoginDto.getPassword();
             String userHashedPassword = user.getHash().getHashedPassword();
 
-            if(!PasswordHasher.hashPassword(inputtedPassword, userSalt)
+            if(!hasher.hashPassword(inputtedPassword, userSalt)
                     .equals(userHashedPassword)) {
              throw new AuthentificationException("Incorrect password for user (" + user.getLogin() + ")");
             }
@@ -166,11 +167,11 @@ public class UserServiceImpl implements UserService {
 
         String currentHashedPassword = user.getHash().getHashedPassword();
 
-        String formHashedCurrentPassword = PasswordHasher.hashPassword(
+        String formHashedCurrentPassword = hasher.hashPassword(
                 changePasswordDto.getCurrentPassword(),
                 user.getHash().getSalt());
 
-        String formHashedNewPassword = PasswordHasher.hashPassword(
+        String formHashedNewPassword = hasher.hashPassword(
                 changePasswordDto.getNewPassword(),
                 user.getHash().getSalt());
 
@@ -185,10 +186,10 @@ public class UserServiceImpl implements UserService {
             throw new InvalidPasswordException("The password entered matches the current one!");
         }
 
-        String newSalt = PasswordHasher.generateSalt();
+        String newSalt = hasher.generateSalt();
         user.getHash().setSalt(newSalt);
 
-        String newHashedPassword = PasswordHasher.hashPassword(
+        String newHashedPassword = hasher.hashPassword(
                 changePasswordDto.getNewPassword(), newSalt);
         user.getHash().setHashedPassword(newHashedPassword);
         userRepository.save(user);
