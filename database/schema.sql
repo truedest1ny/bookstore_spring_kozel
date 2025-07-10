@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS roles (
 
 );
 
-
 CREATE TABLE IF NOT EXISTS users (
 
 	id BIGSERIAL PRIMARY KEY,
@@ -46,12 +45,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS user_hash (
-
-	id BIGSERIAL PRIMARY KEY,
-	user_id BIGINT REFERENCES users,
-	salt VARCHAR(255),
-	hashed_password VARCHAR(255)
-
+    user_id BIGINT PRIMARY KEY REFERENCES users(id),
+    salt VARCHAR(255),
+    hashed_password VARCHAR(255)
 );
 
 CREATE UNIQUE INDEX unique_login_user_deleted
