@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
 public class AuthenticationController {
-
-    private static final String CART_ATTRIBUTE_KEY = "sessionCart";
-    private static final String USER_ATTRIBUTE_KEY = "user";
 
     private final DataMapper mapper;
     private final UserService userService;
@@ -32,8 +31,8 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public String getLoginPage(HttpSession session, Model model){
-        model.addAttribute("warn", session.getAttribute("loginMessage"));
-        session.removeAttribute("warn");
+        model.addAttribute(WARN_MESSAGE_KEY, session.getAttribute("loginMessage"));
+        session.removeAttribute(WARN_MESSAGE_KEY);
 
         return "user/login";
     }
@@ -58,7 +57,7 @@ public class AuthenticationController {
     public String logout(HttpSession session, RedirectAttributes attributes){
         session.removeAttribute(USER_ATTRIBUTE_KEY);
         session.removeAttribute(CART_ATTRIBUTE_KEY);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "You have successfully signed out.");
         return "redirect:/";
     }
@@ -72,7 +71,7 @@ public class AuthenticationController {
     public String register(@ModelAttribute UserCreateDto user,
                            RedirectAttributes attributes) {
         userService.create(user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "You have successfully registered!" +
                         " To access the system, use the parameters you specified.");
         return "redirect:/";

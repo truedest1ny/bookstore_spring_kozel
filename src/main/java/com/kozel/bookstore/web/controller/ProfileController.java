@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping("/profile")
 @RequiredArgsConstructor
 public class ProfileController {
+
 
     private final UserService service;
 
@@ -36,12 +39,12 @@ public class ProfileController {
 
     @PostMapping("/edit")
     public String updateProfile(@ModelAttribute UserUpdateDto user,
-                                @SessionAttribute(name = "user") UserSessionDto sessionDto,
+                                @SessionAttribute(name = USER_ATTRIBUTE_KEY) UserSessionDto sessionDto,
                                 RedirectAttributes attributes){
         user.setId(sessionDto.getId());
         user.setRole(UserUpdateDto.Role.valueOf(sessionDto.getRole().toString()));
         service.update(user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Changes have been applied successfully.");
         return "redirect:/profile";
     }
@@ -53,11 +56,11 @@ public class ProfileController {
 
     @PostMapping("/edit/password")
     public String changePassword(@ModelAttribute UserChangePasswordDto passwordDto,
-                                 @SessionAttribute(name = "user") UserSessionDto userSessionDto,
+                                 @SessionAttribute(name = USER_ATTRIBUTE_KEY) UserSessionDto userSessionDto,
                                  RedirectAttributes attributes){
         passwordDto.setId(userSessionDto.getId());
         service.changePassword(passwordDto);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Password has been changed successfully.");
         return "redirect:/profile";
     }
@@ -65,7 +68,7 @@ public class ProfileController {
     
     private void addToProfile(UserSessionDto user, Model model) {
         UserDto userDto = service.getById(user.getId());
-        model.addAttribute("user", userDto);
-        model.addAttribute("isOwnerProfile", true);
+        model.addAttribute(USER_ATTRIBUTE_KEY, userDto);
+        model.addAttribute(IS_OWNER_PROFILE_ATTRIBUTE_KEY, true);
     }
 }

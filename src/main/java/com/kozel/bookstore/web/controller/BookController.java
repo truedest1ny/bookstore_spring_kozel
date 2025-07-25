@@ -15,23 +15,26 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
+
 
     private final BookService service;
 
     @GetMapping("/{id}")
     public String getBook(@PathVariable long id, Model model) {
         BookDto book = service.getById(id);
-        model.addAttribute("book", book);
+        model.addAttribute(BOOK_ATTRIBUTE_KEY, book);
         return "book/book";
     }
 
     @GetMapping("/add")
     public String getBookAddingForm(Model model) {
-        model.addAttribute("covers", BookDto.Cover.values());
+        model.addAttribute(BOOK_COVERS_ATTRIBUTE_KEY, BookDto.Cover.values());
         return "book/create_book";
     }
 
@@ -39,7 +42,7 @@ public class BookController {
     public String addBook(@ModelAttribute BookDto book,
                           RedirectAttributes attributes) {
         BookDto savedBook = service.create(book);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The book has been successfully added! It is now available in the catalog.");
         return "redirect:/books/" + savedBook.getId();
     }
@@ -48,7 +51,7 @@ public class BookController {
     public String deleteBook(@PathVariable long id,
                              RedirectAttributes attributes) {
         service.disable(id);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The book has been successfully deleted.");
         return "redirect:/books";
     }
@@ -56,15 +59,15 @@ public class BookController {
     @GetMapping
     public String getBooks(Model model) {
         List<BookShowingDto> books = service.getBooksDtoShort();
-        model.addAttribute("books", books);
+        model.addAttribute(BOOKS_ATTRIBUTE_KEY, books);
         return "book/books";
     }
 
     @GetMapping("/edit/{id}")
     public String getUserEditForm(@PathVariable long id, Model model) {
         BookDto book = service.getById(id);
-        model.addAttribute("book", book);
-        model.addAttribute("covers", BookDto.Cover.values());
+        model.addAttribute(BOOK_ATTRIBUTE_KEY, book);
+        model.addAttribute(BOOK_COVERS_ATTRIBUTE_KEY, BookDto.Cover.values());
         return "book/update_book";
 
     }
@@ -75,7 +78,7 @@ public class BookController {
                              RedirectAttributes attributes) {
         book.setId(id);
         service.update(book);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Changes have been applied successfully.");
         return "redirect:/books/" + book.getId();
     }

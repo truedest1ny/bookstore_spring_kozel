@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -41,15 +43,15 @@ public class UserController {
     @GetMapping("/{id}")
     public String getUser(@PathVariable long id, Model model) {
         UserDto user = userService.getById(id);
-        model.addAttribute("user", user);
+        model.addAttribute(USER_ATTRIBUTE_KEY, user);
         return "user/user";
     }
 
     @GetMapping("/edit/{id}")
     public String getEditUserForm(@PathVariable long id, Model model) {
         UserDto user = userService.getById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("roles", UserDto.Role.values());
+        model.addAttribute(USER_ATTRIBUTE_KEY, user);
+        model.addAttribute(USER_ROLES_ATTRIBUTE_KEY, UserDto.Role.values());
         return "user/update_user";
     }
 
@@ -59,7 +61,7 @@ public class UserController {
                              RedirectAttributes attributes) {
         user.setId(id);
         userService.update(user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "User data has been successfully changed.");
         return "redirect:/users/" + user.getId();
     }
@@ -68,7 +70,7 @@ public class UserController {
     public String deleteUser(@PathVariable long id,
                              RedirectAttributes attributes) {
         userService.disable(id);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "User has been successfully disabled.");
         return "redirect:/users";
     }
@@ -76,7 +78,7 @@ public class UserController {
     @GetMapping
     public String getUsers(Model model){
         List<UserShowingDto> users = userService.getUsersDtoShort();
-        model.addAttribute("users", users);
+        model.addAttribute(USERS_ATTRIBUTE_KEY, users);
         return "user/users";
     }
 }

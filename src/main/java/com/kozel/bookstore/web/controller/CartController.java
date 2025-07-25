@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 
 @Controller
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController {
 
-    private static final String CART_ATTRIBUTE_KEY = "sessionCart";
-    private static final String USER_ATTRIBUTE_KEY = "user";
 
     private final CartService cartService;
     private final BookService bookService;
@@ -62,7 +62,7 @@ public class CartController {
         }
 
         session.setAttribute(CART_ATTRIBUTE_KEY, cart);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Item was successfully added.");
         return "redirect:/books";
     }
@@ -83,7 +83,7 @@ public class CartController {
             }
         }
         session.setAttribute(CART_ATTRIBUTE_KEY, cart);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Item was successfully removed.");
         return "redirect:/cart";
     }
@@ -100,7 +100,7 @@ public class CartController {
             session.setAttribute(CART_ATTRIBUTE_KEY, new CartDto());
         }
 
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "Cart was successfully cleared.");
         return "redirect:/books";
     }

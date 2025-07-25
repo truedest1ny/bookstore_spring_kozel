@@ -21,10 +21,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
+
 
     private final OrderService orderService;
     private final UserService userService;
@@ -34,22 +37,22 @@ public class OrderController {
                            @SessionAttribute UserSessionDto user,
                            Model model) {
         OrderDto order = orderService.getById(id, user);
-        model.addAttribute("order", order);
-        model.addAttribute("isEmployee", true);
+        model.addAttribute(ORDER_ATTRIBUTE_KEY, order);
+        model.addAttribute(IS_EMPLOYEE_ATTRIBUTE_KEY, true);
         return "order/order";
     }
 
     @GetMapping
     public String getOrders(Model model) {
         List<OrderShowingDto> orders = orderService.getOrdersDtoShort();
-        model.addAttribute("orders", orders);
+        model.addAttribute(ORDERS_ATTRIBUTE_KEY, orders);
         return "order/orders";
     }
 
     @GetMapping("/find_by_user")
     public String getByUserForm(Model model) {
         List<UserShowingDto> users = userService.getUsersDtoShort();
-        model.addAttribute("users", users);
+        model.addAttribute(USERS_ATTRIBUTE_KEY, users);
         return "order/filter_orders_by_user";
     }
 
@@ -58,8 +61,8 @@ public class OrderController {
         UserDto userDto = userService.getByLogin(login);
 
         List<OrderShowingDto> orders = orderService.findByUserId(userDto.getId());
-        model.addAttribute("orders", orders);
-        model.addAttribute("isEmployee", true);
+        model.addAttribute(ORDERS_ATTRIBUTE_KEY, orders);
+        model.addAttribute(IS_EMPLOYEE_ATTRIBUTE_KEY, true);
         return "order/user_orders";
     }
 
@@ -68,7 +71,7 @@ public class OrderController {
                                @SessionAttribute UserSessionDto user,
                                RedirectAttributes attributes) {
         orderService.archive(id, user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The order was successfully archived.");
         return "redirect:/orders";
     }
@@ -78,7 +81,7 @@ public class OrderController {
                                @SessionAttribute UserSessionDto user,
                                RedirectAttributes attributes) {
         orderService.approve(id, user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The order was successfully approved.");
         return "redirect:/orders";
     }

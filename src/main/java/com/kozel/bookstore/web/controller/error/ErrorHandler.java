@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static com.kozel.bookstore.util.WebConstants.ERROR_MESSAGE_KEY;
+import static com.kozel.bookstore.util.WebConstants.URL_KEY;
+
 
 @ControllerAdvice(annotations = Controller.class)
 @Slf4j
@@ -35,7 +38,7 @@ public class ErrorHandler {
                                           Model model,
                                           ResourceNotFoundException e){
         log(e);
-        model.addAttribute("url", request.getRequestURI());
+        model.addAttribute(URL_KEY, request.getRequestURI());
         return "error/not_found";
     }
 
@@ -53,7 +56,7 @@ public class ErrorHandler {
                                    Model model,
                                    Exception e){
         log(e);
-        model.addAttribute("url", request.getRequestURI());
+        model.addAttribute(URL_KEY, request.getRequestURI());
         return "error/bad_request";
     }
 
@@ -61,7 +64,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleAuthentificationException (Model model, AuthentificationException e){
         log(e);
-        model.addAttribute("message",
+        model.addAttribute(ERROR_MESSAGE_KEY,
                 "Oops! Incorrect login or password. Please check your login details");
         return "user/login";
     }
@@ -77,7 +80,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleInvalidPasswordException (Model model, InvalidPasswordException e){
         log(e);
-        model.addAttribute("message", e.getMessage());
+        model.addAttribute(ERROR_MESSAGE_KEY, e.getMessage());
         return "user/change_password";
     }
 
@@ -85,7 +88,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public String handleBusinessException (RedirectAttributes attributes, BusinessException e){
         log(e);
-        attributes.addFlashAttribute("message", e.getMessage());
+        attributes.addFlashAttribute(ERROR_MESSAGE_KEY, e.getMessage());
         return "redirect:/books";
     }
 

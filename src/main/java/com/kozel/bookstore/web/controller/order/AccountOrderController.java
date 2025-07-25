@@ -18,6 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 @RequestMapping("/ordered")
 @RequiredArgsConstructor
@@ -29,8 +31,8 @@ public class AccountOrderController {
     @GetMapping
     public String getAccountOrders(@SessionAttribute UserSessionDto user, Model model) {
         List<OrderShowingDto> orders = orderService.findByUserId(user.getId());
-        model.addAttribute("orders", orders);
-        model.addAttribute("isEmployee", false);
+        model.addAttribute(ORDERS_ATTRIBUTE_KEY, orders);
+        model.addAttribute(IS_EMPLOYEE_ATTRIBUTE_KEY, false);
         return "order/user_orders";
     }
 
@@ -40,8 +42,8 @@ public class AccountOrderController {
                            Model model) {
         OrderDto order = orderService.getById(id, user);
 
-        model.addAttribute("order", order);
-        model.addAttribute("isEmployee", false);
+        model.addAttribute(ORDER_ATTRIBUTE_KEY, order);
+        model.addAttribute(IS_EMPLOYEE_ATTRIBUTE_KEY, false);
         return "order/order";
     }
 
@@ -51,8 +53,7 @@ public class AccountOrderController {
         CartDto cartDto = cartService.findByUserId(user.getId());
         OrderDto orderDto = orderService.create(cartDto);
 
-        attributes.addFlashAttribute("order", orderDto);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The order was successfully placed!");
         return "redirect:/ordered/" + orderDto.getId();
     }
@@ -62,7 +63,7 @@ public class AccountOrderController {
                               @SessionAttribute UserSessionDto user,
                               RedirectAttributes attributes) {
         orderService.cancel(id, user);
-        attributes.addFlashAttribute("success",
+        attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The order was successfully cancelled.");
         return "redirect:/ordered";
     }

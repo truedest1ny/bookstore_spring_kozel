@@ -5,13 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.kozel.bookstore.util.WebConstants.*;
+
 @Controller
 public class ServletErrorHandler {
 
     @RequestMapping("/error")
     public String handleError (HttpServletRequest request, Model model){
-        model.addAttribute("status", request.getAttribute("jakarta.servlet.error.status_code"))
-                .addAttribute("reason", request.getAttribute("jakarta.servlet.error.message"));
+        model.addAttribute(ERROR_STATUS_KEY, request.getAttribute("jakarta.servlet.error.status_code"))
+                .addAttribute(ERROR_REASON_KEY, request.getAttribute("jakarta.servlet.error.message"));
             return "error/servlet_error";
     }
 
@@ -28,7 +30,7 @@ public class ServletErrorHandler {
             url = (String) request.getAttribute("jakarta.servlet.error.request_uri");
         }
 
-        model.addAttribute("url", url);
+        model.addAttribute(URL_KEY, url);
         return "error/not_found";
     }
 
