@@ -1,6 +1,8 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.exception.AuthentificationException;
+import com.kozel.bookstore.service.exception.AuthorizationException;
+import com.kozel.bookstore.service.exception.BusinessException;
 import com.kozel.bookstore.service.exception.InvalidPasswordException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @ControllerAdvice(annotations = Controller.class)
@@ -43,14 +46,15 @@ public class ErrorHandler {
         return "error/sql_error";
     }
 
-    @ExceptionHandler
+    @ExceptionHandler ({MethodArgumentTypeMismatchException.class,
+                        IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleTypeMismatchException (HttpServletRequest request,
-                                               Model model,
-                                               MethodArgumentTypeMismatchException e){
+    public String handleBadRequest(HttpServletRequest request,
+                                   Model model,
+                                   Exception e){
         log(e);
         model.addAttribute("url", request.getRequestURI());
-        return "error/incorrect_input";
+        return "error/bad_request";
     }
 
     @ExceptionHandler
@@ -63,12 +67,28 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAuthorizationException (AuthorizationException e){
+        log(e);
+        return "error/forbidden";
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleInvalidPasswordException (Model model, InvalidPasswordException e){
         log(e);
         model.addAttribute("message", e.getMessage());
         return "user/change_password";
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public String handleBusinessException (RedirectAttributes attributes, BusinessException e){
+        log(e);
+        attributes.addFlashAttribute("message", e.getMessage());
+        return "redirect:/books";
+    }
+
 
     private void log(Throwable e) {
         log.error("Error occurred: ", e);

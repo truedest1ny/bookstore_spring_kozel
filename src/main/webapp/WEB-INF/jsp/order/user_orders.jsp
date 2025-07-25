@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orders</title>
+    <title>Orders List</title>
     <link rel="shortcut icon" href="/images/icons/brand_icon.png" />
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
@@ -16,14 +16,12 @@
     <%@ include file="/WEB-INF/jsp/notification.jsp" %>
 
     <div class="container text-center my-5">
-        <p class="display-4">Orders list</p>
-        <p class="lead">The catalog includes a list of orders made by users.</p>
-
-        <c:if test="${not empty sessionScope.user
-                        && sessionScope.user.role.name() ne 'CUSTOMER'}">
-            <a href="/orders/find_by_user" class="btn btn-primary btn-lg">
-                Find orders by user
-            </a>
+        <h1 class="display-4">Orders List</h1>
+        <c:if test="${isEmployee}">
+             <p class="lead">
+                Showing orders for user
+                    <span class="font-weight-bold font-italic">${order.userLogin}</span>
+             </p>
         </c:if>
     </div>
 
@@ -32,8 +30,10 @@
             <tr>
                 <th>#</th>
                 <th>Date</th>
-                <th>User Login</th>
-                <th>Total Price</th>
+                <c:if test="${isEmployee}">
+                    <th>User</th>
+                </c:if>
+                <th>Total</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -43,34 +43,33 @@
                 <tr>
                     <td><c:out value="${order.id}"/></td>
                     <td><c:out value="${order.date}"/></td>
-                    <td><c:out value="${order.userLogin}"/></td>
+                    <c:if test="${isEmployee}">
+                        <td><c:out value="${order.userLogin}"/></td>
+                    </c:if>
                     <td><fmt:formatNumber value="${order.totalPrice}" type="currency" currencyCode="USD"/></td>
                     <td><c:out value="${order.status}"/></td>
                     <td>
-                        <a href="/orders/<c:out value='${order.id}'/>" class="btn btn-outline-primary btn-sm">
-                            Details
-                        </a>
+                        <c:choose>
+                            <c:when test="${isEmployee}">
+                                <a href="/orders/<c:out value='${order.id}'/>" class="btn btn-outline-primary btn-sm">
+                                    Details
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="/ordered/<c:out value='${order.id}'/>" class="btn btn-outline-primary btn-sm">
+                                    Details
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
 
-                        <c:if test="${order.status.name() eq 'PENDING'}">
-                            <form action="/orders/approve/<c:out value="${order.id}"/>"
-                                    method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-outline-success btn-sm">
-                                    Approve order
-                                </button>
-                            </form>
-                        </c:if>
-
-                        <c:if test=
-                            "${order.status.name() eq 'CANCELLED'
-                                    && sessionScope.user.role.name() ne 'MANAGER'}">
-                            <form action="/orders/archive/<c:out value="${order.id}"/>"
+                        <c:if test="${order.userLogin eq sessionScope.user.login && order.status.name() eq 'PENDING'}">
+                            <form action="/ordered/cancel/<c:out value="${order.id}"/>"
                                     method="post" style="display:inline;">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    Archive order
+                                    Cancel order
                                 </button>
                             </form>
                         </c:if>
-
                     </td>
                 </tr>
             </c:forEach>
@@ -78,9 +77,7 @@
     </table>
 
     <div class="container text-center my-5">
-        <a href="/" class="btn btn-secondary btn-lg button-margin">
-            Back to mainpage
-        </a>
+        <a href="/" class="btn btn-secondary btn-lg">Back to Home</a>
     </div>
 </body>
 </html>

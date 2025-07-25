@@ -17,29 +17,37 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository {
 
-    private static final String GET_ALL =
-            "SELECT o FROM Order o";
-    private static final String GET_BY_USER_ID =
-            "SELECT o FROM Order o WHERE o.user.id = :id";
+    private static final String GET_ALL_JOIN_FETCH =
+            "SELECT o FROM Order o " +
+                    "LEFT JOIN FETCH o.items oi " +
+                    "LEFT JOIN FETCH oi.book";
+    private static final String GET_BY_USER_ID_JOIN_FETCH =
+            "SELECT o FROM Order o " +
+                    "LEFT JOIN FETCH o.items oi " +
+                    "LEFT JOIN FETCH o.user ou " +
+                    "LEFT JOIN FETCH oi.book " +
+                    "WHERE o.user.id = :id";
     private static final String COUNT_ALL =
             "SELECT COUNT (o) FROM Order o";
-    private static final String GET_BY_STATUS =
-            "SELECT o FROM Order o Where o.status = :status";
+    private static final String GET_BY_STATUS_JOIN_FETCH =
+            "SELECT o FROM Order o " +
+                    "LEFT JOIN FETCH o.items oi " +
+                    "LEFT JOIN FETCH oi.book " +
+                    "WHERE o.status = :status";
 
     @PersistenceContext
     private EntityManager manager;
 
-
     @Override
     public List<Order> findByUserId(Long userId) {
-        return manager.createQuery(GET_BY_USER_ID, Order.class)
+        return manager.createQuery(GET_BY_USER_ID_JOIN_FETCH, Order.class)
                 .setParameter("id", userId)
                 .getResultList();
     }
 
     @Override
     public List<Order> findByStatus(Order.Status status) {
-        return manager.createQuery(GET_BY_STATUS, Order.class)
+        return manager.createQuery(GET_BY_STATUS_JOIN_FETCH, Order.class)
                 .setParameter("status", status)
                 .getResultList();
     }
@@ -50,9 +58,14 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Order save(Order object) {
-        //TODO Order Save
-        return object;
+    public Order save(Order order) {
+        if (order.getId() != null){
+            manager.merge(order);
+        }
+        else {
+            manager.persist(order);
+        }
+        return order;
     }
 
     @Override
@@ -62,13 +75,13 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public List<Order> findAll() {
-       return manager.createQuery(GET_ALL, Order.class).getResultList();
+       return manager.createQuery(GET_ALL_JOIN_FETCH, Order.class)
+               .getResultList();
     }
-
 
     @Override
-    public void delete(Order object) {
-        //TODO Order Delete
+    public void delete(Order order) {
+        order.setStatus(Order.Status.ARCHIVED);
+        manager.merge(order);
     }
-
 }

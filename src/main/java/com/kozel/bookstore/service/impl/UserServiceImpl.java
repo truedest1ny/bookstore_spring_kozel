@@ -15,10 +15,8 @@ import com.kozel.bookstore.service.dto.UserUpdateDto;
 import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.InvalidPasswordException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,18 +122,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-
-        try {
             UserDto user = dataMapper.toDto(
                     userRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Cannot find user (id = " + id + ")." +
                                     " There is nothing to delete. ")
                     ));
             userRepository.delete(dataMapper.toEntity(user));
-
-        } catch (DataAccessException e){
-            throw new RuntimeException("Cannot delete user (id = " + id + ")", e);
-        }
     }
 
     @Override
@@ -153,7 +145,8 @@ public class UserServiceImpl implements UserService {
 
             if(!hasher.hashPassword(inputtedPassword, userSalt)
                     .equals(userHashedPassword)) {
-             throw new AuthentificationException("Incorrect password for user (" + user.getLogin() + ")");
+             throw new AuthentificationException(
+                     "Incorrect password for user (" + user.getLogin() + ")");
             }
 
             return dataMapper.toDto(user);
@@ -195,12 +188,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    @Override
-    public void logout(HttpSession session) {
-        session.invalidate();
-    }
-
-    
 }
 
 

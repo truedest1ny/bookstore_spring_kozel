@@ -31,6 +31,11 @@ public class UserRepositoryImpl implements UserRepository {
     private EntityManager manager;
 
     @Override
+    public User getReferenceById(Long id) {
+        return manager.getReference(User.class, id);
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, false);

@@ -9,7 +9,6 @@ import com.kozel.bookstore.service.dto.BookShowingDto;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,18 +75,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-        try {
                 BookDto book = dataMapper.toDto(
                         bookRepository.findById(id).orElseThrow(
                                 () -> new RuntimeException("Cannot find book (id = " + id + ")." +
                                         " There is nothing to delete. ")
                         ));
-                book.setDeleted(true);
                 bookRepository.delete(dataMapper.toEntity(book));
-
-        } catch (DataAccessException e){
-            throw new RuntimeException("Cannot delete book (id = " + id + "): ", e);
-        }
     }
 
     @Override

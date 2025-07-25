@@ -18,5 +18,6 @@ public class OrderShowingDto {
         PAID,
         DELIVERED,
         CANCELLED,
+        ARCHIVED,
     }
 }

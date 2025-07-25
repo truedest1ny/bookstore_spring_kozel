@@ -1,7 +1,9 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.data.mapper.DataMapper;
+import com.kozel.bookstore.service.CartService;
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.dto.CartDto;
 import com.kozel.bookstore.service.dto.UserCreateDto;
 import com.kozel.bookstore.service.dto.UserDto;
 import com.kozel.bookstore.service.dto.UserLoginDto;
@@ -21,38 +23,43 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
+    private static final String CART_ATTRIBUTE_KEY = "sessionCart";
+    private static final String USER_ATTRIBUTE_KEY = "user";
+
     private final DataMapper mapper;
-    private final UserService service;
+    private final UserService userService;
+    private final CartService cartService;
 
     @GetMapping("/login")
     public String getLoginPage(HttpSession session, Model model){
         model.addAttribute("warn", session.getAttribute("loginMessage"));
         session.removeAttribute("warn");
+
         return "user/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute UserLoginDto user, HttpServletRequest request){
-        UserDto userDto = service.login(user);
-        HttpSession session = request.getSession();
-        session.setAttribute("user", mapper.toSessionDto(userDto));
+    public String login(@ModelAttribute UserLoginDto user,
+                        HttpServletRequest request,
+                        HttpSession session){
+        UserDto userDto = userService.login(user);
+        CartDto cart = (CartDto) session.getAttribute(CART_ATTRIBUTE_KEY);
+
         request.changeSessionId();
+
+        CartDto mergedCart = cartService.mergeCartToUser(userDto.getId(), cart);
+        session.setAttribute(USER_ATTRIBUTE_KEY, mapper.toSessionDto(userDto));
+        session.setAttribute(CART_ATTRIBUTE_KEY, mergedCart);
+
         return "redirect:/";
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
-        service.logout(session);
-        return "redirect:/";
-    }
-
-    @PostMapping("/register")
-    public String register(@ModelAttribute UserCreateDto user,
-                           RedirectAttributes attributes) {
-        service.create(user);
+    @PostMapping("/logout")
+    public String logout(HttpSession session, RedirectAttributes attributes){
+        session.removeAttribute(USER_ATTRIBUTE_KEY);
+        session.removeAttribute(CART_ATTRIBUTE_KEY);
         attributes.addFlashAttribute("success",
-                "You have successfully registered!" +
-                        " To access the system, use the parameters you specified.");
+                "You have successfully signed out.");
         return "redirect:/";
     }
 
@@ -60,4 +67,16 @@ public class AuthenticationController {
     public String getRegisterForm() {
         return "user/create_user";
     }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute UserCreateDto user,
+                           RedirectAttributes attributes) {
+        userService.create(user);
+        attributes.addFlashAttribute("success",
+                "You have successfully registered!" +
+                        " To access the system, use the parameters you specified.");
+        return "redirect:/";
+    }
+
+
 }

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,8 @@
 
     <c:set var="isEmployee"
         value="${not empty sessionScope.user && sessionScope.user.role.name() ne 'CUSTOMER'}"/>
+    <c:set var="isNotManager" value=
+        "${empty sessionScope.user || (not empty sessionScope.user && sessionScope.user.role.name() ne 'MANAGER')}"/>
 
     <div class="container my-5">
         <div class="text-center">
@@ -35,9 +38,7 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Year</th>
-                    <c:if test="${isEmployee}">
-                        <th colspan="2">Actions</th>
-                    </c:if>
+                    <th colspan="3">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +48,17 @@
                         <td><c:out value="${book.name}"/></td>
                         <td><c:out value="${book.author}"/></td>
                         <td><c:out value="${book.publishedYear}"/></td>
+
+                        <c:if test="${isNotManager}">
+                            <td>
+                                <form action="/cart/add" method="post" class="d-inline">
+                                    <input type="hidden" name="bookId" value="<c:out value='${book.id}'/>"/>
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                            </td>
+                        </c:if>
 
                         <c:if test="${isEmployee}">
                             <td>
@@ -62,6 +74,8 @@
                                 </form>
                             </td>
                         </c:if>
+
+
                     </tr>
                 </c:forEach>
             </tbody>

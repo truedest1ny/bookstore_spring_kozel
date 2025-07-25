@@ -76,10 +76,29 @@ CREATE TABLE IF NOT EXISTS order_items (
 
 	id BIGSERIAL PRIMARY KEY,
 	book_id BIGINT NOT NULL REFERENCES books,
-	quantity BIGINT,
+	quantity INT,
 	price DECIMAL(15,2),
 	order_id BIGINT NOT NULL REFERENCES orders
 );
+
+CREATE TABLE IF NOT EXISTS carts (
+
+	id BIGSERIAL PRIMARY KEY,
+	user_id BIGINT UNIQUE REFERENCES users,
+	total_price DECIMAL(15,2)
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+
+	id BIGSERIAL PRIMARY KEY,
+	book_id BIGINT NOT NULL REFERENCES books,
+	quantity INT,
+	price DECIMAL(15,2),
+	cart_id BIGINT NOT NULL REFERENCES carts
+);
+
+
+
 
 
 

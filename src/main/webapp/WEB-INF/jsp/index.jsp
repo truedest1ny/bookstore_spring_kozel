@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +39,7 @@
                 </div>
             </div>
 
-            <c:if test="${not empty sessionScope.user}">
+            <c:if test="${not empty sessionScope.user && sessionScope.user.role.name() ne 'CUSTOMER'}">
                 <div class="media position-relative" style="width: 180px;">
                     <img src="/images/icons/user_icon.png" class="mr-3 card-icon" alt="User icon" width="100" height="100">
                     <div class="media-body text-left">
@@ -46,12 +47,21 @@
                         <a href="/users" class="stretched-link text-size"></a>
                     </div>
                 </div>
+            </c:if>
 
+            <c:if test="${not empty sessionScope.user}">
                 <div class="media position-relative" style="width: 180px;">
                     <img src="/images/icons/order_icon.png" class="mr-3 card-icon" alt="Order icon" width="100" height="100">
                     <div class="media-body text-left">
                         <h5 class="mt-0 card-title">Orders</h5>
-                        <a href="/orders" class="stretched-link text-size"></a>
+                        <c:choose>
+                            <c:when test="${sessionScope.user.role.name() eq 'CUSTOMER'}">
+                                <a href="/ordered" class="stretched-link text-size"></a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="/orders" class="stretched-link text-size"></a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </c:if>

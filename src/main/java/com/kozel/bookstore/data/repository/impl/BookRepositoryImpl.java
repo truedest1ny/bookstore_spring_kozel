@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,8 @@ public class BookRepositoryImpl implements BookRepository {
 
     private static final String GET_ALL =
             "SELECT b FROM Book b";
+    private static final String GET_ALL_BY_IDS =
+            "SELECT b FROM Book b WHERE b.id IN :ids";
     private static final String DELETE =
             "DELETE FROM Book";
     private static final String COUNT_ALL =
@@ -53,6 +57,23 @@ public class BookRepositoryImpl implements BookRepository {
         List<Book> books = session.createQuery(GET_BY_AUTHOR, Book.class)
                             .setParameter("author", author)
                             .getResultList();
+
+        disableDeletedFilter(session);
+        return books;
+    }
+
+    @Override
+    public List<Book> findAllByIds(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        List<Book> books = session.createQuery(GET_ALL_BY_IDS, Book.class)
+                .setParameter("ids", ids)
+                .getResultList();
 
         disableDeletedFilter(session);
         return books;

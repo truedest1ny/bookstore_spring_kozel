@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class WebAuthenticationFilter extends HttpFilter {
+public class WebAuthenticationFilter
+        extends HttpFilter implements PathMatcher {
 
-    private List<Pattern> publicPathPatterns = new ArrayList<>();
-    private List<Pattern> privatePathPatterns = new ArrayList<>();
-    private List<Pattern> staticResourcePatterns = new ArrayList<>();
-    private List<Pattern> authPaths = new ArrayList<>();
+    private final List<Pattern> publicPathPatterns = new ArrayList<>();
+    private final List<Pattern> privatePathPatterns = new ArrayList<>();
+    private final List<Pattern> staticResourcePatterns = new ArrayList<>();
+    private final List<Pattern> authPaths = new ArrayList<>();
 
     @Override
     public void init(FilterConfig config) throws ServletException {
@@ -78,19 +79,11 @@ public class WebAuthenticationFilter extends HttpFilter {
         String paramValue = config.getInitParameter(paramName);
         if (paramValue != null) {
             for (String pattern : paramValue.split("\\s*,\\s*")) {
-                patterns.add(Pattern.compile(pattern));
+                patterns.add(Pattern.compile(pattern.trim()));
             }
         }
     }
 
-    private boolean isMatchAny(String path, List<Pattern> patterns) {
-        for (Pattern pattern : patterns) {
-            if (pattern.matcher(path).matches()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean isPublicResource(String path){
         return isMatchAny(path, publicPathPatterns);

@@ -28,7 +28,8 @@
                 /,
                 /books, /books/,
                 /books/\d+, /books/\d+/,
-                /register, /register/
+                /register, /register/,
+                ^/cart/.*, ^/cart/?
             </param-value>
         </init-param>
 
@@ -38,6 +39,7 @@
                 /profile, /profile/.*,
                 /logout,
                 /users, /users/.*,
+                /ordered, /ordered/.*,
                 /orders, /orders/.*,
                 /books/add, /books/add/,
                 /books/edit/.*, /books/delete/.*
@@ -85,7 +87,8 @@
             <param-name>adminPaths</param-name>
             <param-value>
                 ^/users/edit/.*,
-                ^/users/add/.*
+                ^/users/add/.*,
+                ^/orders/archive/.*,
             </param-value>
         </init-param>
         <init-param>
@@ -99,7 +102,8 @@
                 ^/books/edit/.*,
                 ^/books/delete/.*,
                 ^/books/add?, ^/books/add/.*,
-                ^/orders/?, ^/orders/.*,
+                ^/orders/?, ^/orders/?,
+                ^/orders/approve/.*,
                 ^/users/?, ^/users/\d+/?
             </param-value>
         </init-param>
@@ -112,13 +116,37 @@
             <param-name>customerPaths</param-name>
             <param-value>
                 ^/profile/.*,
-                ^/orders/my
+                ^/orders/cancel/.*
             </param-value>
         </init-param>
         <init-param>
             <param-name>customerRoles</param-name>
             <param-value>CUSTOMER,MANAGER,ADMIN,SUPER_ADMIN</param-value>
         </init-param>
+
+        <init-param>
+            <param-name>guestAllowedPaths</param-name>
+            <param-value>
+                ^/cart/.*,
+                ^/cart/?
+            </param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>forbiddenPaths</param-name>
+            <param-value>
+                ^/cart/.*,
+                ^/cart/?,
+                ^/ordered,
+                ^/ordered/.*,
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>forbiddenRoles</param-name>
+            <param-value>MANAGER</param-value>
+        </init-param>
+
+
     </filter>
 
     <filter-mapping>
@@ -129,10 +157,15 @@
     <filter-mapping>
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/orders/*</url-pattern>
+        <url-pattern>/ordered</url-pattern>
+        <url-pattern>/ordered/*</url-pattern>
         <url-pattern>/users/*</url-pattern>
         <url-pattern>/books/add/*</url-pattern>
         <url-pattern>/books/\d+/*</url-pattern>
         <url-pattern>/profile/*</url-pattern>
+        <url-pattern>/cart</url-pattern>
+        <url-pattern>/cart/*</url-pattern>
+
     </filter-mapping>
 
 </web-app>

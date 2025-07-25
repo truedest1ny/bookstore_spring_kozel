@@ -6,6 +6,7 @@ import com.kozel.bookstore.service.UserService;
 import com.kozel.bookstore.service.dto.OrderDto;
 import com.kozel.bookstore.service.dto.OrderShowingDto;
 import com.kozel.bookstore.service.dto.UserDto;
+import com.kozel.bookstore.service.dto.UserSessionDto;
 import com.kozel.bookstore.service.dto.UserShowingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -27,11 +30,20 @@ public class OrderController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public String getOrder(@PathVariable long id, Model model) {
-        OrderDto order = orderService.getById(id);
+    public String getOrder(@PathVariable long id,
+                           @SessionAttribute UserSessionDto user,
+                           Model model) {
+        OrderDto order = orderService.getById(id, user);
         model.addAttribute("order", order);
-        model.addAttribute("items", order.getItems());
+        model.addAttribute("isEmployee", true);
         return "order/order";
+    }
+
+    @GetMapping
+    public String getOrders(Model model) {
+        List<OrderShowingDto> orders = orderService.getOrdersDtoShort();
+        model.addAttribute("orders", orders);
+        return "order/orders";
     }
 
     @GetMapping("/find_by_user")
@@ -47,15 +59,27 @@ public class OrderController {
 
         List<OrderShowingDto> orders = orderService.findByUserId(userDto.getId());
         model.addAttribute("orders", orders);
-        model.addAttribute("login", login);
-        return "order/orders_by_user";
+        model.addAttribute("isEmployee", true);
+        return "order/user_orders";
     }
 
-    @GetMapping
-    public String getOrders(Model model) {
-        List<OrderShowingDto> orders = orderService.getOrdersDtoShort();
-        model.addAttribute("orders", orders);
-        return "order/orders";
+    @PostMapping("/archive/{id}")
+    public String archiveOrder(@PathVariable Long id,
+                               @SessionAttribute UserSessionDto user,
+                               RedirectAttributes attributes) {
+        orderService.archive(id, user);
+        attributes.addFlashAttribute("success",
+                "The order was successfully archived.");
+        return "redirect:/orders";
     }
 
+    @PostMapping("/approve/{id}")
+    public String approveOrder(@PathVariable Long id,
+                               @SessionAttribute UserSessionDto user,
+                               RedirectAttributes attributes) {
+        orderService.approve(id, user);
+        attributes.addFlashAttribute("success",
+                "The order was successfully approved.");
+        return "redirect:/orders";
+    }
 }

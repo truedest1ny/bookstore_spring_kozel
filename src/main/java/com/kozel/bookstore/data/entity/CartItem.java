@@ -11,17 +11,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "cart_items")
 
 @Getter
 @Setter
-public class OrderItem {
+@ToString
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,14 +40,14 @@ public class OrderItem {
     private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        OrderItem item = (OrderItem) o;
+        CartItem item = (CartItem) o;
         return getId() != null && Objects.equals(getId(), item.getId());
     }
 
@@ -54,14 +56,4 @@ public class OrderItem {
         return Objects.hash(getId());
     }
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }
 }
-
-

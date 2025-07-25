@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +45,10 @@
                     <td><c:out value="${user.role}"/></td>
                     <td>
                         <c:if test="${isNotManager}">
-                            <a href="/users/edit/<c:out value='${user.id}'/>" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="/users/edit/<c:out value='${user.id}'/>"
+                                    class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
                         </c:if>
                     </td>
                     <td>

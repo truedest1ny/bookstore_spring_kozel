@@ -177,57 +177,8 @@ VALUES
             ('PENDING'),
             ('PAID'),
             ('CANCELLED'),
-            ('DELIVERED');
-
-        INSERT INTO orders (user_id, date, status_id, price) VALUES
-          ((SELECT id FROM users WHERE login = 'RoadTrip'), '2023-10-01', (SELECT id FROM statuses WHERE enum_value = 'PENDING'), 125.00),
-          ((SELECT id FROM users WHERE login = 'RoadTrip'), '2023-10-02', (SELECT id FROM statuses WHERE enum_value = 'PENDING'), 10.00),
-          ((SELECT id FROM users WHERE login = 'sadyboyyyy'), '2023-10-03', (SELECT id FROM statuses WHERE enum_value = 'PENDING'), 72.00),
-          ((SELECT id FROM users WHERE login = 'NEMBERTATE'), '2023-10-04', (SELECT id FROM statuses WHERE enum_value = 'PAID'), 14.00),
-          ((SELECT id FROM users WHERE login = 'NEMBERTATE'), '2023-10-05', (SELECT id FROM statuses WHERE enum_value = 'PAID'), 34.00),
-          ((SELECT id FROM users WHERE login = 'NEMBERTATE'), '2023-11-01', (SELECT id FROM statuses WHERE enum_value = 'PAID'), 22.50),
-          ((SELECT id FROM users WHERE login = 'vebm765'), '2023-10-23', (SELECT id FROM statuses WHERE enum_value = 'DELIVERED'), 101.00),
-          ((SELECT id FROM users WHERE login = 'revolution64'), '2023-12-14', (SELECT id FROM statuses WHERE enum_value = 'DELIVERED'), 345.00),
-          ((SELECT id FROM users WHERE login = 'GhostRider'), '2023-12-16', (SELECT id FROM statuses WHERE enum_value = 'DELIVERED'), 12.00),
-          ((SELECT id FROM users WHERE login = 'GhostRider'), '2024-10-14', (SELECT id FROM statuses WHERE enum_value = 'DELIVERED'), 7.00),
-          ((SELECT id FROM users WHERE login = 'farmer'), '2023-10-26', (SELECT id FROM statuses WHERE enum_value = 'CANCELLED'), 13.00),
-          ((SELECT id FROM users WHERE login = 'Vm443x'), '2023-10-01', (SELECT id FROM statuses WHERE enum_value = 'CANCELLED'), 250.00);
-
-
-
-        INSERT INTO order_items (order_id, book_id, quantity, price) VALUES
-            (1, (SELECT id FROM books WHERE isbn = '9781212326534'), 1, 10.06),
-            (1, (SELECT id FROM books WHERE isbn = '9783454327554'), 2, 39.99),
-            (1, (SELECT id FROM books WHERE isbn = '9781332336537'), 1, 44.55),
-            (1, (SELECT id FROM books WHERE isbn = '9781213216516'), 1, 199.99),
-            (2, (SELECT id FROM books WHERE isbn = '9781232452387'), 1, 40.02),
-            (2, (SELECT id FROM books WHERE isbn = '9787855663312'), 3, 52.12),
-            (3, (SELECT id FROM books WHERE isbn = '9784523996556'), 1, 79.99),
-            (4, (SELECT id FROM books WHERE isbn = '9781213561795'), 2, 12.16),
-            (5, (SELECT id FROM books WHERE isbn = '9781213256452'), 1, 15.99),
-            (5, (SELECT id FROM books WHERE isbn = '9781212326534'), 1, 18.99),
-            (5, (SELECT id FROM books WHERE isbn = '9781212388512'), 1, 22.50),
-            (5, (SELECT id FROM books WHERE isbn = '9783454327554'), 2, 25.00),
-            (5, (SELECT id FROM books WHERE isbn = '9781732344511'), 1, 30.99),
-            (6, (SELECT id FROM books WHERE isbn = '9787855663312'), 1, 20.00),
-            (6, (SELECT id FROM books WHERE isbn = '9785665788799'), 1, 19.99),
-            (6, (SELECT id FROM books WHERE isbn = '9781213561795'), 2, 14.50),
-            (7, (SELECT id FROM books WHERE isbn = '9784564231667'), 1, 24.99),
-            (7, (SELECT id FROM books WHERE isbn = '9781364327811'), 1, 29.99),
-            (7, (SELECT id FROM books WHERE isbn = '9781213256452'), 1, 35.99),
-            (7, (SELECT id FROM books WHERE isbn = '9784555633311'), 1, 27.50),
-            (8, (SELECT id FROM books WHERE isbn = '9781332336537'), 1, 12.99),
-            (8, (SELECT id FROM books WHERE isbn = '9781213216516'), 2, 16.99),
-            (8, (SELECT id FROM books WHERE isbn = '9781232452387'), 1, 23.00),
-            (8, (SELECT id FROM books WHERE isbn = '9784564231667'), 1, 28.50),
-            (9, (SELECT id FROM books WHERE isbn = '9781732344511'), 2, 21.75),
-            (10, (SELECT id FROM books WHERE isbn = '9781332336537'), 1, 15.25),
-            (10, (SELECT id FROM books WHERE isbn = '9784555633311'), 1, 18.75),
-            (11, (SELECT id FROM books WHERE isbn = '9781332745888'), 2, 22.25),
-            (11, (SELECT id FROM books WHERE isbn = '9784523996556'), 1, 17.50),
-            (11, (SELECT id FROM books WHERE isbn = '9781213561795'), 1, 26.00),
-            (12, (SELECT id FROM books WHERE isbn = '9781732451222'), 2, 29.95),
-            (12, (SELECT id FROM books WHERE isbn = '9781213256452'), 1, 31.99);
+            ('DELIVERED'),
+            ('ARCHIVED');
 
 
 
