@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,20 +33,22 @@
         <table class="table table-position wide-table">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Title</th>
                     <th>Author</th>
                     <th>Year</th>
+                    <th>Price</th>
                     <th colspan="3">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach items="${books}" var="book">
+                <c:forEach items="${books}" var="book" varStatus="counter">
                     <tr>
-                        <td><a href="/books/<c:out value='${book.id}'/>"><c:out value="${book.id}"/></a></td>
+                        <td><a href="/books/<c:out value='${book.id}'/>"><c:out value="${counter.index + 1}"/></a></td>
                         <td><c:out value="${book.name}"/></td>
                         <td><c:out value="${book.author}"/></td>
                         <td><c:out value="${book.publishedYear}"/></td>
+                        <td><fmt:formatNumber value="${book.price}" type="currency" currencyCode="USD"/></td>
 
                         <c:if test="${isNotManager}">
                             <td>

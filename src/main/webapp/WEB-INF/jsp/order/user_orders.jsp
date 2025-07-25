@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +40,7 @@
         <tbody>
             <c:forEach items="${orders}" var="order" varStatus="counter">
                 <tr>
-                    <td><c:out value="${order.id}"/></td>
+                    <td><c:out value="${counter.index + 1}"/></td>
                     <td><c:out value="${order.date}"/></td>
                     <c:if test="${isEmployee}">
                         <td><c:out value="${order.userLogin}"/></td>

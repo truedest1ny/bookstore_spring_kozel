@@ -120,6 +120,7 @@ public class DataMapperImpl implements DataMapper {
         bookShowingDto.setName(bookEntity.getName());
         bookShowingDto.setAuthor(bookEntity.getAuthor());
         bookShowingDto.setPublishedYear(bookEntity.getPublishedYear());
+        bookShowingDto.setPrice(bookEntity.getPrice());
         return bookShowingDto;
     }
 

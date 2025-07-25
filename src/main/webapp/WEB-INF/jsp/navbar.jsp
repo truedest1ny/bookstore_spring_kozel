@@ -1,3 +1,5 @@
+<%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
+
 <c:set var="cartTotalPrice" value="${0}" />
 
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">

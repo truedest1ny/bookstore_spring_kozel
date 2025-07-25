@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,26 +12,21 @@
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
-    <div class="error-container text-center">
-        <div class="img-align my-4">
-            <img src="/images/icons/error_403_icon.png"
-                 width="170"
-                 height="170"
-                 alt="Access Forbidden Icon"
-                 class="img-fluid" />
-        </div>
+    <div class="img-align">
+        <img src="/images/icons/error_403_icon.png"
+             width="130"
+             height="130"
+             alt="Access Forbidden Icon" />
+    </div>
 
-        <div class="container">
-            <h1 class="display-1 text-margin mb-3">Access Denied</h1>
-            <p class="display-6 text-muted mb-4">
-                You don't have permission to access this page. Please contact your administrator.
-            </p>
-            <div class="d-grid gap-2 col-md-6 mx-auto">
-                <a href="/" class="btn btn-secondary btn-lg">
-                    Return to Homepage
-                </a>
-            </div>
-        </div>
+    <div class="container text-center my-5"> <%-- Установлен my-5 --%>
+        <p class="display-1">Access Denied :(</p>
+        <p class="display-6"> <%-- Заменен text-muted на display-6 --%>
+            You don't have permission to access this page. Please contact your administrator.
+        </p>
+        <a href="/" class="btn btn-secondary btn-lg mt-3">
+            Back to mainpage
+        </a>
     </div>
 </body>
 </html>

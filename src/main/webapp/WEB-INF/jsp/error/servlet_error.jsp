@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,22 +12,25 @@
 <body>
     <%@ include file="/WEB-INF/jsp/navbar.jsp" %>
 
-    <div class="img-align text-center my-4">
+    <div class="img-align">
         <img src="/images/icons/error_500_icon.png"
              width="130"
              height="130"
              alt="Server Error" />
     </div>
 
-    <div class="container text-center my-4">
-        <h1 class="display-4 mb-4">Error :(</h1>
-        <div class="error-details mb-4">
-            <p class="lead">Something went wrong with the server:</p>
+    <div class="container text-center my-5">
+        <p class="display-1">Error :(</p>
+        <p class="display-6">
+            Something went wrong with the server. Please try again later.
+        </p>
+        <c:if test="${not empty status}">
             <p class="lead"><strong>Status:</strong> <c:out value="${status}"/></p>
-            <c:if test="${not empty reason}">
-                <p class="lead"><strong>Reason:</strong> <c:out value="${reason}"/></p>
-            </c:if>
-        </div>
+        </c:if>
+        <c:if test="${not empty reason}">
+            <p class="lead"><strong>Reason:</strong> <c:out value="${reason}"/></p>
+        </c:if>
+
         <a href="/" class="btn btn-secondary btn-lg mt-3">
             Back to mainpage
         </a>
