@@ -1,7 +1,7 @@
 package com.kozel.bookstore.service;
 
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.CartDto;
+import com.kozel.bookstore.service.dto.book.BookDto;
+import com.kozel.bookstore.service.dto.cart.CartDto;
 
 import java.util.List;
 

@@ -2,9 +2,9 @@ package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.BookService;
 import com.kozel.bookstore.service.CartService;
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.CartDto;
-import com.kozel.bookstore.service.dto.UserSessionDto;
+import com.kozel.bookstore.service.dto.book.BookDto;
+import com.kozel.bookstore.service.dto.cart.CartDto;
+import com.kozel.bookstore.service.dto.user.UserSessionDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

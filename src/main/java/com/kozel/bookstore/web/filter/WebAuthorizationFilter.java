@@ -1,6 +1,6 @@
 package com.kozel.bookstore.web.filter;
 
-import com.kozel.bookstore.service.dto.UserSessionDto;
+import com.kozel.bookstore.service.dto.user.UserSessionDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;

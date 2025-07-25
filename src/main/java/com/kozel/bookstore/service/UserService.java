@@ -1,11 +1,11 @@
 package com.kozel.bookstore.service;
 
-import com.kozel.bookstore.service.dto.UserChangePasswordDto;
-import com.kozel.bookstore.service.dto.UserCreateDto;
-import com.kozel.bookstore.service.dto.UserDto;
-import com.kozel.bookstore.service.dto.UserLoginDto;
-import com.kozel.bookstore.service.dto.UserShowingDto;
-import com.kozel.bookstore.service.dto.UserUpdateDto;
+import com.kozel.bookstore.service.dto.user.UserChangePasswordDto;
+import com.kozel.bookstore.service.dto.user.UserCreateDto;
+import com.kozel.bookstore.service.dto.user.UserDto;
+import com.kozel.bookstore.service.dto.user.UserLoginDto;
+import com.kozel.bookstore.service.dto.user.UserShowingDto;
+import com.kozel.bookstore.service.dto.user.UserUpdateDto;
 
 import java.util.List;
 

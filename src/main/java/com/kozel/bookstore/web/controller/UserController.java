@@ -1,10 +1,10 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserCreateDto;
-import com.kozel.bookstore.service.dto.UserDto;
-import com.kozel.bookstore.service.dto.UserShowingDto;
-import com.kozel.bookstore.service.dto.UserUpdateDto;
+import com.kozel.bookstore.service.dto.user.UserCreateDto;
+import com.kozel.bookstore.service.dto.user.UserDto;
+import com.kozel.bookstore.service.dto.user.UserShowingDto;
+import com.kozel.bookstore.service.dto.user.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

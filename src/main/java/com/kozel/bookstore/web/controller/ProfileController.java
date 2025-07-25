@@ -1,10 +1,10 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.UserService;
-import com.kozel.bookstore.service.dto.UserChangePasswordDto;
-import com.kozel.bookstore.service.dto.UserDto;
-import com.kozel.bookstore.service.dto.UserSessionDto;
-import com.kozel.bookstore.service.dto.UserUpdateDto;
+import com.kozel.bookstore.service.dto.user.UserChangePasswordDto;
+import com.kozel.bookstore.service.dto.user.UserDto;
+import com.kozel.bookstore.service.dto.user.UserSessionDto;
+import com.kozel.bookstore.service.dto.user.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

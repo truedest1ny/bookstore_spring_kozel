@@ -1,4 +1,4 @@
-package com.kozel.bookstore.web.controller;
+package com.kozel.bookstore.web.controller.error;
 
 import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.AuthorizationException;

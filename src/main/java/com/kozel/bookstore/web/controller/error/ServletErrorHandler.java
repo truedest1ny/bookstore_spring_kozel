@@ -1,4 +1,4 @@
-package com.kozel.bookstore.web.controller;
+package com.kozel.bookstore.web.controller.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;

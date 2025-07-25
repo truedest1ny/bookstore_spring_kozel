@@ -1,4 +1,4 @@
-package com.kozel.bookstore.service.dto;
+package com.kozel.bookstore.service.dto.order;
 
 import lombok.Data;
 

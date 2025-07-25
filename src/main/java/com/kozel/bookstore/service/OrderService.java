@@ -1,10 +1,10 @@
 package com.kozel.bookstore.service;
 
 
-import com.kozel.bookstore.service.dto.CartDto;
-import com.kozel.bookstore.service.dto.OrderDto;
-import com.kozel.bookstore.service.dto.OrderShowingDto;
-import com.kozel.bookstore.service.dto.UserSessionDto;
+import com.kozel.bookstore.service.dto.cart.CartDto;
+import com.kozel.bookstore.service.dto.order.OrderDto;
+import com.kozel.bookstore.service.dto.order.OrderShowingDto;
+import com.kozel.bookstore.service.dto.user.UserSessionDto;
 
 import java.util.List;
 

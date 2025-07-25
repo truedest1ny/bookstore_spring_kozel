@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface BookRepository extends CrudRepository<Long, Book> {
     Optional<Book> findByIsbn(String isbn);
-    public List<Book> findAllByIds(Collection<Long> ids);
+    List<Book> findAllByIds(Collection<Long> ids);
     List<Book> findByAuthor(String author);
     long countAll();
     void clearDeletedRows();

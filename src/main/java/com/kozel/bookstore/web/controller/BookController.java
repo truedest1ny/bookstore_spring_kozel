@@ -1,8 +1,8 @@
 package com.kozel.bookstore.web.controller;
 
 import com.kozel.bookstore.service.BookService;
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.BookShowingDto;
+import com.kozel.bookstore.service.dto.book.BookDto;
+import com.kozel.bookstore.service.dto.book.BookShowingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

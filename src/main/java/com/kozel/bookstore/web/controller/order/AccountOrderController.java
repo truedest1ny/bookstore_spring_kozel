@@ -1,11 +1,11 @@
-package com.kozel.bookstore.web.controller;
+package com.kozel.bookstore.web.controller.order;
 
 import com.kozel.bookstore.service.CartService;
 import com.kozel.bookstore.service.OrderService;
-import com.kozel.bookstore.service.dto.CartDto;
-import com.kozel.bookstore.service.dto.OrderDto;
-import com.kozel.bookstore.service.dto.OrderShowingDto;
-import com.kozel.bookstore.service.dto.UserSessionDto;
+import com.kozel.bookstore.service.dto.cart.CartDto;
+import com.kozel.bookstore.service.dto.order.OrderDto;
+import com.kozel.bookstore.service.dto.order.OrderShowingDto;
+import com.kozel.bookstore.service.dto.user.UserSessionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
