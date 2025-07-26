@@ -29,105 +29,73 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final DataMapper dataMapper;
+    private final DataMapper mapper;
     private final Hasher hasher;
 
 
     @Override
     public List<UserDto> getAll() {
-
         log.debug("Called getAll() method");
-
-        return userRepository.findAll()
-                .stream()
-                .map(dataMapper::toDto)
-                .toList();
+        return mapper.toUserDtoList(
+                userRepository.findAll());
     }
 
     @Override
     public List<UserShowingDto> getUsersDtoShort() {
-
         log.debug("Called getUsersDtoShort() method");
-
-        return userRepository.findAll()
-                .stream()
-                .map(dataMapper::toShortedDto)
-                .toList();
+        return mapper.toUserShowingDtoList(
+                userRepository.findAll());
     }
 
     @Override
     public UserDto getById(Long id) {
             log.debug("Called getById() method");
-
             User user = userRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Cannot find user by id " + id)
             );
-            return dataMapper.toDto(user);
+            return mapper.toDto(user);
     }
 
     @Override
     public UserDto getByLogin(String login) {
+        log.debug("Called getByLogin() method");
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new ResourceNotFoundException("No user with such login (" + login +").")
         );
-        return dataMapper.toDto(user);
+        return mapper.toDto(user);
     }
 
     @Override
     public UserDto create(UserCreateDto userCreateDto) {
-
         log.debug("Called create() method");
 
-        User entity = new User();
+        User newUser = collectNewUser(userCreateDto);
+        User savedUser = userRepository.save(newUser);
 
-        entity.setEmail(userCreateDto.getEmail());
-        entity.setLogin(userCreateDto.getLogin());
-
-
-        entity.setRole(User.Role.CUSTOMER);
-
-
-        UserHash hash = new UserHash();
-
-        String salt = hasher.generateSalt();
-        String password = userCreateDto.getPassword();
-
-        String hashedPassword = hasher.hashPassword(password, salt);
-
-        hash.setSalt(salt);
-        hash.setHashedPassword(hashedPassword);
-
-        entity.setHash(hash);
-        hash.setUser(entity);
-
-        User user = userRepository.save(entity);
-
-        return dataMapper.toDto(user);
-
+        return mapper.toDto(savedUser);
     }
 
     @Override
     public UserDto update(UserUpdateDto dto) {
-
         log.debug("Called update() method");
 
         User user = userRepository.findById(dto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User " + dto.getId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User " + dto.getId() + " not found for update"));
 
-        dataMapper.mapToEntity(dto, user);
+        mapper.mapToEntity(dto, user);
 
-        return dataMapper.toDto(userRepository.save(user));
+        return mapper.toDto(
+                userRepository.save(user));
     }
 
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-            UserDto user = dataMapper.toDto(
-                    userRepository.findById(id).orElseThrow(
+            User userToDisable = userRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Cannot find user (id = " + id + ")." +
-                                    " There is nothing to delete. ")
-                    ));
-            userRepository.delete(dataMapper.toEntity(user));
+                                    " Nothing to delete. "));
+            userRepository.delete(userToDisable);
     }
 
     @Override
@@ -149,9 +117,10 @@ public class UserServiceImpl implements UserService {
                      "Incorrect password for user (" + user.getLogin() + ")");
             }
 
-            return dataMapper.toDto(user);
+            return mapper.toDto(user);
     }
 
+    @Override
     public void changePassword(UserChangePasswordDto changePasswordDto){
         User user = userRepository.findById(changePasswordDto.getId()).orElseThrow(
                 () -> new ResourceNotFoundException(
@@ -188,6 +157,23 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    private User collectNewUser(UserCreateDto userCreateDto) {
+        User newUser = mapper.toEntity(userCreateDto);
+        newUser.setRole(User.Role.CUSTOMER);
+
+        UserHash hash = new UserHash();
+
+        String salt = hasher.generateSalt();
+        String password = userCreateDto.getPassword();
+        String hashedPassword = hasher.hashPassword(password, salt);
+
+        hash.setSalt(salt);
+        hash.setHashedPassword(hashedPassword);
+
+        newUser.setHash(hash);
+        hash.setUser(newUser);
+        return newUser;
+    }
 }
 
 

@@ -1,7 +1,6 @@
 package com.kozel.bookstore.service.impl;
 
 import com.kozel.bookstore.data.entity.Cart;
-import com.kozel.bookstore.data.entity.CartItem;
 import com.kozel.bookstore.data.entity.Order;
 import com.kozel.bookstore.data.entity.OrderItem;
 import com.kozel.bookstore.data.mapper.DataMapper;
@@ -38,31 +37,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getAll() {
         log.debug("Called getAll() method");
-
-        return orderRepository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+        return mapper.toOrderDtoList(
+                orderRepository.findAll());
     }
 
     @Override
     public List<OrderShowingDto> getOrdersDtoShort() {
         log.debug("Called getOrdersDtoShort() method");
-
-        return orderRepository.findAll()
-                .stream()
-                .map(mapper::toShortedDto)
-                .toList();
+        return mapper.toOrderShowingDtoList(
+                orderRepository.findAll());
     }
 
     @Override
     public List<OrderShowingDto> findByUserId(Long userId) {
         log.debug("Called findByUserId() method");
-
-        return orderRepository.findByUserId(userId)
-                .stream()
-                .map(mapper::toShortedDto)
-                .toList();
+        return mapper.toOrderShowingDtoList(
+                orderRepository.findByUserId(userId));
     }
 
     @Override
@@ -74,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
             );
 
         validateOrderAffiliation(user, order);
-
         return mapper.toDto(order);
     }
 
@@ -92,7 +81,9 @@ public class OrderServiceImpl implements OrderService {
                     "Cannot create an order from an empty cart.");
         }
 
-        Order order = fillCreatedOrder(cart);
+        Order order = mapper.toOrder(cart);
+        order.setDate(LocalDateTime.now());
+        updateOrderTotalPrice(order);
         Order savedOrder = orderRepository.save(order);
 
         cartRepository.deleteItemsByCartId(cart.getId());
@@ -209,28 +200,6 @@ public class OrderServiceImpl implements OrderService {
         if (!order.getUser().getId().equals(user.getId())) {
             throw new AuthorizationException(
                     "Access Denied: You do not have permission to view this order.");
-        }
-    }
-
-    private Order fillCreatedOrder(Cart cart) {
-        Order order = new Order();
-        order.setUser(cart.getUser());
-        order.setStatus(Order.Status.PENDING);
-        order.setDate(LocalDateTime.now());
-
-        setOrderItemFromCart(cart, order);
-        updateOrderTotalPrice(order);
-        return order;
-    }
-
-    private void setOrderItemFromCart(Cart cart, Order order) {
-        for (CartItem cartItem : cart.getItems()) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setBook(cartItem.getBook());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getPrice());
-
-            order.addItem(orderItem);
         }
     }
 

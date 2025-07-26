@@ -88,7 +88,7 @@ public class CartServiceImpl implements CartService {
         updateCartTotalPrice(newCart);
 
         Cart savedCart = cartRepository.save(newCart);
-        return mapper.toDto(savedCart, cartDto.getUserId());
+        return mapper.toDto(savedCart);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class CartServiceImpl implements CartService {
         updateCartTotalPrice(existingCart);
 
         Cart savedCart = cartRepository.save(existingCart);
-        return mapper.toDto(savedCart, savedCart.getUser().getId());
+        return mapper.toDto(savedCart);
 
     }
 
@@ -154,7 +154,7 @@ public class CartServiceImpl implements CartService {
         updateCartTotalPrice(cart);
 
         Cart savedCart = cartRepository.save(cart);
-        return mapper.toDto(savedCart, userId);
+        return mapper.toDto(savedCart);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class CartServiceImpl implements CartService {
         updateCartTotalPrice(cart);
 
         Cart savedCart = cartRepository.save(cart);
-        return mapper.toDto(savedCart, userId);
+        return mapper.toDto(savedCart);
     }
 
 
@@ -251,7 +251,7 @@ public class CartServiceImpl implements CartService {
         updateCartTotalPrice(userCartInDb);
 
         cartRepository.save(userCartInDb);
-        return mapper.toDto(userCartInDb, userId);
+        return mapper.toDto(userCartInDb);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class CartServiceImpl implements CartService {
                     cartRepository.deleteItemsByCartId(cart.getId());
                     cart.setTotalPrice(BigDecimal.ZERO);
                     Cart savedCart = cartRepository.save(cart);
-                    return mapper.toDto(savedCart, userId);
+                    return mapper.toDto(savedCart);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Cart for user (" + userId + ")not found for clearing"));

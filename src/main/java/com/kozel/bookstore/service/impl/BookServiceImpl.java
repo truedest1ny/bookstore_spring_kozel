@@ -22,26 +22,21 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final DataMapper dataMapper;
+    private final DataMapper mapper;
 
     @Override
     public List<BookDto> getAll() {
         log.debug("Called getAll() method");
 
-        return bookRepository.findAll()
-                .stream()
-                .map(dataMapper::toDto)
-                .toList();
+        return mapper.toBookDtoList(
+                bookRepository.findAll());
     }
 
     @Override
     public List<BookShowingDto> getBooksDtoShort() {
         log.debug("Called getBooksDtoShort() method");
-
-        return bookRepository.findAll()
-                .stream()
-                .map(dataMapper::toShortedDto)
-                .toList();
+        return mapper.toBookShowingDtoList(
+                bookRepository.findAll());
     }
 
     @Override
@@ -50,37 +45,44 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Cannot find book by id " + id)
             );
-
-            return dataMapper.toDto(book);
+            return mapper.toDto(book);
     }
 
     @Override
     public BookDto create(BookDto bookDto) {
         log.debug("Called create() method");
 
-        Book entity = dataMapper.toEntity(bookDto);
-        Book savedBook = bookRepository.save(entity);
-        return dataMapper.toDto(savedBook);
+        Book createtBook = mapper.toEntity(bookDto);
+        Book savedBook = bookRepository.save(createtBook);
+        return mapper.toDto(savedBook);
     }
 
     @Override
     public BookDto update(BookDto bookDto) {
         log.debug("Called update() method");
 
-        Book entity = dataMapper.toEntity(bookDto);
-        Book savedBook = bookRepository.save(entity);
-        return dataMapper.toDto(savedBook);
+        if (bookDto.getId() == null) {
+            throw new IllegalArgumentException(
+                    "Book ID must be provided for update operation.");
+        }
+
+        Book existingBook = bookRepository.findById(bookDto.getId()).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "Book not found for update with ID: " + bookDto.getId()));
+
+        mapper.updateEntityFromDto(bookDto, existingBook);
+        Book updatedBook = bookRepository.save(existingBook);
+        return mapper.toDto(updatedBook);
     }
 
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-                BookDto book = dataMapper.toDto(
-                        bookRepository.findById(id).orElseThrow(
+
+        Book existingBook =  bookRepository.findById(id).orElseThrow(
                                 () -> new RuntimeException("Cannot find book (id = " + id + ")." +
-                                        " There is nothing to delete. ")
-                        ));
-                bookRepository.delete(dataMapper.toEntity(book));
+                                        " There is nothing to delete. "));
+        bookRepository.delete(existingBook);
     }
 
     @Override
@@ -90,7 +92,7 @@ public class BookServiceImpl implements BookService {
         BigDecimal SumPrice = BigDecimal.valueOf(0);
         List<BookDto> bookDtos = bookRepository.findByAuthor(author)
                 .stream()
-                .map(dataMapper::toDto)
+                .map(mapper::toDto)
                 .toList();
         if (bookDtos.isEmpty())
         {
