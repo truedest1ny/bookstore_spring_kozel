@@ -1,8 +1,6 @@
 package com.kozel.bookstore.web.controller.order;
 
-import com.kozel.bookstore.service.CartService;
 import com.kozel.bookstore.service.OrderService;
-import com.kozel.bookstore.service.dto.cart.CartDto;
 import com.kozel.bookstore.service.dto.order.OrderDto;
 import com.kozel.bookstore.service.dto.order.OrderShowingDto;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
@@ -26,7 +24,6 @@ import static com.kozel.bookstore.util.WebConstants.*;
 public class AccountOrderController {
 
     private final OrderService orderService;
-    private final CartService cartService;
 
     @GetMapping
     public String getAccountOrders(@SessionAttribute UserSessionDto user, Model model) {
@@ -50,8 +47,7 @@ public class AccountOrderController {
     @PostMapping("/add")
     public String addOrder(@SessionAttribute UserSessionDto user,
                            RedirectAttributes attributes) {
-        CartDto cartDto = cartService.findByUserId(user.getId());
-        OrderDto orderDto = orderService.create(cartDto);
+        OrderDto orderDto = orderService.create(user.getId());
 
         attributes.addFlashAttribute(SUCCESS_MESSAGE_KEY,
                 "The order was successfully placed!");

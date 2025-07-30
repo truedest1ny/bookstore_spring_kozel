@@ -24,6 +24,7 @@ public class CartRepositoryImpl implements CartRepository {
             "SELECT c FROM Cart c " +
                     "LEFT JOIN FETCH c.items ci " +
                     "LEFT JOIN FETCH ci.book " +
+                    "LEFT JOIN FETCH c.user " +
                     "WHERE c.user.id = :id";
     private static final String COUNT_ALL =
             "SELECT COUNT (c) FROM Cart c";

@@ -17,10 +17,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository {
 
+    private static final String GET_BY_ID_JOIN_FETCH =
+            "SELECT o FROM Order o " +
+                    "LEFT JOIN FETCH o.items oi " +
+                    "LEFT JOIN FETCH oi.book " +
+                    "LEFT JOIN FETCH o.user " +
+                    "WHERE o.id = :id";
     private static final String GET_ALL_JOIN_FETCH =
             "SELECT o FROM Order o " +
                     "LEFT JOIN FETCH o.items oi " +
-                    "LEFT JOIN FETCH oi.book";
+                    "LEFT JOIN FETCH oi.book " +
+                    "LEFT JOIN FETCH o.user";
     private static final String GET_BY_USER_ID_JOIN_FETCH =
             "SELECT o FROM Order o " +
                     "LEFT JOIN FETCH o.items oi " +
@@ -70,7 +77,9 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Optional<Order> findById(Long id) {
-        return Optional.ofNullable(manager.find(Order.class, id));
+        return Optional.of(manager.createQuery(GET_BY_ID_JOIN_FETCH, Order.class)
+                .setParameter("id", id)
+                .getSingleResult());
     }
 
     @Override

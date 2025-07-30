@@ -7,7 +7,6 @@ import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.CartRepository;
 import com.kozel.bookstore.data.repository.OrderRepository;
 import com.kozel.bookstore.service.OrderService;
-import com.kozel.bookstore.service.dto.cart.CartDto;
 import com.kozel.bookstore.service.dto.order.OrderDto;
 import com.kozel.bookstore.service.dto.order.OrderShowingDto;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
@@ -68,13 +67,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto create(CartDto cartDto) {
+    public OrderDto create(Long userId) {
         log.debug("Called create() method");
 
-        Cart cart = cartRepository.findByUserId(cartDto.getUserId())
+
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Cart not found with user ID: " + cartDto.getUserId()));
+                                "Cart not found with user ID: " + userId));
 
         if (cart.getItems().isEmpty()) {
             throw new BusinessException(
