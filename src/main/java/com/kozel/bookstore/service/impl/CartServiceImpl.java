@@ -84,7 +84,17 @@ public class CartServiceImpl implements CartService {
         User user = userRepository.getReferenceById(cartDto.getUserId());
         newCart.setUser(user);
 
-        initializeCartItems(cartDto, newCart);
+        if (cartDto.getItems() != null && !cartDto.getItems().isEmpty()) {
+            Map<Long, Book> bookMap = loadBooksForCartItems(cartDto.getItems());
+            CartProcessingContext contextForCreate = new CartProcessingContext(
+                    getBookIds(cartDto.getItems()),
+                    bookMap,
+                    Collections.emptyMap()
+            );
+            for (CartItemDto itemDto : cartDto.getItems()) {
+                processItemAdding(itemDto, contextForCreate, newCart);
+            }
+        }
         updateCartTotalPrice(newCart);
 
         Cart savedCart = cartRepository.save(newCart);
@@ -106,32 +116,11 @@ public class CartServiceImpl implements CartService {
         CartProcessingContext cartProcessingContext =
                 getContext(cartDto, existingCart);
 
-        List<CartItem> itemsToRemove = existingCart.getItems().stream()
-                .filter(existingItem ->
-                        !cartProcessingContext.bookIds().contains(existingItem.getBook().getId()))
-                .toList();
-
-        itemsToRemove.forEach(existingCart::removeItem);
+        existingCart.getItems().removeIf(existingItem ->
+                !cartProcessingContext.bookIds().contains(existingItem.getBook().getId()));
 
         for (CartItemDto itemDto : cartDto.getItems()) {
-
-            Long bookId = itemDto.getBook().getId();
-            Book book = cartProcessingContext.loadedBooksMap().get(bookId);
-
-            if (book == null) {
-                throw new ResourceNotFoundException(
-                        "Book with ID " + bookId + " not found for cart item update.");
-            }
-
-            CartItem existingItem = cartProcessingContext.existingItemsMap().get(bookId);
-
-            if (existingItem != null) {
-                existingItem.setQuantity(itemDto.getQuantity());
-                existingItem.setPrice(
-                        book.getPrice().multiply(BigDecimal.valueOf(itemDto.getQuantity())));
-            } else {
-                collectCartItem(itemDto, book, existingCart);
-            }
+            processItemAdding(itemDto, cartProcessingContext, existingCart);
         }
 
         updateCartTotalPrice(existingCart);
@@ -149,6 +138,10 @@ public class CartServiceImpl implements CartService {
                         "Cart for user ID " + userId + " not found."));
 
         CartItem itemToRemove = getExistingItem(bookId, cart);
+        if (itemToRemove == null) {
+            throw new ResourceNotFoundException(
+                    "Item with book ID " + bookId + " was not found in cart with user ID " + userId);
+        }
         cart.removeItem(itemToRemove);
 
         updateCartTotalPrice(cart);
@@ -176,16 +169,8 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Book not found with ID: " + bookId));
 
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseGet(() -> {
-                    Cart newCart = new Cart();
-                    newCart.setUser(userRepository.getReferenceById(userId));
-                    return cartRepository.save(newCart);
-                });
-
-        CartItem existingItem = getExistingItem(bookId, cart);
-
-        addOrUpdateCartItem(quantity, existingItem, book, cart);
+        Cart cart = getOrCreateCart(userId);
+        updateOrCollectCartItem(book, cart, quantity);
         updateCartTotalPrice(cart);
 
         Cart savedCart = cartRepository.save(cart);
@@ -229,23 +214,7 @@ public class CartServiceImpl implements CartService {
         CartProcessingContext cartProcessingContext = getContext(cartDto, userCartInDb);
 
         for (CartItemDto cartItemDto : cartDto.getItems()) {
-            Long bookId = cartItemDto.getBook().getId();
-
-            Book book = cartProcessingContext.loadedBooksMap().get(bookId);
-            if (book == null) {
-                throw new ResourceNotFoundException(
-                        "Book with ID " + bookId + " was not found during cart merging.");
-            }
-
-            CartItem userCartItem = cartProcessingContext.existingItemsMap().get(bookId);
-
-            if (userCartItem != null) {
-                userCartItem.setQuantity(userCartItem.getQuantity() + cartItemDto.getQuantity());
-                userCartItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(userCartItem.getQuantity())));
-
-            } else {
-                collectCartItem(cartItemDto, book, userCartInDb);
-            }
+            processItemAdding(cartItemDto, cartProcessingContext, userCartInDb);
         }
 
         updateCartTotalPrice(userCartInDb);
@@ -265,25 +234,22 @@ public class CartServiceImpl implements CartService {
                     return mapper.toDto(savedCart);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cart for user (" + userId + ")not found for clearing"));
+                        "Cart for user (" + userId + ") was not found for clearing"));
     }
 
     private CartItem getExistingItem(Long bookId, Cart cart) {
-        CartItem item = null;
-        for (CartItem cartItem : cart.getItems()) {
-            if (cartItem.getBook().getId().equals(bookId)) {
-                item = cartItem;
-                break;
-            }
-        }
-        return item;
+        return cart.getItems().stream()
+                .filter(cartItem -> cartItem.getBook().getId().equals(bookId))
+                .findFirst()
+                .orElse(null);
     }
 
-    private void addOrUpdateCartItem(int quantity, CartItem existingItem, Book book, Cart cart) {
+    private void updateOrCollectCartItem(Book book, Cart cart, int quantity) {
+        CartItem existingItem = getExistingItem(book.getId(), cart);
+
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
-            existingItem.setPrice(
-                    book.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+            existingItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
         } else {
             CartItem newCartItem = new CartItem();
             newCartItem.setBook(book);
@@ -293,22 +259,16 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    private void initializeCartItems(CartDto cartDto, Cart newCart) {
-        if (cartDto.getItems() == null || cartDto.getItems().isEmpty()) {
-            return;
+    private void processItemAdding(CartItemDto cartItemDto,
+                                   CartProcessingContext cartProcessingContext,
+                                   Cart targetCart) {
+        Long bookId = cartItemDto.getBook().getId();
+        Book book = cartProcessingContext.loadedBooksMap().get(bookId);
+        if (book == null) {
+            throw new ResourceNotFoundException(
+                    "Book with ID " + bookId + " was not found during cart process.");
         }
-
-        Map<Long, Book> bookMap = loadBooksForCartItems(cartDto.getItems());
-
-        for (CartItemDto itemDto : cartDto.getItems()) {
-            Book book = bookMap.get(itemDto.getBook().getId());
-            if (book == null) {
-                throw new ResourceNotFoundException(
-                        "Book with ID " + itemDto.getBook().getId() + " not found for new cart item.");
-            }
-            collectCartItem(itemDto, book, newCart);
-        }
-
+        updateOrCollectCartItem(book, targetCart, cartItemDto.getQuantity());
     }
 
     private void updateOrCollectCartItemDto(CartDto cart, BookDto book, int quantity) {
@@ -322,16 +282,12 @@ public class CartServiceImpl implements CartService {
             }
         }
         if (!isFoundItem) {
-            collectCartItemDto(cart, book, quantity);
+            CartItemDto newItem = new CartItemDto();
+            newItem.setBook(book);
+            newItem.setQuantity(quantity);
+            newItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
+            cart.getItems().add(newItem);
         }
-    }
-
-    private void collectCartItemDto(CartDto cart, BookDto book, int quantity) {
-        CartItemDto newItem = new CartItemDto();
-        newItem.setBook(book);
-        newItem.setQuantity(quantity);
-        newItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
-        cart.getItems().add(newItem);
     }
 
     private Cart getOrCreateCart(Long userId) {
@@ -387,13 +343,5 @@ public class CartServiceImpl implements CartService {
                 .map(CartItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         existingCart.setTotalPrice(newTotalPrice);
-    }
-
-    private void collectCartItem(CartItemDto cartItemDto, Book book, Cart userCartInDb) {
-        CartItem newCartItem = new CartItem();
-        newCartItem.setBook(book);
-        newCartItem.setQuantity(cartItemDto.getQuantity());
-        newCartItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(cartItemDto.getQuantity())));
-        userCartInDb.addItem(newCartItem);
     }
 }
