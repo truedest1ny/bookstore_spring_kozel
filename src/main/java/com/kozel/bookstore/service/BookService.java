@@ -1,7 +1,7 @@
 package com.kozel.bookstore.service;
 
-import com.kozel.bookstore.service.dto.BookDto;
-import com.kozel.bookstore.service.dto.BookShowingDto;
+import com.kozel.bookstore.service.dto.book.BookDto;
+import com.kozel.bookstore.service.dto.book.BookShowingDto;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,17 +1,19 @@
 package com.kozel.bookstore.data.entity;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Converter;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Filter;
 
@@ -25,7 +27,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,8 +45,10 @@ public class User {
     @Column(name = "login", updatable = false)
     private String login;
 
-    @Column(name = "password")
-    private String password;
+    @OneToOne(mappedBy = "user",
+            cascade = {CascadeType.PERSIST},
+            fetch = FetchType.LAZY)
+    private UserHash hash;
 
     @Convert(converter = RoleConverter.class)
     @Column(name = "role_id", nullable = false)
@@ -71,7 +74,20 @@ public class User {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", login='" + login + '\'' +
+                ", role=" + role +
+                ", isDeleted=" + isDeleted +
+                '}';
     }
 
     @Converter

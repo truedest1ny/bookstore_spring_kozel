@@ -16,51 +16,50 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
 
 @Getter
 @Setter
-@ToString
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "date")
+    @Column(name = "date", updatable = false)
     private LocalDateTime date;
 
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany (cascade = CascadeType.ALL,
-                fetch = FetchType.EAGER,
-                orphanRemoval = true)
-    @JoinColumn (name = "order_id")
-    private List<OrderItem> items;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    private Set<OrderItem> items = new HashSet<>();
 
     @Convert(converter = StatusConverter.class)
     @Column(name = "status_id", nullable = false)
     private Status status;
 
     @Column(name = "price")
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     public enum Status {
         PENDING,
         PAID,
         CANCELLED,
         DELIVERED,
+        ARCHIVED,
     }
 
     @Override
@@ -73,7 +72,29 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", date=" + date +
+                ", status=" + status +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+
+    public void addItem(OrderItem item) {
+        this.getItems().add(item);
+        item.setOrder(this);
+    }
+
+    public void removeItem(OrderItem item) {
+        if (getItems().contains(item)) {
+            getItems().remove(item);
+            item.setOrder(null);
+        }
     }
 
     @Converter
@@ -89,6 +110,7 @@ public class Order {
                 case PAID -> 2L;
                 case CANCELLED -> 3L;
                 case DELIVERED -> 4L;
+                case ARCHIVED -> 5L;
             };
         }
 
@@ -105,6 +127,8 @@ public class Order {
                 return Status.CANCELLED;
             } else if (dbData.equals(4L)) {
                 return Status.DELIVERED;
+            } else if (dbData.equals(5L)) {
+                return Status.ARCHIVED;
             } else {
                 throw new IllegalArgumentException("Not found status by id: " + dbData);
             }

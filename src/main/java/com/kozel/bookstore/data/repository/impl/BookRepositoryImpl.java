@@ -4,25 +4,33 @@ import com.kozel.bookstore.data.entity.Book;
 import com.kozel.bookstore.data.repository.BookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
 
     private static final String GET_ALL =
             "SELECT b FROM Book b";
+    private static final String GET_ALL_BY_IDS =
+            "SELECT b FROM Book b WHERE b.id IN :ids";
     private static final String DELETE =
             "DELETE FROM Book";
     private static final String COUNT_ALL =
             "SELECT COUNT(b) from Book b";
     private static final String GET_BY_AUTHOR =
             "SELECT b FROM Book b WHERE b.author = :author";
+    private static final String GET_BY_ISBN =
+            "SELECT b FROM Book b WHERE b.isbn = :isbn";
 
     @PersistenceContext
     private EntityManager manager;
@@ -32,11 +40,13 @@ public class BookRepositoryImpl implements BookRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, false);
 
-        Optional<Book> book = Optional.ofNullable(
-                session.find(Book.class, isbn));
+        List<Book> books = session.createQuery(GET_BY_ISBN,Book.class)
+                .setParameter("isbn", isbn)
+                .setMaxResults(1)
+                .getResultList();
 
         disableDeletedFilter(session);
-        return book;
+        return books.stream().findFirst();
     }
 
     @Override
@@ -47,6 +57,23 @@ public class BookRepositoryImpl implements BookRepository {
         List<Book> books = session.createQuery(GET_BY_AUTHOR, Book.class)
                             .setParameter("author", author)
                             .getResultList();
+
+        disableDeletedFilter(session);
+        return books;
+    }
+
+    @Override
+    public List<Book> findAllByIds(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Session session = manager.unwrap(Session.class);
+        activateDeletedFilter(session, false);
+
+        List<Book> books = session.createQuery(GET_ALL_BY_IDS, Book.class)
+                .setParameter("ids", ids)
+                .getResultList();
 
         disableDeletedFilter(session);
         return books;
@@ -68,7 +95,7 @@ public class BookRepositoryImpl implements BookRepository {
         Session session = manager.unwrap(Session.class);
         activateDeletedFilter(session, true);
 
-        session.createQuery(DELETE, Book.class);
+        session.createQuery(DELETE, Book.class).executeUpdate();
 
         disableDeletedFilter(session);
     }

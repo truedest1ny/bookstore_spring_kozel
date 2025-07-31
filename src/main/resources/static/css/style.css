@@ -1,0 +1,307 @@
+/* Background styles */
+body {
+    background: url(/images/background.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Message styles */
+.fade-out {
+    animation: fadeOut 5s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+/* Cart Styles */
+.table tfoot {
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-top: 2px solid #dee2e6;
+}
+
+.table tfoot td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.table tfoot td:nth-last-child(2) {
+    text-align: right;
+}
+
+.table tfoot .clear-cart-btn-cell {
+    text-align: center;
+}
+
+.action-buttons-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.action-buttons-container .btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.table-position {
+    margin-bottom: 0;
+}
+
+.display-5.mb-4 {
+    font-size: 1.75rem;
+    margin-bottom: 2.5rem !important;
+}
+
+.table th:first-child,
+.table td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.table th:last-child,
+.table td:last-child {
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Card Styles */
+.card-icon {
+    margin-bottom: 1.3rem;
+}
+
+.card-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+/* Layout and positioning */
+.box {
+    display: flex;
+    justify-content: center;
+}
+
+.box-margin {
+    margin-left: 4em;
+}
+
+.container-position {
+    width: 45%;
+}
+
+.img-align {
+    margin-top: 3em;
+    text-align: center;
+}
+
+.form-position {
+    max-width: 40%;
+}
+
+.profile-container {
+    padding: 2rem;
+    text-align: center;
+}
+
+.form-check {
+    padding-left: 6rem;
+}
+
+.form-check-input {
+    margin-left: 1em;
+    margin-right: 0.5rem;
+}
+
+/* Table styles */
+table {
+    margin: auto;
+}
+
+.table-position {
+    width: 60%;
+    margin: auto;
+    opacity: 0.8;
+}
+
+.profile-table {
+    background-color: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    border-collapse: collapse;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.profile-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-table tr:last-child td {
+    border-bottom: none;
+}
+
+.wide-table {
+    width: 87%;
+    margin: 0 auto;
+}
+
+/* Cell alignment */
+th,
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.profile-label {
+    font-weight: 600;
+    color: #495057;
+    width: 30%;
+}
+
+.profile-value {
+    color: #212529;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-label {
+    min-width: 180px;
+    margin-bottom: 0;
+    padding-right: 15px;
+}
+
+.form-control-container {
+    flex: 1;
+}
+
+.password-rules {
+    font-size: 0.6rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Order form section styles */
+.order-form-section {
+    background-color: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: 600px;
+    margin: 1.5rem auto 0 auto;
+    padding: 1.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    text-align: left;
+}
+
+.order-form-section h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #343a40;
+}
+
+.order-form-section .form-inline-custom {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.order-form-section .form-label-custom {
+    margin-right: 15px;
+    font-weight: 600;
+    color: #495057;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.order-form-section .form-group-custom {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 15px;
+    margin-bottom: 0;
+}
+
+.order-form-section .form-control {
+    width: 100%;
+    max-width: 100px;
+    text-align: center;
+}
+
+.order-form-section .btn {
+    flex-shrink: 0;
+}
+
+/* Button styles */
+.button-margin {
+    margin: 0.5rem;
+    margin-top: 4em;
+    margin-bottom: 4em;
+}
+
+.button-padding {
+    padding: 1.5em;
+    padding-top: 15px;
+}
+
+.btn-password {
+    width: 80px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Text styles */
+.font-weight-bold {
+    font-weight: bold !important;
+}
+
+.font-italic {
+    font-style: italic !important;
+}
+
+.text-font-size {
+    font-size: 28px;
+}
+
+.top-text-size {
+    font-size: 37px;
+}
+
+.sign-up-label {
+    font-size: 19px;
+}
+
+.label-text-size {
+    font-size: 17px;
+}
+
+.help-text-size {
+    font-size: 11px;
+}
+
+.login-error-style {
+    font-size: 15px;
+    color: red;
+}
+
+/* Spacing utilities */
+.element-padding {
+    padding: 0.3em;
+}
