@@ -53,6 +53,7 @@ public class CartServiceImpl implements CartService {
                 () -> new ResourceNotFoundException(
                         "Cannot find cart by id " + id)
         );
+        updateCartTotalPrice(cart);
         return mapper.toDto(cart);
     }
 
@@ -60,6 +61,7 @@ public class CartServiceImpl implements CartService {
     public CartDto findOrCreateByUserId(Long userId) {
         log.debug("Called findOrCreateByUserId() method");
         Cart cart = getOrCreateCart(userId);
+        updateCartTotalPrice(cart);
         return mapper.toDto(cart);
     }
 
@@ -69,6 +71,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByUserId(userId).orElseThrow(() ->
                 new ResourceNotFoundException(
                         "Cart with user ID " + userId + " was not found!"));
+        updateCartTotalPrice(cart);
         return mapper.toDto(cart);
     }
 
@@ -196,6 +199,11 @@ public class CartServiceImpl implements CartService {
         log.debug("Called updateCartTotalPrice() method");
         BigDecimal cartTotalPrice = BigDecimal.ZERO;
         for (CartItemDto item : cart.getItems()) {
+            if (item.getBook() != null && item.getBook().getPrice() != null) {
+                BigDecimal currentItemPrice = item.getBook().getPrice()
+                                                .multiply(BigDecimal.valueOf(item.getQuantity()));
+                item.setPrice(currentItemPrice);
+            }
             cartTotalPrice = cartTotalPrice.add(item.getPrice());
         }
         cart.setTotalPrice(cartTotalPrice);
@@ -339,9 +347,15 @@ public class CartServiceImpl implements CartService {
 
 
     private void updateCartTotalPrice(Cart existingCart) {
-        BigDecimal newTotalPrice = existingCart.getItems().stream()
-                .map(CartItem::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal newTotalPrice = BigDecimal.ZERO;
+        for (CartItem item : existingCart.getItems()) {
+            if (item.getBook() != null && item.getBook().getPrice() != null) {
+                BigDecimal currentItemPrice = item.getBook().getPrice()
+                                        .multiply(BigDecimal.valueOf(item.getQuantity()));
+                item.setPrice(currentItemPrice);
+            }
+            newTotalPrice = newTotalPrice.add(item.getPrice());
+        }
         existingCart.setTotalPrice(newTotalPrice);
     }
 }
