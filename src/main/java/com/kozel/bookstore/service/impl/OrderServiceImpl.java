@@ -1,6 +1,7 @@
 package com.kozel.bookstore.service.impl;
 
 import com.kozel.bookstore.data.entity.Cart;
+import com.kozel.bookstore.data.entity.CartItem;
 import com.kozel.bookstore.data.entity.Order;
 import com.kozel.bookstore.data.entity.OrderItem;
 import com.kozel.bookstore.data.mapper.DataMapper;
@@ -83,6 +84,17 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = mapper.toOrder(cart);
         order.setDate(LocalDateTime.now());
+        for (OrderItem orderItem : order.getItems()) {
+            CartItem correspondingCartItem = cart.getItems().stream()
+                    .filter(ci -> ci.getBook().getId().equals(orderItem.getBook().getOriginalBookId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Cart item was not for book with ID " +
+                                    orderItem.getBook().getOriginalBookId()));
+            BigDecimal itemLinePrice = correspondingCartItem.getBook().getPrice()
+                                        .multiply(new BigDecimal(orderItem.getQuantity()));
+            orderItem.setPrice(itemLinePrice);
+        }
         updateOrderTotalPrice(order);
         Order savedOrder = orderRepository.save(order);
 

@@ -5,6 +5,7 @@ import com.kozel.bookstore.data.entity.Cart;
 import com.kozel.bookstore.data.entity.CartItem;
 import com.kozel.bookstore.data.entity.Order;
 import com.kozel.bookstore.data.entity.OrderItem;
+import com.kozel.bookstore.data.entity.OrderedBook;
 import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.service.dto.book.BookDto;
 import com.kozel.bookstore.service.dto.book.BookShowingDto;
@@ -69,15 +70,7 @@ public interface DataMapper {
     OrderDto toDto(Order entity);
     List<OrderDto> toOrderDtoList(List<Order> entities);
 
-    @Mapping(target = "user", source = "dto.user")
-    @Mapping(target = "items", source = "dto.items")
-    @Mapping(target = "totalPrice", ignore = true)
-    Order toEntity (OrderDto dto);
-
     OrderItemDto toDto(OrderItem orderItem);
-
-    @Mapping(target = "order", ignore = true)
-    OrderItem toEntity(OrderItemDto orderItemDto);
 
     @Mapping(target = "userLogin", source = "entity.user.login")
     OrderShowingDto toShortedDto(Order entity);
@@ -88,20 +81,34 @@ public interface DataMapper {
             "java(entity.getUser() != null ? entity.getUser().getId() : null)")
     CartDto toDto(Cart entity);
 
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "totalPrice", ignore = true)
-    Cart toEntity(CartDto dto);
-
     CartItemDto toDto(CartItem cartItem);
-
-    @Mapping(target = "book", ignore = true)
-    @Mapping(target = "cart", ignore = true)
-    @Mapping(target = "price", ignore = true)
-    CartItem toEntity(CartItemDto cartItemDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "order", ignore = true)
+    @Mapping(target = "book", source = "cartItem.book")
+    @Mapping(target = "price", ignore = true)
     OrderItem toOrderItem (CartItem cartItem);
+
+    @Mapping(target = "orderItemId", ignore = true)
+    @Mapping(target = "orderItem", ignore = true)
+    @Mapping(target = "originalBookId", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "author", source = "author")
+    @Mapping(target = "isbn", source = "isbn")
+    @Mapping(target = "publishedYear", source = "publishedYear")
+    @Mapping(target = "priceAtOrder", source = "price")
+    OrderedBook toOrderedBook(Book book);
+
+    @Mapping(target = "id", source = "originalBookId")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "author", source = "author")
+    @Mapping(target = "isbn", source = "isbn")
+    @Mapping(target = "publishedYear", source = "publishedYear")
+    @Mapping(target = "price", source = "priceAtOrder")
+    @Mapping(target = "cover", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    BookDto toBookDto(OrderedBook orderedBook);
+
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true)

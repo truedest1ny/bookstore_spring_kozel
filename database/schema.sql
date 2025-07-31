@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS statuses(
 
 );
 
-
 CREATE TABLE IF NOT EXISTS orders (
 
 	id BIGSERIAL PRIMARY KEY,
@@ -75,7 +74,6 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE TABLE IF NOT EXISTS order_items (
 
 	id BIGSERIAL PRIMARY KEY,
-	book_id BIGINT NOT NULL REFERENCES books,
 	quantity INT,
 	price DECIMAL(15,2),
 	order_id BIGINT NOT NULL REFERENCES orders
@@ -97,6 +95,15 @@ CREATE TABLE IF NOT EXISTS cart_items (
 	cart_id BIGINT NOT NULL REFERENCES carts
 );
 
+CREATE TABLE IF NOT EXISTS ordered_books (
+    order_item_id BIGINT PRIMARY KEY REFERENCES order_items,
+    original_book_id BIGINT NOT NULL REFERENCES books,
+    name VARCHAR(255),
+    author VARCHAR(255),
+    isbn VARCHAR(255),
+    published_year INT,
+    price_at_order NUMERIC(15, 2)
+);
 
 
 
