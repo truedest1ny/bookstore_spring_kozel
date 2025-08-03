@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             User userToDisable = userRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Cannot find user (id = " + id + ")." +
                                     " Nothing to delete. "));
-            userRepository.delete(userToDisable);
+            userRepository.softDelete(userToDisable.getId());
     }
 
     @Override

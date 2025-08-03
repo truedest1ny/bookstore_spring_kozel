@@ -5,6 +5,8 @@ import jakarta.persistence.Persistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -16,9 +18,10 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @ComponentScan
+@EnableJpaRepositories(basePackages = "com.kozel.bookstore.data.repository")
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 public class AppConfig extends WebMvcConfigurationSupport {
-
 
     @Bean
     public EntityManagerFactory entityManagerFactory(){
@@ -39,7 +42,6 @@ public class AppConfig extends WebMvcConfigurationSupport {
         resolver.setViewClass(JstlView.class);
         return resolver;
     }
-
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -38,14 +38,14 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getAll() {
         log.debug("Called getAll() method");
         return mapper.toOrderDtoList(
-                orderRepository.findAll());
+                orderRepository.findAllWithDetails());
     }
 
     @Override
     public List<OrderShowingDto> getOrdersDtoShort() {
         log.debug("Called getOrdersDtoShort() method");
         return mapper.toOrderShowingDtoList(
-                orderRepository.findAll());
+                orderRepository.findAllWithDetails());
     }
 
     @Override
@@ -153,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
                         + orderToArchive.getStatus() + ").");
             }
 
-            orderRepository.delete(orderToArchive);
+            orderRepository.softDelete(orderToArchive.getId(), Order.Status.ARCHIVED);
     }
 
     @Override
