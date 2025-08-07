@@ -12,7 +12,7 @@ public interface CartService {
     CartDto findByUserId(Long userId);
     CartDto create(CartDto cartDto);
     CartDto update(CartDto cartDto);
-    void delete(CartDto cartDto);
+    void delete(Long id);
     void addItemToCart(CartDto cart, BookDto book, int quantity);
     CartDto addItemToUserCart(Long userId, Long bookId, int quantity);
     CartDto removeItemFromUserCart(Long userId, Long bookId);

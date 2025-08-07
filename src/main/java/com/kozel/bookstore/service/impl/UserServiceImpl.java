@@ -92,10 +92,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void disable(Long id) {
         log.debug("Called disable() method");
-            User userToDisable = userRepository.findById(id).orElseThrow(
-                            () -> new RuntimeException("Cannot find user (id = " + id + ")." +
-                                    " Nothing to delete. "));
-            userRepository.softDelete(userToDisable.getId());
+        if (!userRepository.existsById(id)){
+            throw  new RuntimeException("Cannot find user (id = " + id + ")." +
+                    " Nothing to delete. ");
+        }
+            userRepository.softDelete(id);
     }
 
     @Override

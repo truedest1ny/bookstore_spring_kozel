@@ -81,10 +81,11 @@ public class BookServiceImpl implements BookService {
     public void disable(Long id) {
         log.debug("Called disable() method");
 
-        Book existingBook = bookRepository.findById(id).orElseThrow(
-                                () -> new RuntimeException("Cannot find book (id = " + id + ")." +
-                                        " There is nothing to delete. "));
-        bookRepository.softDelete(existingBook.getId());
+        if (!bookRepository.existsById(id)){
+           throw  new RuntimeException("Cannot find book (id = " + id + ")." +
+                    " There is nothing to delete. ");
+        }
+        bookRepository.softDelete(id);
     }
 
     @Override

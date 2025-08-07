@@ -154,16 +154,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void delete(CartDto cartDto) {
+    public void delete(Long cartId) {
         log.debug("Called delete() method");
-        if (cartDto.getId() == null) {
+        if (cartId == null) {
             throw new IllegalArgumentException(
                     "Cart ID must be provided for delete operation.");
         }
-        Cart cartToDelete = cartRepository.findById(cartDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cart not found for delete with ID: " + cartDto.getId()));
-        cartRepository.delete(cartToDelete);
+
+        if (!cartRepository.existsById(cartId)) {
+            throw  new RuntimeException(
+                    "Cart not found for delete with ID: " + cartId);
+        }
+        cartRepository.deleteById(cartId);
     }
 
     @Override
