@@ -22,7 +22,9 @@ import com.kozel.bookstore.service.dto.user.UserUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -67,11 +69,15 @@ public interface DataMapper {
     BookShowingDto toShortedDto(Book bookEntity);
     List<BookShowingDto> toBookShowingDtoList(List<Book> bookEntities);
 
+    @Named("toDto")
+    @Mapping(target = "formattedDate", ignore = true)
     OrderDto toDto(Order entity);
     List<OrderDto> toOrderDtoList(List<Order> entities);
 
     OrderItemDto toDto(OrderItem orderItem);
 
+    @Named("toShortedDto")
+    @Mapping(target = "formattedDate", ignore = true)
     @Mapping(target = "userLogin", source = "entity.user.login")
     OrderShowingDto toShortedDto(Order entity);
 
@@ -117,5 +123,26 @@ public interface DataMapper {
     @Mapping(target = "user", source = "cart.user")
     @Mapping(target = "items", source = "cart.items")
     Order toOrder (Cart cart);
+
+    default OrderDto mapOrderToDtoWithDate(Order entity) {
+        OrderDto dto = toDto(entity);
+
+        if (dto.getDate() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            dto.setFormattedDate(dto.getDate().format(formatter));
+        }
+
+        return dto;
+    }
+
+    default OrderShowingDto mapOrderToShortedDtoWithDate(Order entity) {
+        OrderShowingDto dto = toShortedDto(entity);
+
+        if (dto.getDate() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            dto.setFormattedDate(dto.getDate().format(formatter));
+        }
+        return dto;
+    }
 
 }

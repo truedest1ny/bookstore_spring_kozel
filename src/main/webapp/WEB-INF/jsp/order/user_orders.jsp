@@ -45,7 +45,7 @@
             <c:forEach items="${page.content}" var="order" varStatus="counter">
                 <tr>
                     <td><c:out value="${page.number * page.size + counter.index + 1}"/></td>
-                    <td><c:out value="${order.date}"/></td>
+                    <td><c:out value="${order.formattedDate}"/></td>
                     <c:if test="${isEmployee}">
                         <td><c:out value="${order.userLogin}"/></td>
                     </c:if>

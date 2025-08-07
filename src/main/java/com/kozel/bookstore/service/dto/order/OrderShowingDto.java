@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class OrderShowingDto {
     private Long id;
     private LocalDateTime date;
+    private String formattedDate;
     private String userLogin;
     private OrderShowingDto.Status status;
     private BigDecimal totalPrice;

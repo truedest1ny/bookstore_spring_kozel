@@ -39,21 +39,21 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderDto> getAll(Pageable pageable) {
         log.debug("Called getAll() method");
         return orderRepository.findAllWithDetails(pageable)
-                .map(mapper::toDto);
+                .map(mapper::mapOrderToDtoWithDate);
     }
 
     @Override
     public Page<OrderShowingDto> getOrdersDtoShort(Pageable pageable) {
         log.debug("Called getOrdersDtoShort() method");
         return orderRepository.findAllWithDetails(pageable)
-                .map(mapper::toShortedDto);
+                .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
     public Page<OrderShowingDto> findByUserId(Pageable pageable, Long userId) {
         log.debug("Called findByUserId() method");
         return orderRepository.findByUserId(pageable, userId)
-                .map(mapper::toShortedDto);
+                .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
             );
 
         validateOrderAffiliation(user, order);
-        return mapper.toDto(order);
+        return mapper.mapOrderToDtoWithDate(order);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         cart.setTotalPrice(BigDecimal.ZERO);
         cartRepository.save(cart);
 
-        return mapper.toDto(savedOrder);
+        return mapper.mapOrderToDtoWithDate(savedOrder);
     }
 
 
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
 
         updateOrderTotalPrice(existingOrder);
         Order savedOrder = orderRepository.save(existingOrder);
-        return mapper.toDto(savedOrder);
+        return mapper.mapOrderToDtoWithDate(savedOrder);
     }
 
     @Override

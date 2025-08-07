@@ -28,7 +28,7 @@
                 <tbody>
                     <tr>
                         <td class="font-weight-bold">Date:</td>
-                        <td><c:out value='${order.date}'/></td>
+                        <td><c:out value='${order.formattedDate}'/></td>
                     </tr>
                     <c:if test="${isEmployee}">
                         <tr>

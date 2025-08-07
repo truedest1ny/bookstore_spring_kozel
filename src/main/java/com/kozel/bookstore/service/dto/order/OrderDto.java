@@ -12,6 +12,7 @@ import java.util.Set;
 public class OrderDto {
     private Long id;
     private LocalDateTime date;
+    private String formattedDate;
     private UserDto user;
     private Set<OrderItemDto> items = new HashSet<>();
     private Status status;
