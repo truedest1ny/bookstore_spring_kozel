@@ -2,11 +2,11 @@ package com.kozel.bookstore.service;
 
 import com.kozel.bookstore.service.dto.book.BookDto;
 import com.kozel.bookstore.service.dto.cart.CartDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CartService {
-    List<CartDto> getAll();
+    Page<CartDto> getAll(Pageable pageable);
     CartDto getById(Long id);
     CartDto findOrCreateByUserId(Long userId);
     CartDto findByUserId(Long userId);

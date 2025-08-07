@@ -7,11 +7,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -19,9 +21,11 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @ComponentScan
 @EnableJpaRepositories(basePackages = "com.kozel.bookstore.data.repository")
+@EnableSpringDataWebSupport
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
-public class AppConfig extends WebMvcConfigurationSupport {
+@EnableWebMvc
+public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public EntityManagerFactory entityManagerFactory(){
@@ -44,7 +48,7 @@ public class AppConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("css/**", "images/**", "js/**")
                 .addResourceLocations("classpath:/static/css/", "classpath:/static/images/", "classpath:/static/js/");
     }

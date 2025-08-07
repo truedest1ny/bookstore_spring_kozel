@@ -16,12 +16,13 @@ import com.kozel.bookstore.service.exception.BusinessException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Transactional
@@ -35,24 +36,24 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderDto> getAll() {
+    public Page<OrderDto> getAll(Pageable pageable) {
         log.debug("Called getAll() method");
-        return mapper.toOrderDtoList(
-                orderRepository.findAllWithDetails());
+        return orderRepository.findAllWithDetails(pageable)
+                .map(mapper::toDto);
     }
 
     @Override
-    public List<OrderShowingDto> getOrdersDtoShort() {
+    public Page<OrderShowingDto> getOrdersDtoShort(Pageable pageable) {
         log.debug("Called getOrdersDtoShort() method");
-        return mapper.toOrderShowingDtoList(
-                orderRepository.findAllWithDetails());
+        return orderRepository.findAllWithDetails(pageable)
+                .map(mapper::toShortedDto);
     }
 
     @Override
-    public List<OrderShowingDto> findByUserId(Long userId) {
+    public Page<OrderShowingDto> findByUserId(Pageable pageable, Long userId) {
         log.debug("Called findByUserId() method");
-        return mapper.toOrderShowingDtoList(
-                orderRepository.findByUserId(userId));
+        return orderRepository.findByUserId(pageable, userId)
+                .map(mapper::toShortedDto);
     }
 
     @Override

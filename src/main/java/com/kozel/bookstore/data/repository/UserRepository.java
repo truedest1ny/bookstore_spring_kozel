@@ -2,12 +2,13 @@ package com.kozel.bookstore.data.repository;
 
 import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.repository.annotation.QueryDeletedFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>{
@@ -15,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByEmail(String email);
 
     @QueryDeletedFilter(isDeleted = false)
-    List<User> findByLastName(String lastName);
+    Page<User> findByLastName(@NonNull Pageable pageable, String lastName);
 
     @QueryDeletedFilter(isDeleted = false)
     Optional<User> findByLogin (String login);
@@ -34,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     @NonNull
     @QueryDeletedFilter(isDeleted = false)
-    List<User> findAll();
+    Page<User> findAll(@NonNull Pageable pageable);
 
     @Modifying
     @Query("UPDATE User u SET u.isDeleted = true WHERE u.id = :id")

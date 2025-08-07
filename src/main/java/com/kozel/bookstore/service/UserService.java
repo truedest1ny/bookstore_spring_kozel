@@ -6,12 +6,12 @@ import com.kozel.bookstore.service.dto.user.UserDto;
 import com.kozel.bookstore.service.dto.user.UserLoginDto;
 import com.kozel.bookstore.service.dto.user.UserShowingDto;
 import com.kozel.bookstore.service.dto.user.UserUpdateDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    List<UserDto> getAll();
-    List<UserShowingDto> getUsersDtoShort();
+    Page<UserDto> getAll(Pageable pageable);
+    Page<UserShowingDto> getUsersDtoShort(Pageable pageable);
     UserDto getById(Long id);
     UserDto create(UserCreateDto userCreateDto);
     UserDto update(UserUpdateDto dto);

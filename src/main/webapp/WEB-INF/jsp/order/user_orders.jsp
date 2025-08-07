@@ -24,6 +24,10 @@
         </c:if>
     </div>
 
+    <div class="d-flex justify-content-end mb-4 order-form-margin-right">
+        <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
+    </div>
+
     <table class="table table-position">
         <thead class="table-light">
             <tr>
@@ -38,9 +42,9 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${orders}" var="order" varStatus="counter">
+            <c:forEach items="${page.content}" var="order" varStatus="counter">
                 <tr>
-                    <td><c:out value="${counter.index + 1}"/></td>
+                    <td><c:out value="${page.number * page.size + counter.index + 1}"/></td>
                     <td><c:out value="${order.date}"/></td>
                     <c:if test="${isEmployee}">
                         <td><c:out value="${order.userLogin}"/></td>
@@ -64,8 +68,43 @@
                         <c:if test="${order.userLogin eq sessionScope.user.login && order.status.name() eq 'PENDING'}">
                             <form action="/ordered/cancel/<c:out value="${order.id}"/>"
                                     method="post" style="display:inline;">
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     Cancel order
+                                </button>
+                            </form>
+                        </c:if>
+
+                        <c:if test="${order.status.name() eq 'PENDING'}">
+                            <form action="/orders/approve/<c:out value="${order.id}"/>"
+                                    method="post" style="display:inline;">
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
+                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                    Approve order
+                                </button>
+                            </form>
+                        </c:if>
+
+                        <c:if test=
+                            "${order.status.name() eq 'CANCELLED'
+                                    && sessionScope.user.role.name() ne 'MANAGER'}">
+                            <form action="/orders/archive/<c:out value="${order.id}"/>"
+                                    method="post" style="display:inline;">
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    Archive order
                                 </button>
                             </form>
                         </c:if>
@@ -74,6 +113,10 @@
             </c:forEach>
         </tbody>
     </table>
+
+    <c:if test="${page.totalPages > 1}">
+        <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+    </c:if>
 
     <div class="container text-center my-5">
         <a href="/" class="btn btn-secondary btn-lg">Back to Home</a>

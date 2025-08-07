@@ -1,12 +1,13 @@
 package com.kozel.bookstore.data.repository;
 
 import com.kozel.bookstore.data.entity.Cart;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
@@ -23,7 +24,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c " +
             "LEFT JOIN FETCH c.items ci " +
             "LEFT JOIN FETCH ci.book")
-    List<Cart> findAllWithItems();
+    Page<Cart> findAllWithItems(@NonNull Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM CartItem ci WHERE ci.cart.id = :cartId")

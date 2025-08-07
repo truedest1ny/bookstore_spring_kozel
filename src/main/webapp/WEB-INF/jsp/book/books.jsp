@@ -17,6 +17,7 @@
         value="${not empty sessionScope.user && sessionScope.user.role.name() ne 'CUSTOMER'}"/>
     <c:set var="isNotManager" value=
         "${empty sessionScope.user || (not empty sessionScope.user && sessionScope.user.role.name() ne 'MANAGER')}"/>
+    <c:set var="pageUrl" value="/books" />
 
     <div class="container my-5">
         <div class="text-center">
@@ -28,6 +29,10 @@
                     Add New Book
                 </a>
             </c:if>
+        </div>
+
+        <div class="d-flex justify-content-end mb-4 books-form-margin-right">
+            <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
         </div>
 
         <table class="table table-position wide-table">
@@ -42,9 +47,13 @@
                 </tr>
             </thead>
             <tbody>
-                <c:forEach items="${books}" var="book" varStatus="counter">
+                <c:forEach items="${page.content}" var="book" varStatus="counter">
                     <tr>
-                        <td><a href="/books/<c:out value='${book.id}'/>"><c:out value="${counter.index + 1}"/></a></td>
+                        <td>
+                            <a href="/books/<c:out value='${book.id}'/>">
+                                <c:out value="${page.number * page.size + counter.index + 1}"/>
+                            </a>
+                        </td>
                         <td><c:out value="${book.name}"/></td>
                         <td><c:out value="${book.author}"/></td>
                         <td><c:out value="${book.publishedYear}"/></td>
@@ -54,6 +63,11 @@
                             <td>
                                 <form action="/cart/add" method="post" class="d-inline">
                                     <input type="hidden" name="bookId" value="<c:out value='${book.id}'/>"/>
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
                                     <button type="submit" class="btn btn-sm btn-outline-success">
                                         Add to Cart
                                     </button>
@@ -69,6 +83,11 @@
                             </td>
                             <td>
                                 <form action="/books/delete/<c:out value='${book.id}'/>" method="post" class="d-inline">
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         Delete
                                     </button>
@@ -81,6 +100,10 @@
                 </c:forEach>
             </tbody>
         </table>
+
+        <c:if test="${page.totalPages > 1}">
+            <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+        </c:if>
 
         <div class="text-center mt-4">
             <a href="/" class="btn btn-secondary btn-lg">

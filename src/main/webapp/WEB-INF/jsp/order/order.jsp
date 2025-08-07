@@ -53,6 +53,10 @@
 
         <h2 class="display-5 mb-4"><i>Items in order:</i></h2>
 
+         <div class="d-flex justify-content-end mb-4 order-item-form-margin-right">
+               <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
+         </div>
+
         <table class="table table-position table-hover">
             <thead class="table-light">
                 <tr>
@@ -63,11 +67,11 @@
                 </tr>
             </thead>
             <tbody>
-                <c:forEach items="${order.items}" var="item" varStatus="counter">
+                <c:forEach items="${page.content}" var="item" varStatus="counter">
                     <tr>
                         <td>
                             <a href="/books/<c:out value='${item.book.id}'/>">
-                                <c:out value="${counter.count}"/>
+                                <c:out value="${page.number * page.size + counter.index + 1}"/>
                             </a>
                         </td>
                         <td><c:out value="${item.book.name}"/></td>
@@ -77,6 +81,10 @@
                 </c:forEach>
             </tbody>
         </table>
+
+         <c:if test="${page.totalPages > 1}">
+            <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+         </c:if>
 
         <div class="action-buttons mt-5">
             <c:choose>
