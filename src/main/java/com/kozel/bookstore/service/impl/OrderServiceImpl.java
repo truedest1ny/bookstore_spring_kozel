@@ -189,7 +189,8 @@ public class OrderServiceImpl implements OrderService {
 
             validateOrderAffiliation(user, orderToCancel);
 
-            if (user.getRole() != UserSessionDto.Role.CUSTOMER) {
+            if ((user.getRole() != UserSessionDto.Role.CUSTOMER) &&
+                    (user.getRole() != UserSessionDto.Role.SUPER_ADMIN) ) {
                 throw new AuthorizationException(
                         "Order with ID " + orderId + " cannot be cancelled." +
                                 " You don't have corresponding rights");

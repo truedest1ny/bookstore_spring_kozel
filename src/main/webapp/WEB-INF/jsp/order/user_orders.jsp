@@ -78,36 +78,6 @@
                                 </button>
                             </form>
                         </c:if>
-
-                        <c:if test="${order.status.name() eq 'PENDING'}">
-                            <form action="/orders/approve/<c:out value="${order.id}"/>"
-                                    method="post" style="display:inline;">
-                                    <input type="hidden" name="page" value="${page.number}"/>
-                                    <input type="hidden" name="size" value="${page.size}"/>
-                                    <c:forEach items="${sortParams}" var="sortParam">
-                                         <input type="hidden" name='sort' value='${sortParam}'/>
-                                    </c:forEach>
-                                <button type="submit" class="btn btn-outline-success btn-sm">
-                                    Approve order
-                                </button>
-                            </form>
-                        </c:if>
-
-                        <c:if test=
-                            "${order.status.name() eq 'CANCELLED'
-                                    && sessionScope.user.role.name() ne 'MANAGER'}">
-                            <form action="/orders/archive/<c:out value="${order.id}"/>"
-                                    method="post" style="display:inline;">
-                                    <input type="hidden" name="page" value="${page.number}"/>
-                                    <input type="hidden" name="size" value="${page.size}"/>
-                                    <c:forEach items="${sortParams}" var="sortParam">
-                                         <input type="hidden" name='sort' value='${sortParam}'/>
-                                    </c:forEach>
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    Archive order
-                                </button>
-                            </form>
-                        </c:if>
                     </td>
                 </tr>
             </c:forEach>
