@@ -19,6 +19,7 @@ import com.kozel.bookstore.service.dto.user.UserDto;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
 import com.kozel.bookstore.service.dto.user.UserShowingDto;
 import com.kozel.bookstore.service.dto.user.UserUpdateDto;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -95,6 +96,13 @@ public interface DataMapper {
     @Mapping(target = "price", ignore = true)
     OrderItem toOrderItem (CartItem cartItem);
 
+    @AfterMapping
+    default void linkOrderItemWithBook(@MappingTarget OrderItem orderItem, CartItem cartItem) {
+        if (orderItem.getBook() != null) {
+            orderItem.getBook().setOrderItem(orderItem);
+        }
+    }
+
     @Mapping(target = "orderItemId", ignore = true)
     @Mapping(target = "orderItem", ignore = true)
     @Mapping(target = "originalBookId", source = "id")
@@ -115,7 +123,6 @@ public interface DataMapper {
     @Mapping(target = "deleted", ignore = true)
     BookDto toBookDto(OrderedBook orderedBook);
 
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
@@ -123,6 +130,15 @@ public interface DataMapper {
     @Mapping(target = "user", source = "cart.user")
     @Mapping(target = "items", source = "cart.items")
     Order toOrder (Cart cart);
+
+    @AfterMapping
+    default void linkOrderItems(@MappingTarget Order order, Cart cart) {
+        if (order.getItems() != null) {
+            for (OrderItem item : order.getItems()) {
+                item.setOrder(order);
+            }
+        }
+    }
 
     default OrderDto mapOrderToDtoWithDate(Order entity) {
         OrderDto dto = toDto(entity);

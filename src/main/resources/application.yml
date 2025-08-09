@@ -1,0 +1,141 @@
+#Logging configs
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+
+#Servlet error configs
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+# Database configs
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bookstore_bh
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+      show-sql: true
+    properties:
+      hibernate:
+        transaction:
+          jta:
+            platform: org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform
+
+  # View resolver configs
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+    throw-exception-if-no-handler-found: true
+    thymeleaf:
+      cache: false
+
+# Web filters configs
+filter:
+  authentication:
+    url-patterns:
+      - /*
+    public-paths:
+      - /
+      - /books
+      - /books/
+      - /books/\d+
+      - /books/\d+/
+      - /register
+      - /register/
+      - ^/cart/.*
+      - ^/cart/?
+    private-paths:
+      - /profile
+      - /profile/.*
+      - /logout
+      - /users
+      - /users/.*
+      - /ordered
+      - /ordered/.*
+      - /orders
+      - /orders/.*
+      - /books/add
+      - /books/add/
+      - /books/edit/.*
+      - /books/delete/.*
+    auth-paths:
+      - /login
+      - /login/
+    static-resources:
+      - /images/.*
+      - /css/.*
+      - /js/.*
+      - .*\.css
+      - .*\.js
+      - .*\.png
+      - .*\.jpg
+      - .*\.bmp
+  authorization:
+    url-patterns:
+      - /orders/*
+      - /ordered
+      - /ordered/*
+      - /users/*
+      - /books/add/*
+      - /books/\\d+/*
+      - /profile/*
+      - /cart
+      - /cart/*
+    allowed-paths:
+      super-admin:
+        - ^/users/delete/.*
+      admin:
+        - ^/users/edit/.*
+        - ^/users/add/.*
+        - ^/orders/archive/.*
+      manager:
+        - ^/books/edit/.*
+        - ^/books/delete/.*
+        - ^/books/add?
+        - ^/books/add/.*
+        - ^/orders?
+        - ^/orders/?
+        - ^/orders/approve/.*
+        - ^/users?
+        - ^/users/\d+/?
+      customer:
+        - ^/profile/.*
+        - ^/orders/cancel/.*
+    denied-paths:
+      manager-denied:
+        - ^/cart/.*
+        - ^/cart/?
+        - ^/ordered
+        - ^/ordered/.*
+    guest-allowed-paths:
+      - ^/cart$
+      - ^/cart/.*
+      - ^/cart/$
+    role-mapping:
+      super-admin:
+        - SUPER_ADMIN
+      admin:
+        - SUPER_ADMIN
+        - ADMIN
+      manager:
+        - SUPER_ADMIN
+        - ADMIN
+        - MANAGER
+      customer:
+        - SUPER_ADMIN
+        - ADMIN
+        - MANAGER
+        - CUSTOMER
+      manager-denied:
+        - MANAGER

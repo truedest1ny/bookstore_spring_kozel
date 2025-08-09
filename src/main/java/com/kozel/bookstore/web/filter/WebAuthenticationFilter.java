@@ -1,34 +1,47 @@
 package com.kozel.bookstore.web.filter;
 
+import com.kozel.bookstore.config.properties.WebAuthenticationFilterProperties;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Component
+@RequiredArgsConstructor
 @Slf4j
 public class WebAuthenticationFilter
         extends HttpFilter implements PathMatcher {
 
+    private final WebAuthenticationFilterProperties properties;
+
     private final List<Pattern> publicPathPatterns = new ArrayList<>();
     private final List<Pattern> privatePathPatterns = new ArrayList<>();
     private final List<Pattern> staticResourcePatterns = new ArrayList<>();
-    private final List<Pattern> authPaths = new ArrayList<>();
+    private final List<Pattern> authPatterns = new ArrayList<>();
 
-    @Override
-    public void init(FilterConfig config) throws ServletException {
-        initPatterns(config, "publicPaths", publicPathPatterns);
-        initPatterns(config, "privatePaths", privatePathPatterns);
-        initPatterns(config, "authPaths", authPaths);
-        initPatterns(config, "staticResources", staticResourcePatterns);
+    @PostConstruct
+    public void init() {
+        this.publicPathPatterns.addAll(
+                compilePatterns(properties.getPublicPaths()));
+        this.privatePathPatterns.addAll(
+                compilePatterns(properties.getPrivatePaths()));
+        this.authPatterns.addAll(
+                compilePatterns(properties.getAuthPaths()));
+        this.staticResourcePatterns.addAll(
+                compilePatterns(properties.getStaticResources()));
     }
 
     @Override
@@ -75,13 +88,13 @@ public class WebAuthenticationFilter
 
 
 
-    private void initPatterns(FilterConfig config, String paramName, List<Pattern> patterns) {
-        String paramValue = config.getInitParameter(paramName);
-        if (paramValue != null) {
-            for (String pattern : paramValue.split("\\s*,\\s*")) {
-                patterns.add(Pattern.compile(pattern.trim()));
-            }
+    private List<Pattern> compilePatterns(String[] patterns) {
+        if (patterns == null) {
+            return Collections.emptyList();
         }
+        return Arrays.stream(patterns)
+                .map(Pattern::compile)
+                .toList();
     }
 
 
@@ -98,7 +111,7 @@ public class WebAuthenticationFilter
     }
 
     private boolean isAuthResource(String path){
-        return isMatchAny(path, authPaths);
+        return isMatchAny(path, authPatterns);
     }
 
     private void moveToNotFoundPage(HttpServletRequest request, HttpServletResponse response, String path)

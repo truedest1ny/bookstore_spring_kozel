@@ -1,78 +1,70 @@
 package com.kozel.bookstore.web.filter;
 
+import com.kozel.bookstore.config.properties.WebAuthorizationFilterProperties;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
+@Component
+@RequiredArgsConstructor
 @Slf4j
 public class WebAuthorizationFilter
         extends HttpFilter implements PathMatcher {
+
+    private final WebAuthorizationFilterProperties properties;
 
     private final Map<Pattern, Set<UserSessionDto.Role>> allowedRoleConstraints = new HashMap<>();
     private final Map<Pattern, Set<UserSessionDto.Role>> deniedRoleConstraints = new HashMap<>();
     private final List<Pattern> guestAllowedPaths = new ArrayList<>();
 
-    @Override
-    public void init(FilterConfig config) throws ServletException {
-        Enumeration<String> params = config.getInitParameterNames();
-        while (params.hasMoreElements()) {
-            String paramName = params.nextElement();
+    @PostConstruct
+    public void init() {
+        if (properties.getAllowedPaths() != null) {
+            properties.getAllowedPaths().forEach((roleName, paths) -> {
+                Set<UserSessionDto.Role> roles = getRoles(roleName);
+                paths.forEach(path -> allowedRoleConstraints.put(
+                        Pattern.compile(path), roles));
+            });
+        }
 
-            if (paramName.equals("guestAllowedPaths")) {
-                String paths = config.getInitParameter(paramName);
-                if (paths != null) {
-                    for (String path : paths.split("\\s*,\\s*")) {
-                        guestAllowedPaths.add(Pattern.compile(path.trim()));
-                    }
-                }
-            } else if (paramName.endsWith("Paths")) {
-                String roleType = paramName.replace("Paths", "");
-                String rolesParam = config.getInitParameter(roleType + "Roles");
+        if (properties.getDeniedPaths() != null) {
+            properties.getDeniedPaths().forEach((roleName, paths) -> {
+                Set<UserSessionDto.Role> roles = getRoles(roleName);
+                paths.forEach(path -> deniedRoleConstraints.put(
+                        Pattern.compile(path), roles));
+            });
+        }
 
-                if (rolesParam != null) {
-                    Set<UserSessionDto.Role> roles = Arrays.stream(rolesParam.split("\\s*,\\s*"))
-                            .map(String::trim)
-                            .map(this::toRole)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-
-                    String paths = config.getInitParameter(paramName);
-                    for (String path : paths.split("\\s*,\\s*")) {
-                        Pattern pattern = Pattern.compile(path.trim());
-                        if (roleType.startsWith("forbidden")) {
-                            deniedRoleConstraints.put(pattern, roles);
-                        } else {
-                            allowedRoleConstraints.put(pattern, roles);
-                        }
-                    }
-                }
-            }
+        if (properties.getGuestAllowedPaths() != null) {
+            properties.getGuestAllowedPaths().forEach(
+                    path -> guestAllowedPaths.add(Pattern.compile(path)));
         }
 
         if (allowedRoleConstraints.isEmpty()
                 && deniedRoleConstraints.isEmpty()
                 && guestAllowedPaths.isEmpty()) {
-            throw new ServletException("No authorization rules configured");
+            log.warn("No authorization rules configured for WebAuthorizationFilter");
         }
     }
+
+
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -129,14 +121,8 @@ public class WebAuthorizationFilter
 
     }
 
-
-    private UserSessionDto.Role toRole(String roleName) {
-        try {
-            return UserSessionDto.Role.valueOf(roleName);
-        } catch (IllegalArgumentException e) {
-            log.error("Unknown role: {}", roleName);
-            return null;
-        }
+    private Set<UserSessionDto.Role> getRoles(String roleName) {
+        return properties.getRoleMapping().getOrDefault(roleName, Collections.emptySet());
     }
 
     private void accessDeniedLog(UserSessionDto user, String path) {
