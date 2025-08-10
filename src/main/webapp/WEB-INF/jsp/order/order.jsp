@@ -119,8 +119,7 @@
                 </c:if>
 
                 <c:if test="${order.user.login eq sessionScope.user.login
-                                && order.status.name() eq 'PENDING'
-                                && sessionScope.user.role.name() eq 'CUSTOMER'}">
+                                && order.status.name() eq 'PENDING'}">
                      <form action="/ordered/cancel/<c:out value="${order.id}"/>"
                            method="post" style="display:inline;">
                              <button type="submit" class="btn btn-danger btn-lg button-margin">
