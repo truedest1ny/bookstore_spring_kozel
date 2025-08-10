@@ -47,7 +47,8 @@ public class User {
 
     @OneToOne(mappedBy = "user",
             cascade = {CascadeType.PERSIST},
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            optional = false)
     private UserHash hash;
 
     @Convert(converter = RoleConverter.class)
