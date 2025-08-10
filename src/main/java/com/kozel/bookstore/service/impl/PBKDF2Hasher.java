@@ -1,6 +1,7 @@
 package com.kozel.bookstore.service.impl;
 
 import com.kozel.bookstore.service.Hasher;
+import com.kozel.bookstore.service.annotation.SecuredLogging;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKeyFactory;
@@ -11,6 +12,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
 @Service
+@SecuredLogging
 public class PBKDF2Hasher implements Hasher {
 
     private static final int ITERATIONS = 10000;

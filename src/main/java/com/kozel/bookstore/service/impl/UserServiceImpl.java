@@ -6,6 +6,7 @@ import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.UserRepository;
 import com.kozel.bookstore.service.Hasher;
 import com.kozel.bookstore.service.UserService;
+import com.kozel.bookstore.service.annotation.SecuredLogging;
 import com.kozel.bookstore.service.dto.user.UserChangePasswordDto;
 import com.kozel.bookstore.service.dto.user.UserCreateDto;
 import com.kozel.bookstore.service.dto.user.UserDto;
@@ -16,7 +17,6 @@ import com.kozel.bookstore.service.exception.AuthentificationException;
 import com.kozel.bookstore.service.exception.InvalidPasswordException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -35,21 +34,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> getAll(Pageable pageable) {
-        log.debug("Called getAll() method");
         return userRepository.findAll(pageable)
                 .map(mapper::toDto);
     }
 
     @Override
     public Page<UserShowingDto> getUsersDtoShort(Pageable pageable) {
-        log.debug("Called getUsersDtoShort() method");
         return userRepository.findAll(pageable)
                 .map(mapper::toShortedDto);
     }
 
     @Override
     public UserDto getById(Long id) {
-            log.debug("Called getById() method");
             User user = userRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Cannot find user by id " + id)
             );
@@ -57,8 +53,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SecuredLogging
     public UserDto getByLogin(String login) {
-        log.debug("Called getByLogin() method");
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new ResourceNotFoundException("No user with such login (" + login +").")
         );
@@ -66,9 +62,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SecuredLogging
     public UserDto create(UserCreateDto userCreateDto) {
-        log.debug("Called create() method");
-
         User newUser = collectNewUser(userCreateDto);
         User savedUser = userRepository.save(newUser);
 
@@ -76,9 +71,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SecuredLogging
     public UserDto update(UserUpdateDto dto) {
-        log.debug("Called update() method");
-
         User user = userRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User " + dto.getId() + " not found for update"));
@@ -91,7 +85,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void disable(Long id) {
-        log.debug("Called disable() method");
         if (!userRepository.existsById(id)){
             throw  new RuntimeException("Cannot find user (id = " + id + ")." +
                     " Nothing to delete. ");
@@ -100,9 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SecuredLogging
     public UserDto login(UserLoginDto userLoginDto) {
-            log.debug("Called login() method");
-
             User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
                     () -> new AuthentificationException(
                             "No user with such login (" + userLoginDto.getLogin() +").")
@@ -122,6 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SecuredLogging
     public void changePassword(UserChangePasswordDto changePasswordDto){
         User user = userRepository.findById(changePasswordDto.getId()).orElseThrow(
                 () -> new ResourceNotFoundException(

@@ -8,6 +8,7 @@ import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.CartRepository;
 import com.kozel.bookstore.data.repository.OrderRepository;
 import com.kozel.bookstore.service.OrderService;
+import com.kozel.bookstore.service.annotation.SecuredLogging;
 import com.kozel.bookstore.service.dto.order.OrderDto;
 import com.kozel.bookstore.service.dto.order.OrderShowingDto;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
@@ -15,7 +16,6 @@ import com.kozel.bookstore.service.exception.AuthorizationException;
 import com.kozel.bookstore.service.exception.BusinessException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -37,28 +36,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderDto> getAll(Pageable pageable) {
-        log.debug("Called getAll() method");
         return orderRepository.findAllWithDetails(pageable)
                 .map(mapper::mapOrderToDtoWithDate);
     }
 
     @Override
     public Page<OrderShowingDto> getOrdersDtoShort(Pageable pageable) {
-        log.debug("Called getOrdersDtoShort() method");
         return orderRepository.findAllWithDetails(pageable)
                 .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
     public Page<OrderShowingDto> findByUserId(Pageable pageable, Long userId) {
-        log.debug("Called findByUserId() method");
         return orderRepository.findByUserId(pageable, userId)
                 .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
     public OrderDto getById(Long id, UserSessionDto user) {
-        log.debug("Called getById() method");
             Order order = orderRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException(
                             "Cannot find order by id " + id)
@@ -70,9 +65,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(Long userId) {
-        log.debug("Called create() method");
-
-
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -111,8 +103,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto update(OrderDto orderDto) {
-        log.debug("Called update() method");
-
         if (orderDto.getId() == null) {
             throw new IllegalArgumentException(
                     "Order ID must be provided for update operation.");
@@ -135,8 +125,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SecuredLogging
     public void archive(Long orderId, UserSessionDto user) {
-        log.debug("Called archive() method");
             Order orderToArchive = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
@@ -158,8 +148,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SecuredLogging
     public void approve(Long orderId, UserSessionDto user) {
-        log.debug("Called approve() method");
             Order orderToApprove = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
@@ -181,8 +171,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SecuredLogging
     public void cancel(Long orderId, UserSessionDto user) {
-        log.debug("Called cancel() method");
             Order orderToCancel = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
