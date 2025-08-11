@@ -1,9 +1,41 @@
-    INSERT INTO covers (enum_value) VALUES
+--
+-- Data inserts for static lookup tables
+--
 
+-- Table: covers
+-- Description: Inserting predefined book cover types.
+-- Values: 1: HARD, 2: SOFT, 3: SPECIAL
+INSERT INTO covers (enum_value) VALUES
         ('HARD'),
         ('SOFT'),
         ('SPECIAL');
 
+-- Table: roles
+-- Description: Inserting predefined user roles.
+-- Values: 1: SUPER_ADMIN, 2: ADMIN, 3: MANAGER, 4: CUSTOMER
+INSERT INTO roles (enum_value) VALUES
+        ('SUPER_ADMIN'),
+        ('ADMIN'),
+        ('MANAGER'),
+        ('CUSTOMER');
+
+-- Table: statuses
+-- Description: Inserting predefined order statuses.
+-- Values: 1: PENDING, 2: PAID, 3: CANCELLED, 4: DELIVERED, 5: ARCHIVED
+INSERT INTO statuses (enum_value) VALUES
+        ('PENDING'),
+        ('PAID'),
+        ('CANCELLED'),
+        ('DELIVERED'),
+        ('ARCHIVED');
+
+--
+-- Data inserts for books
+--
+-- Description: Populating the books table with various titles.
+-- Note: 'cover_id' values are foreign keys to the 'covers' table (1=HARD, 2=SOFT, 3=SPECIAL).
+-- Note: Some books have 'is_deleted' set to 'true' to demonstrate the soft-delete functionality.
+--
 INSERT INTO books (name, isbn, cover_id, author, published_year, price, is_deleted)
 VALUES
         ('War and Peace', '9785171712345', 2, 'Leo Tolstoy', 1869, 15.99, false),
@@ -159,26 +191,42 @@ VALUES
         ('The Labyrinth of the Spirits', '9785171120190', 1, 'Carlos Ruiz Zafón', 2016, 14.50, false),
         ('The Historian', '9785171120206', 2, 'Elizabeth Kostova', 2005, 12.75, false);
 
+--
+-- Data inserts for users
+--
+-- Description: Creating initial user accounts with hashed passwords and salts.
+-- Note: 'role_id' values are foreign keys to the 'roles' table (1=SUPER_ADMIN, 2=ADMIN, etc.).
+-- Passwords are the same as their respective logins.
+--
+-- User 1: superAdmin
+-- Login: 'superAdmin', Password: 'superAdmin', Role: SUPER_ADMIN
+INSERT INTO users (first_name, last_name, email, login, role_id, is_deleted) VALUES
+        ('Super', 'Admin', 'super.admin@bookstore.com', 'superAdmin', 1, FALSE);
+INSERT INTO user_hash (user_id, salt, hashed_password) VALUES
+        (LASTVAL(), 'ejsb0o7Tve36m5zmH0G76Q==', '48H2/FhYfXcatEt0xk9dju4rlpI1d9/XKncxzfs2B/M=');
+
+-- User 2: admin
+-- Login: 'admin', Password: 'admin', Role: ADMIN
+INSERT INTO users (first_name, last_name, email, login, role_id, is_deleted) VALUES
+        ('Admin', 'User', 'admin@bookstore.com', 'admin', 2, FALSE);
+INSERT INTO user_hash (user_id, salt, hashed_password) VALUES
+        (LASTVAL(), 'vYMslwTUooBgFnBkfOQAYA==', 'G87BDAhFMcPsOUf8a1te7aH/xO2TRL1zDJ/M2DFiNYY=');
+
+-- User 3: manager
+-- Login: 'manager', Password: 'manager', Role: MANAGER
+INSERT INTO users (first_name, last_name, email, login, role_id, is_deleted) VALUES
+        ('Manager', 'User', 'manager@bookstore.com', 'manager', 3, FALSE);
+INSERT INTO user_hash (user_id, salt, hashed_password) VALUES
+        (LASTVAL(), 'uxogEGqMV/1A3GpmCex/gg==', 'E7dENp1vrvLDGTlxRtSZ2Q+GcmyrWms/xvopEdOFUHo=');
+
+-- User 4: customer
+-- Login: 'customer', Password: 'customer', Role: CUSTOMER
+INSERT INTO users (first_name, last_name, email, login, role_id, is_deleted) VALUES
+        ('Customer', 'User', 'customer@bookstore.com', 'customer', 4, FALSE);
+INSERT INTO user_hash (user_id, salt, hashed_password) VALUES
+        (LASTVAL(), 'EzGVTgQoKHImWSPaRLIaow==', 'ThrUn7KbPbFUh7xMLAHJEDsZvKFFGaj7py8vMl+mBX4=');
 
 
-	-----------------------------------------------------------------------------------------------------------------------
-
-	INSERT INTO roles (enum_value) VALUES
-
-        ('SUPER_ADMIN'),
-        ('ADMIN'),
-        ('MANAGER'),
-        ('CUSTOMER');
-
-        -----------------------------------------------------------------------------------------------------------------------------------
-
-        INSERT INTO statuses (enum_value) VALUES
-
-            ('PENDING'),
-            ('PAID'),
-            ('CANCELLED'),
-            ('DELIVERED'),
-            ('ARCHIVED');
 
 
 
