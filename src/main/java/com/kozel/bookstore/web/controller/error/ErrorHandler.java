@@ -113,8 +113,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleAuthentificationException (Model model, AuthentificationException e){
         log(e);
-        model.addAttribute(ERROR_MESSAGE_KEY,
-                "Oops! Incorrect login or password. Please check your login details");
+        model.addAttribute(ERROR_MESSAGE_KEY, e.getMessage());
         return "user/login";
     }
 

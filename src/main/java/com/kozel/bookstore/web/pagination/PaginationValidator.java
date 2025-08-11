@@ -1,5 +1,7 @@
 package com.kozel.bookstore.web.pagination;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ import static com.kozel.bookstore.util.WebConstants.*;
  * and that pagination requests do not exceed the total number of available pages.
  */
 public interface PaginationValidator {
+
+    Logger log = LoggerFactory.getLogger(PaginationValidator.class);
 
     /**
      * Validates and adjusts the requested page size to prevent excessively large pages.
@@ -115,8 +119,9 @@ public interface PaginationValidator {
                 try {
                     Sort.Direction.valueOf(order.getDirection().name());
                     validOrders.add(order);
-                } catch (IllegalArgumentException ignored) {
-
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid sort direction '{}' for property '{}'. Ignoring this order.",
+                            order.getDirection().name(), order.getProperty());
                 }
             }
         }

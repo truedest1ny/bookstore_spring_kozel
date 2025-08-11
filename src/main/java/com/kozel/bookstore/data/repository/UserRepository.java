@@ -61,6 +61,20 @@ public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByLogin (String login);
 
     /**
+     * Checks for the existence of a user with the specified login.
+     *
+     * <p>This method uses the {@code @QueryDeletedFilter(isDeleted = false)} annotation,
+     * which ensures that the search results will only include "active" users
+     * (those not marked as deleted).
+     *
+     * @param login A string containing the user's login to search for. This is a mandatory parameter.
+     * @return {@code true} if a user with that login
+     * and {@code isDeleted = false} exists. Returns {@code false} if no such user is found.
+     */
+    @QueryDeletedFilter(isDeleted = false)
+    boolean existsByLogin (String login);
+
+    /**
      * Counts the total number of active (non-deleted) users in the repository.
      * The {@link QueryDeletedFilter} ensures that soft-deleted rows are not counted.
      *

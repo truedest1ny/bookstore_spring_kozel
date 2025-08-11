@@ -64,6 +64,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @SecuredLogging
     public UserDto create(UserCreateDto userCreateDto) {
+
+        if (userRepository.existsByLogin(userCreateDto.getLogin())){
+            throw new AuthentificationException(
+                    "This login is already taken. Please choose another one.");
+        }
+
         User newUser = collectNewUser(userCreateDto);
         User savedUser = userRepository.save(newUser);
 
@@ -95,9 +101,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @SecuredLogging
     public UserDto login(UserLoginDto userLoginDto) {
+
+        String errorAuthMessage = "Incorrect login or password. Please try again.";
+
             User user = userRepository.findByLogin(userLoginDto.getLogin()).orElseThrow(
                     () -> new AuthentificationException(
-                            "No user with such login (" + userLoginDto.getLogin() +").")
+                            errorAuthMessage)
             );
 
             String userSalt = user.getHash().getSalt();
@@ -107,7 +116,7 @@ public class UserServiceImpl implements UserService {
             if(!hasher.hashPassword(inputtedPassword, userSalt)
                     .equals(userHashedPassword)) {
              throw new AuthentificationException(
-                     "Incorrect password for user (" + user.getLogin() + ")");
+                     errorAuthMessage);
             }
 
             return mapper.toDto(user);
