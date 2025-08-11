@@ -25,9 +25,9 @@ public class BookServiceImpl implements BookService {
     private final DataMapper mapper;
 
     @Override
-    public List<BookDto> getAll() {
-        return mapper.toBookDtoList(
-                bookRepository.findAll());
+    public Page<BookDto> getAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(mapper::toDto);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void disable(Long id) {
         if (!bookRepository.existsById(id)){
-           throw  new RuntimeException("Cannot find book (id = " + id + ")." +
+           throw  new ResourceNotFoundException("Cannot find book (id = " + id + ")." +
                     " There is nothing to delete. ");
         }
         bookRepository.softDelete(id);

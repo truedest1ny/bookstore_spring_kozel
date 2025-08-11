@@ -19,7 +19,13 @@ import org.hibernate.annotations.Filter;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-
+/**
+ * Represents a book in the bookstore's inventory.
+ * This entity stores detailed information about a book, including its title, author,
+ * ISBN, cover type, and price. It also supports soft deletion through the {@code isDeleted} flag,
+ * which is managed by a Hibernate filter named "isDeletedFilter".
+ *
+ */
 @Entity
 @Table(name = "books")
 
@@ -29,33 +35,65 @@ import java.util.Objects;
 @Setter
 @ToString
 public class Book {
+
+    /**
+     * The unique identifier for the book.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    /**
+     * The title of the book.
+     */
     @Column(name = "name")
     private String name;
 
+    /**
+     * The unique ISBN of the book.
+     * This field is immutable once set, as indicated by {@code updatable = false}.
+     */
     @Column(name = "isbn", updatable = false)
     private String isbn;
 
+    /**
+     * The type of book cover (e.g., HARD, SOFT). This is stored in the database as a numeric ID
+     * and converted to a Java enum using the {@link CoverConverter}.
+     */
     @Convert(converter = CoverConverter.class)
     @Column(name = "cover_id", nullable = false)
     private Cover cover;
 
+    /**
+     * The name of the book's author.
+     */
     @Column(name = "author")
     private String author;
 
+    /**
+     * The year the book was published.
+     */
     @Column(name = "published_year")
     private Integer publishedYear;
 
+    /**
+     * The price of the book.
+     */
     @Column(name = "price")
     private BigDecimal price;
 
+    /**
+     * A flag indicating whether the book has been soft-deleted.
+     * When {@code true}, the book is hidden from regular queries
+     * through the use of the "isDeletedFilter".
+     */
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
+    /**
+     * An enumeration representing the available types of book covers.
+     */
     public enum Cover
     {
         HARD,
@@ -76,6 +114,11 @@ public class Book {
         return Objects.hash(getId());
     }
 
+    /**
+     * A JPA attribute converter for mapping the {@link Cover} enum to a numeric database column.
+     * This converter ensures type safety and handles the translation between the Java enum type
+     * and the database's Long type.
+     */
     @Converter
     public static class CoverConverter implements AttributeConverter<Book.Cover, Long> {
 

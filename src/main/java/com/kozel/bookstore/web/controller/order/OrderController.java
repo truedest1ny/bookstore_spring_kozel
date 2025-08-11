@@ -32,15 +32,31 @@ import java.util.Optional;
 
 import static com.kozel.bookstore.util.WebConstants.*;
 
+/**
+ * Controller for managing all orders from an administrative or employee perspective.
+ * This class provides functionalities to view, filter, approve, and archive orders
+ * across all users in the system.
+ */
 @Controller
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController implements PaginationValidator, InMemoryPaginationHandler {
 
-
     private final OrderService orderService;
     private final UserService userService;
 
+    /**
+     * Displays the details of a specific order.
+     * This method is for employees to view any order by its ID, including its
+     * paginated and sorted items. The order items are sorted in-memory.
+     *
+     * @param pageable The pagination and sorting parameters for the order items.
+     * @param id The unique ID of the order to display.
+     * @param user The session attribute containing the current employee's details (for authorization checks).
+     * @param model The Spring Model to add view attributes.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return The view name for the order details page.
+     */
     @GetMapping("/{id}")
     public String getOrder(@PageableDefault(
                                        size = 20,
@@ -72,6 +88,16 @@ public class OrderController implements PaginationValidator, InMemoryPaginationH
         return "order/order";
     }
 
+    /**
+     * Displays a paginated list of all orders in the system.
+     * This serves as the primary dashboard for employees to see all orders.
+     * Pagination and sorting are handled by the database repository.
+     *
+     * @param pageable The pagination and sorting parameters.
+     * @param model The Spring Model to add view attributes.
+     * @param attributes RedirectAttributes for redirection handling.
+     * @return The view name for the orders list page.
+     */
     @GetMapping
     public String getOrders(@PageableDefault(
                                 size = 20,
@@ -94,6 +120,14 @@ public class OrderController implements PaginationValidator, InMemoryPaginationH
         return "order/orders";
     }
 
+    /**
+     * Displays a form page for employees to find orders by a user's login.
+     * It also populates the model with a paginated list of users for convenience.
+     *
+     * @param pageable The pagination parameters for the user list.
+     * @param model The Spring Model to add the user list to.
+     * @return The view name for the user filter form page.
+     */
     @GetMapping("/find_by_user")
     public String getByUserForm(Pageable pageable, Model model) {
         Page<UserShowingDto> users = userService.getUsersDtoShort(pageable);
@@ -101,6 +135,16 @@ public class OrderController implements PaginationValidator, InMemoryPaginationH
         return "order/filter_orders_by_user";
     }
 
+    /**
+     * Filters and displays a paginated list of orders placed by a specific user.
+     * The user is identified by their login, which is provided through the form.
+     *
+     * @param pageable The pagination and sorting parameters for the orders.
+     * @param login The login of the user to filter orders by.
+     * @param model The Spring Model to add the filtered orders to.
+     * @param attributes RedirectAttributes for redirection handling.
+     * @return The view name for the filtered user's orders page.
+     */
     @PostMapping("/find_by_user")
     public String getByUser(@PageableDefault(
                                         size = 20,
@@ -129,6 +173,19 @@ public class OrderController implements PaginationValidator, InMemoryPaginationH
         return "order/user_orders";
     }
 
+    /**
+     * Archives a specific order.
+     * After archiving, the user is redirected to the main orders list,
+     * preserving their pagination state.
+     *
+     * @param id The unique ID of the order to archive.
+     * @param user The session attribute containing the current employee's details.
+     * @param page The current page number for redirection.
+     * @param size The current page size for redirection.
+     * @param sort The current sort parameters for redirection.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return A redirect string to the main orders list page.
+     */
     @PostMapping("/archive/{id}")
     public String archiveOrder(@PathVariable Long id,
 
@@ -144,6 +201,19 @@ public class OrderController implements PaginationValidator, InMemoryPaginationH
         return "redirect:/orders";
     }
 
+    /**
+     * Approves a specific order.
+     * After approval, the user is redirected to the main orders list,
+     * preserving their pagination state.
+     *
+     * @param id The unique ID of the order to approve.
+     * @param user The session attribute containing the current employee's details.
+     * @param page The current page number for redirection.
+     * @param size The current page size for redirection.
+     * @param sort The current sort parameters for redirection.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return A redirect string to the main orders list page.
+     */
     @PostMapping("/approve/{id}")
     public String approveOrder(@PathVariable Long id,
                                @SessionAttribute UserSessionDto user,

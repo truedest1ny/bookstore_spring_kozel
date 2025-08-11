@@ -24,36 +24,71 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a complete order placed by a user.
+ * An order is a record of a transaction at a specific point in time. It contains
+ * details about the user, the date of the order, its current status, and a collection
+ * of {@link OrderItem}s.
+ *
+ * @see OrderItem
+ * @see User
+ */
 @Entity
 @Table(name = "orders")
 
 @Getter
 @Setter
 public class Order {
+
+    /**
+     * The unique identifier for the order.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    /**
+     * The date and time the order was created. This field is immutable.
+     */
     @Column(name = "date", updatable = false)
     private LocalDateTime date;
 
+    /**
+     * The user who placed this order. This is a many-to-one relationship.
+     */
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * A set of items included in this order. This is a one-to-many relationship
+     * with {@link OrderItem}. The {@code orphanRemoval = true} setting ensures
+     * that an {@link OrderItem} is automatically deleted from the database if
+     * it is removed from this collection.
+     */
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             orphanRemoval = true)
     private Set<OrderItem> items = new HashSet<>();
 
+    /**
+     * The current status of the order (e.g., PENDING, PAID, CANCELLED).
+     * This enum is mapped to a numeric database column using the {@link StatusConverter}.
+     */
     @Convert(converter = StatusConverter.class)
     @Column(name = "status_id", nullable = false)
     private Status status;
 
+    /**
+     * The total price of the entire order.
+     */
     @Column(name = "price")
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
+    /**
+     * An enumeration representing the possible states of an order.
+     */
     public enum Status {
         PENDING,
         PAID,
@@ -85,11 +120,23 @@ public class Order {
                 '}';
     }
 
+    /**
+     * Adds an {@link OrderItem} to the order. This method also handles
+     * the bidirectional relationship by setting the item's order to this instance.
+     *
+     * @param item The item to add.
+     */
     public void addItem(OrderItem item) {
         this.getItems().add(item);
         item.setOrder(this);
     }
 
+    /**
+     * Removes an {@link OrderItem} from the order. This method also handles
+     * the bidirectional relationship by nullifying the item's order.
+     *
+     * @param item The item to remove.
+     */
     public void removeItem(OrderItem item) {
         if (getItems().contains(item)) {
             getItems().remove(item);
@@ -97,6 +144,10 @@ public class Order {
         }
     }
 
+    /**
+     * A JPA attribute converter for mapping the {@link Status} enum to a numeric database column.
+     * This converter handles the translation between the Java enum type and the database's Long type.
+     */
     @Converter
     public static class StatusConverter implements AttributeConverter<Order.Status, Long> {
 

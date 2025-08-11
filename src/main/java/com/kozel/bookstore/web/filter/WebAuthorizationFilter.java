@@ -22,6 +22,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * A servlet filter for enforcing role-based access control to web resources.
+ * <p>This filter intercepts incoming requests and, based on a set of configured
+ * rules, either grants or denies access to the resource. The rules are defined
+ * by URL patterns and associated user roles, which are loaded from a properties file.
+ * The filter supports three main types of rules:</p>
+ * <ul>
+ * <li><b>Denied Paths:</b> Explicitly denies access to a path for specific roles.</li>
+ * <li><b>Allowed Paths:</b> Explicitly allows access to a path for specific roles.
+ * If a path is in this category, only the specified roles can access it.</li>
+ * <li><b>Guest Allowed Paths:</b> Permits access to unauthenticated users.</li>
+ * </ul>
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -34,6 +47,11 @@ public class WebAuthorizationFilter
     private final Map<Pattern, Set<UserSessionDto.Role>> deniedRoleConstraints = new HashMap<>();
     private final List<Pattern> guestAllowedPaths = new ArrayList<>();
 
+    /**
+     * Initializes the filter by compiling URL patterns and role-based access rules.
+     * <p>This method is called after the bean is constructed and populates the
+     * internal maps and lists with rules defined in the application properties.</p>
+     */
     @PostConstruct
     public void init() {
         if (properties.getAllowedPaths() != null) {
@@ -64,8 +82,28 @@ public class WebAuthorizationFilter
         }
     }
 
-
-
+    /**
+     * Filters incoming HTTP requests to enforce authorization rules.
+     * <p>The authorization logic is applied in a specific order:</p>
+     * <ol>
+     * <li>Check against <b>denied paths</b>: If the path matches a denied pattern for the user's role,
+     * access is immediately forbidden (403 Forbidden).</li>
+     * <li>Check against <b>guest-allowed paths</b>: If the user is unauthenticated and the path is
+     * guest-allowed, access is granted.</li>
+     * <li>Handle unauthenticated users: If the user is not authenticated, and the path is not
+     * guest-allowed, the user is redirected to the login page.</li>
+     * <li>Check against <b>allowed paths</b>: If the path matches an allowed pattern, access is
+     * granted only if the user's role is in the list of allowed roles. If the path is protected
+     * by an allowed rule but the user's role is not a match, access is forbidden.</li>
+     * <li>Default behavior: If the path is not protected by any allowed rule, access is granted.</li>
+     * </ol>
+     *
+     * @param request The HttpServletRequest object.
+     * @param response The HttpServletResponse object.
+     * @param chain The FilterChain for passing the request to the next filter.
+     * @throws IOException If an I/O error occurs.
+     * @throws ServletException If a servlet-specific error occurs.
+     */
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -121,10 +159,22 @@ public class WebAuthorizationFilter
 
     }
 
+    /**
+     * Retrieves the set of roles corresponding to a given role name from the properties.
+     *
+     * @param roleName The name of the role group (e.g., "admins").
+     * @return A set of UserSessionDto.Role objects.
+     */
     private Set<UserSessionDto.Role> getRoles(String roleName) {
         return properties.getRoleMapping().getOrDefault(roleName, Collections.emptySet());
     }
 
+    /**
+     * Logs access denied warning message.
+     *
+     * @param user The user who was denied access.
+     * @param path The path they attempted to access.
+     */
     private void accessDeniedLog(UserSessionDto user, String path) {
         log.warn("Access denied for {} (role {}) to {}",
                 user.getLogin(), user.getRole(), path);

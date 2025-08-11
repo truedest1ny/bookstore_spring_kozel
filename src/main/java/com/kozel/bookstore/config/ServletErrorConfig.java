@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
+/**
+ * A configuration class for registering custom error pages.
+ * This class defines a single {@link ErrorPageRegistrar} bean that maps specific
+ * HTTP status codes to corresponding URL paths.
+ */
 @Configuration
 public class ServletErrorConfig {
     @Bean

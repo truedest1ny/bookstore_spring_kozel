@@ -153,7 +153,7 @@ public class CartServiceImpl implements CartService {
         }
 
         if (!cartRepository.existsById(cartId)) {
-            throw  new RuntimeException(
+            throw  new ResourceNotFoundException(
                     "Cart not found for delete with ID: " + cartId);
         }
         cartRepository.deleteById(cartId);

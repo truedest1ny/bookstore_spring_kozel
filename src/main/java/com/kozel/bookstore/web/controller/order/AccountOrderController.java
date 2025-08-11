@@ -28,6 +28,12 @@ import java.util.Optional;
 
 import static com.kozel.bookstore.util.WebConstants.*;
 
+/**
+ * Controller for managing a user's personal order history and details.
+ * This controller handles displaying a user's orders, viewing specific order details,
+ * creating new orders from the user's cart, and canceling existing orders.
+ * It also includes helper methods for pagination and sorting.
+ */
 @Controller
 @RequestMapping("/ordered")
 @RequiredArgsConstructor
@@ -35,6 +41,17 @@ public class AccountOrderController implements PaginationValidator, InMemoryPagi
 
     private final OrderService orderService;
 
+    /**
+     * Displays a paginated list of all orders for the logged-in user.
+     * The method fetches orders by the user's ID and applies pagination and sorting.
+     * It also handles redirecting to the last page if the requested page number is out of bounds.
+     *
+     * @param pageable The pagination and sorting parameters provided by the request.
+     * @param user The session attribute containing the current user's details.
+     * @param model The Spring Model for adding view attributes.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return The view name for the user's order list page.
+     */
     @GetMapping
     public String getAccountOrders(@PageableDefault(
                                     size = 20, sort = "date", direction = Sort.Direction.ASC)
@@ -60,6 +77,18 @@ public class AccountOrderController implements PaginationValidator, InMemoryPagi
         return "order/user_orders";
     }
 
+    /**
+     * Displays the details of a specific order for the logged-in user.
+     * The method retrieves the full order and then handles in-memory pagination and
+     * sorting for its order items.
+     *
+     * @param pageable The pagination and sorting parameters for the order items.
+     * @param id The unique ID of the order to display.
+     * @param user The session attribute containing the current user's details.
+     * @param model The Spring Model for adding view attributes.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return The view name for the order details page.
+     */
     @GetMapping("/{id}")
     public String getOrder(@PageableDefault(
                                        size = 20,
@@ -93,6 +122,14 @@ public class AccountOrderController implements PaginationValidator, InMemoryPagi
         return "order/order";
     }
 
+    /**
+     * Creates a new order from the user's shopping cart.
+     * Upon successful creation, the user is redirected to the newly created order's details page.
+     *
+     * @param user The session attribute containing the current user's details.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return A redirect string to the newly created order's details page.
+     */
     @PostMapping("/add")
     public String addOrder(@SessionAttribute UserSessionDto user,
                            RedirectAttributes attributes) {
@@ -103,6 +140,19 @@ public class AccountOrderController implements PaginationValidator, InMemoryPagi
         return "redirect:/ordered/" + orderDto.getId();
     }
 
+    /**
+     * Cancels an existing order for the logged-in user.
+     * The user is redirected back to their order list page with a success message.
+     * The method also ensures that pagination and sorting parameters are preserved in the redirect.
+     *
+     * @param id The unique ID of the order to cancel.
+     * @param user The session attribute containing the current user's details.
+     * @param page The current page number for redirection.
+     * @param size The current page size for redirection.
+     * @param sort The current sort parameters for redirection.
+     * @param attributes RedirectAttributes for handling flash messages and redirection.
+     * @return A redirect string to the user's order list page.
+     */
     @PostMapping("/cancel/{id}")
     public String cancelOrder(@PathVariable Long id,
                               @SessionAttribute UserSessionDto user,

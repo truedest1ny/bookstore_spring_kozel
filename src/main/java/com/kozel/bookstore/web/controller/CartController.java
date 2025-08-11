@@ -28,16 +28,32 @@ import java.util.Optional;
 
 import static com.kozel.bookstore.util.WebConstants.*;
 
-
+/**
+ * Controller for managing the user's shopping cart.
+ * This class handles all cart-related actions, including displaying the cart,
+ * adding items, removing items, and clearing the cart. It seamlessly manages
+ * both authenticated user carts (stored in the database) and guest session carts.
+ */
 @Controller
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController implements PaginationValidator, InMemoryPaginationHandler {
 
-
     private final CartService cartService;
     private final BookService bookService;
 
+    /**
+     * Displays the contents of the shopping cart.
+     * This method retrieves the cart from either the user's account or the session.
+     * It then applies in-memory pagination and sorting to the cart items before
+     * displaying them.
+     *
+     * @param pageable The pagination and sorting parameters for the cart items.
+     * @param model The Spring Model to add view attributes.
+     * @param attributes RedirectAttributes for redirection handling.
+     * @param session The HttpSession to retrieve or store cart and user information.
+     * @return The view name for the cart page.
+     */
     @GetMapping
     public String getCart(@PageableDefault(
                         size = 20,
@@ -78,7 +94,21 @@ public class CartController implements PaginationValidator, InMemoryPaginationHa
         return "cart/cart";
     }
 
-
+    /**
+     * Adds a specified quantity of a book to the shopping cart.
+     * The method distinguishes between authenticated and guest users, handling
+     * cart updates accordingly. After adding, the user is redirected to the
+     * main books page with a success message.
+     *
+     * @param bookId The ID of the book to add.
+     * @param quantity The number of books to add.
+     * @param page The current page number for redirection.
+     * @param size The current page size for redirection.
+     * @param sort The current sort parameters for redirection.
+     * @param session The HttpSession to manage cart and user information.
+     * @param attributes RedirectAttributes for flash messages and pagination parameters.
+     * @return A redirect string to the books list page.
+     */
     @PostMapping("/add")
     public String addToCart(@RequestParam Long bookId,
                             @RequestParam(defaultValue = "1") int quantity,
@@ -110,6 +140,16 @@ public class CartController implements PaginationValidator, InMemoryPaginationHa
         return "redirect:/books";
     }
 
+    /**
+     * Removes a single item from the shopping cart.
+     * This method removes the specified book from the cart, updates the total price,
+     * and redirects the user back to the cart page with a success message.
+     *
+     * @param bookId The ID of the book to remove.
+     * @param session The HttpSession to manage cart and user information.
+     * @param attributes RedirectAttributes to add a flash message.
+     * @return A redirect string to the cart page.
+     */
     @PostMapping("/remove")
     public String removeFromCart(@RequestParam Long bookId,
                                  HttpSession session,
@@ -131,6 +171,15 @@ public class CartController implements PaginationValidator, InMemoryPaginationHa
         return "redirect:/cart";
     }
 
+    /**
+     * Clears all items from the shopping cart.
+     * The method clears the cart for either an authenticated user or a guest session
+     * and redirects the user to the books page with a success message.
+     *
+     * @param session The HttpSession to manage cart and user information.
+     * @param attributes RedirectAttributes to add a flash message.
+     * @return A redirect string to the books list page.
+     */
     @PostMapping("/clear")
     public String clearCart(HttpSession session, RedirectAttributes attributes) {
 

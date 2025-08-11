@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void disable(Long id) {
         if (!userRepository.existsById(id)){
-            throw  new RuntimeException("Cannot find user (id = " + id + ")." +
+            throw  new ResourceNotFoundException("Cannot find user (id = " + id + ")." +
                     " Nothing to delete. ");
         }
             userRepository.softDelete(id);
