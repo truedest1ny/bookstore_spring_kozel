@@ -24,10 +24,14 @@
             <c:otherwise>
                 <h2 class="display-5 mb-4"><i>Items in your cart:</i></h2>
 
+                <div class="d-flex justify-content-end mb-4 cart-form-margin-right">
+                    <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
+                </div>
+
                 <table class="table table-position table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th>#</th> <%-- New column for serial number --%>
+                            <th>#</th>
                             <th>Book</th>
                             <th>Author</th>
                             <th>Quantity</th>
@@ -37,9 +41,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${sessionScope.sessionCart.items}" var="item" varStatus="loop">
+                        <c:forEach items="${page.content}" var="item" varStatus="loop">
                             <tr>
-                                <td><a href="/books/${item.book.id}"><c:out value="${loop.index + 1}"/></a></td> <%-- Serial number as a link --%>
+                                <td>
+                                    <a href="/books/${item.book.id}">
+                                        <c:out value="${page.number * page.size + loop.index + 1}"/>
+                                    </a>
+                               </td>
                                 <td><c:out value="${item.book.name}"/></td>
                                 <td><c:out value="${item.book.author}"/></td>
                                 <td><c:out value="${item.quantity}"/></td>
@@ -68,6 +76,10 @@
                         </tr>
                     </tfoot>
                 </table>
+
+                <c:if test="${page.totalPages > 1}">
+                    <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+                </c:if>
 
                 <div class="action-buttons-container">
                     <a href="/books" class="btn btn-primary">Go to Books Catalog</a>

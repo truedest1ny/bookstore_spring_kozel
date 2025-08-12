@@ -14,7 +14,8 @@ import com.kozel.bookstore.service.dto.cart.CartDto;
 import com.kozel.bookstore.service.dto.cart.CartItemDto;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
@@ -39,16 +39,13 @@ public class CartServiceImpl implements CartService {
     private final DataMapper mapper;
 
     @Override
-    public List<CartDto> getAll() {
-        return cartRepository.findAll()
-                .stream()
-                .map(mapper::toDto)
-                .toList();
+    public Page<CartDto> getAll(Pageable pageable) {
+        return cartRepository.findAllWithItems(pageable)
+                .map(mapper::toDto);
     }
 
     @Override
     public CartDto getById(Long id) {
-        log.debug("Called getById() method");
         Cart cart = cartRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Cannot find cart by id " + id)
@@ -59,7 +56,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto findOrCreateByUserId(Long userId) {
-        log.debug("Called findOrCreateByUserId() method");
         Cart cart = getOrCreateCart(userId);
         updateCartTotalPrice(cart);
         return mapper.toDto(cart);
@@ -67,7 +63,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto findByUserId(Long userId) {
-        log.debug("Called findByUserId() method");
         Cart cart = cartRepository.findByUserId(userId).orElseThrow(() ->
                 new ResourceNotFoundException(
                         "Cart with user ID " + userId + " was not found!"));
@@ -77,7 +72,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto create(CartDto cartDto) {
-        log.debug("Called create() method");
         if (cartRepository.existsByUserId(cartDto.getUserId())){
             throw new RuntimeException(
                     "Cart with user ID (" + cartDto.getUserId() + ") is already exists!");
@@ -106,7 +100,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto update(CartDto cartDto) {
-        log.debug("Called update() method");
         if (cartDto.getId() == null) {
             throw new IllegalArgumentException(
                     "Cart ID must be provided for update operation.");
@@ -135,7 +128,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto removeItemFromUserCart(Long userId, Long bookId) {
-        log.debug("Called removeItemFromUserCart() method");
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Cart for user ID " + userId + " not found."));
@@ -154,16 +146,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void delete(CartDto cartDto) {
-        log.debug("Called delete() method");
-        if (cartDto.getId() == null) {
+    public void delete(Long cartId) {
+        if (cartId == null) {
             throw new IllegalArgumentException(
                     "Cart ID must be provided for delete operation.");
         }
-        Cart cartToDelete = cartRepository.findById(cartDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cart not found for delete with ID: " + cartDto.getId()));
-        cartRepository.delete(cartToDelete);
+
+        if (!cartRepository.existsById(cartId)) {
+            throw  new ResourceNotFoundException(
+                    "Cart not found for delete with ID: " + cartId);
+        }
+        cartRepository.deleteById(cartId);
     }
 
     @Override
@@ -184,7 +177,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addItemToCart(CartDto cart, BookDto book, int quantity) {
-        log.debug("Called addItemToCart() method");
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
         }
@@ -196,7 +188,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void updateCartTotalPrice(CartDto cart) {
-        log.debug("Called updateCartTotalPrice() method");
         BigDecimal cartTotalPrice = BigDecimal.ZERO;
         for (CartItemDto item : cart.getItems()) {
             if (item.getBook() != null && item.getBook().getPrice() != null) {
@@ -211,7 +202,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto mergeCartToUser(Long userId, CartDto cartDto) {
-        log.debug("Called mergeCartToUser() method");
 
         Cart userCartInDb = getOrCreateCart(userId);
 
@@ -233,7 +223,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto clearCartByUserId(Long userId) {
-        log.debug("Called clearCartByUserId() method");
         return cartRepository.findByUserId(userId)
                 .map(cart -> {
                     cartRepository.deleteItemsByCartId(cart.getId());

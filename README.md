@@ -1,166 +1,137 @@
-# Bookstore application
+# Bookstore Web Application
 
-### Launch instructions
+## Overview
 
-You must have a **database**, that meets  the following *criteria*:
+This is a web application for a bookstore, built with **Spring MVC** and **JSP**. The application provides a platform for managing books, user accounts, and orders, with a focus on clean architecture, security, and maintainability. It features a robust **role-based access control (RBAC)** system implemented with custom servlet filters and a soft-delete mechanism for key entities.
 
-- The connection is made using the *protocol* `jdbc:postgresql` and *port* ***5432***;
-- *Database name*: `bookstore_bh`;
-- *Login* : `postgres`, *password*: see in a file `application.properties`.
+### Key Features
 
+* **User Management**: Role-based user accounts for Super Admin, Admin, Manager, and Customer.
+* **Book Catalog**: A comprehensive catalog of books with details like author, price, and cover type.
+* **Shopping Cart**: Functionality for adding books to a cart and managing order items.
+* **Order Processing**: Users can place orders, and managers can approve or archive them.
+* **Security**: Custom authentication and authorization filters to secure access to different parts of the application. Passwords are stored securely using salted hashing.
+* **Database**: The application uses a PostgreSQL database with a normalized schema, including foreign keys and unique indexes for data integrity.
 
-### Application description
+-----
 
-## Hometask #1.1 (Data Access Object)
+## Getting Started
 
-There is a *data class* [Book](src/main/java/com/kozel/bookstore/data/entity/Book.java) used in application, which contains following fields:
+### Prerequisites
 
-- (required) *Long* field `id`;
-- (required) *String* field `name`;
-- *String* field `isbn`;
-- *Enum* field `cover`;
-- (required) *String* field `author`;
-- (required) *Integer* field `published_year`;
-- *BigDecimal* field `price`.
+Before you begin, ensure you have the following installed:
 
-There is also an *interface* `BookDao` that interacts with the database and includes CRUD and some other methods:
+* **Java Development Kit (JDK) 8 or higher**
+* **Apache Maven**
+* **PostgreSQL database**
+* An IDE (e.g., IntelliJ IDEA, Eclipse) for running the application.
 
-- `Long addBook(Book book)` that adds a book to a database;
-- `Book getById(Long id)` that finds a book by its *id* in a database;
-- `Book getByIsbn(String isbn)` that finds a book by its *isbn* in a database;
-- `List<Book> findByAuthor(String author)` that finds a **group of books** by their *author* in a database;
-- `Book update(Book book)` that updates a selected book in a database;
-- `boolean deleteById (Long id)` that deletes a book from a database;
-- `long countAll()` that counts number of books in a database;
-- `boolean updateRS(Book book)` that updates a selected book in a database using ***ResultSet*** methods;
-- `void createRS(Book book)` that adds a book to a database using ***ResultSet*** methods;
-- `void printTableInfo()` that displays information of a database table ***books***;
+### Installation and Setup
 
-*Class* `BookDaoImpl` implements interface `BookDao` and carries out the methods described above.
+1.  **Clone the repository**:
 
+```bash
+    git clone https://github.com/truedest1ny/bookstore_spring_kozel.git
+    cd bookstore
+```
 
-## Hometask #1.2 (Service)
+2.  **Set up the Database**:
 
-There is a *Data Transfer Object* `BookDto` Having a similar structure to `Book` data class and another *DTO* `BookDtoShowing` providing an abbreviated representation of a `Book` object for display to the user.
+   * Create a new database in your PostgreSQL instance.
+   * Execute the SQL scripts located in the project's root directory. These scripts create the necessary tables, indexes, and populate the initial data.
+      * The provided SQL file ([schema.sql](database/schema.sql)) should be run to create the tables, indexes; [data.sql](database/data.sql) would insert the initial data.
+```sql 
+      -- data.sql
+      
+      -- User 1: superAdmin
+      -- Login: 'superAdmin', Password: 'superAdmin', Role: SUPER_ADMIN
+      
+      INSERT INTO users (first_name, last_name, email, login, role_id, is_deleted) VALUES
+        ('Super', 'Admin', 'super.admin@bookstore.com', 'superAdmin', 1, FALSE);
+        
+      INSERT INTO user_hash (user_id, salt, hashed_password) VALUES
+        (LASTVAL(), 'ejsb0o7Tve36m5zmH0G76Q==', '48H2/FhYfXcatEt0xk9dju4rlpI1d9/XKncxzfs2B/M=');
+```
 
-Also, there is an *interface* [BookService](src/main/java/com/kozel/bookstore/service/BookService.java) implementing basic CRUD operations and its implementation [BookServiceImpl](src/main/java/com/kozel/bookstore/service/impl/BookServiceImpl.java).
+3.  **Configure the Application**:
 
-Interface `DataSource` has a method `getConnection()`, which is implemented by class: `DataSourceImpl`.
+Open [application.yml](src/main/resources/application.yml) and verify that the database connection properties are correct.
+Update the `spring.datasource` section with your PostgreSQL username and password if they differ from the defaults.
 
-Connection parameters are read from the file `application.properties` (contains both parameters for the local and remote database) through the methods `getPropertiesLocal()` and `getPropertiesRemote()` of the `ConnectionProperties` class.
+   ```yaml
+      #application.yml
 
-## Hometask #1.3 (User)
+      spring:
+        datasource:
+          url: jdbc:postgresql://localhost:5432/bookstore_bh
+          username: postgres
+          password: root
+   ```    
 
-Added entity [User](src/main/java/com/kozel/bookstore/data/entity/User.java) and created all classes, Data and DTO similar to entity `Book`.
+4.  **Run the Application**:
 
-The project now uses *Maven* for build. Its code is in [pom.xml](pom.xml) file where its configuration settings are described and all dependencies necessary for the project to work are included.
+   * Using your IDE, run the `Main` class.
+   * Alternatively, use Maven to build and run the application:
 
-*Logging* is connected to the project `(Log4j2)`. Its configuration settings are described in the [log4j2.xml](src/main/resources/log4j2.xml) file.
+```bash
+    mvn spring-boot:run
+```
 
-## Hometask #1.4 (Web HTTP)
+The application will be available at `http://localhost:8080`.
 
-There is a Controller layer implemented in next classes:
-- `MainPageController`,being a servlet to the server's home page;
-- `BookController`, which is a book information servlet;
-- `UserController` is a user information servlet;
-- `BooksController` is a servlet of list of all books;
-- `UsersController` is a servlet of list of all users.
+-----
 
-All these classes extend `HttpServlet` class and override the `doGet()` method. Servlets are registered using the `@WebServlet()` annotation.
+## Application Architecture
 
-The project is packed into a `war` archive, as a result of which it can be deployed on the server (`Tomcat` in this case).
+The application follows a layered, service-oriented architecture:
 
-## Hometask #1.5 (Patterns)
+* **Controllers**: Handle incoming HTTP requests and manage the flow of data between the web layer and the service layer.
+* **Services**: Contain the core business logic of the application. They are responsible for transactions and orchestrating interactions with repositories.
+* **Repositories**: Interact with the database. They use JPA (Hibernate) to perform CRUD operations on the data models.
+* **Filters**: Custom `WebAuthenticationFilter` and `WebAuthorizationFilter` intercept requests to enforce security policies.
+* **Views**: The presentation layer is built with JSP (JavaServer Pages) and uses a custom view resolver to locate templates.
 
-Previous controller classes were reworked: the *Front Controller* design pattern was applied.
+## Database Schema
 
-A `FrontController` class of the same name was created, which is the only servlet of the application, the remaining classes were reworked into commands:
+The database schema is designed for a relational bookstore model, with several key tables:
 
-1. **Book** entity:
-   - [BookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCommand.java) processes requests for information about a specific book;
-   - [BookCreateCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCreateCommand.java) creates a new book;
-   - [BookCreatingCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookCreatingCommand.java) redirects to the page for creating a new book;
-   - [BookDeleteCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BookDeleteCommand.java) deletes a book;
-   - [BooksCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/BooksCommand.java) displays a list of all books;
-   - [EditBookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/EditBookCommand.java) directs to the book information change page;
-   - [UpdateBookCommand](src/main/java/com/kozel/bookstore/web/controller/impl/book/UpdateBookCommand.java) modifies information about the book.
+* **`books`**: Main table for books, with a `is_deleted` flag for soft deletion.
+* **`users`**: Stores user information with a foreign key to the `roles` table. Also uses soft deletion.
+* **`user_hash`**: A separate table for storing user password hashes and salts, improving security by separating sensitive data.
+* **`carts`** and **`cart_items`**: Manages the shopping cart for each user.
+* **`orders`** and **`order_items`**: Manages orders placed by users.
+* **`ordered_books`**: A crucial table that stores a snapshot of a book's information at the time of an order, ensuring historical data integrity even if the original book record is modified or deleted.
+* **`covers`**, **`roles`**, **`statuses`**: Dictionary tables for lookup values, ensuring data consistency.
 
+The full database schema with descriptions is available in the provided SQL script.
 
-2. The commands for the **User** entity are similar to the commands for the **Book** entity:
+-----
 
-   - [EditUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/EditUserCommand.java);
-   - [UpdateUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UpdateUserCommand.java);
-   - [UserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCommand.java);
-   - [UserCreateCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCreateCommand.java);
-   - [UserCreatingCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserCreatingCommand.java);
-   - [UserDeleteCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UserDeleteCommand.java);
-   - [UsersCommand](src/main/java/com/kozel/bookstore/web/controller/impl/user/UsersCommand.java).
+## Documentation
 
-The creation of all the main components of the application takes place in the `CommandFactory` class, which implements two design patterns at once: `Factory` and `Singleton`.
+The codebase is thoroughly documented with Javadoc for all public classes and methods. This documentation provides a clear understanding of the application's design, purpose, and functionality, making it easier to navigate and maintain the code.
 
-## Hometask #2.1 (Spring Framework)
+```java
 
-The project has been migrated to Spring Framework. The framework is configured using a Java class [AppConfig](src/main/java/com/kozel/bookstore/AppConfig.java) and Annotation `@Component (@Repository, @Service, @Controller)`.
-Removed unused classes:
-- `CommandFactory`;
-- `ConnectionProperties` and its implementation `ConnectionPropertiesImpl`;
-- `IllegalCommandException`.
+/**
+ * A servlet filter for enforcing role-based access control to web resources.
+ * This filter intercepts incoming requests and, based on a set of configured
+ * rules, either grants or denies access to the resource.
+ */
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class WebAuthorizationFilter extends HttpFilter implements PathMatcher
+```
 
-## Hometask #2.2 (Spring JDBC Template)
+-----
 
-DAO classes have been redesigned: now they use `NamedParameterJdbcTemplate` and external `DataSource (Hikari Connection Pool)` optimizing code and performance.
+## Contributing
 
-## Hometask #2.3 (Order. Complex Business Tier)
+If you'd like to contribute, please fork the repository and submit a pull request.
 
-Added [Order](src/main/java/com/kozel/bookstore/data/entity/Order.java) entity and auxiliary entity [OrderItem](src/main/java/com/kozel/bookstore/data/entity/OrderItem.java).
+-----
 
-Added a _**Repository**_ layer (related to the Data layer), which is an abstraction over the DAO. The necessity of its use is caused by the appearance of a complex Order object, the creation of which requires the use of different DAOs:
+## Contact
 
-- [BookRepository](src/main/java/com/kozel/bookstore/data/repository/BookRepository.java) - uses `BookDao`;
-- [UserRepository](src/main/java/com/kozel/bookstore/data/repository/UserRepository.java) - uses `UserDao`;
-- [OrderRepository](src/main/java/com/kozel/bookstore/data/repository/OrderRepository.java)- uses `BookDao`, `UserDao`, `OrderItemDao` and `OrderDao`.
-
-Added **_DTO classes_** for the Data layer:
-
-- `BookDto`;
-- `OrderDto`;
-- `OrderItemDto`;
-- `UserDto`.
-
-The DTO classes of the service layer have been renamed to eliminate duplicate class names.
-
-Added **_commands_** for the controller to search for an order by ID, a list of all orders, and a list of all orders for a specific user:
-
-- [OrderCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrderCommand.java) displays an order by its ID;
-- [OrdersCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrdersCommand.java) displays a list of all orders;
-- [FilterOrdersByUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/FilterOrdersByUserCommand.java) displays a form with a selection of the user whose orders will be displayed;
-- [OrdersByUserCommand](src/main/java/com/kozel/bookstore/web/controller/impl/order/OrdersByUserCommand.java) displays the selected user's orders.
-
-Added **_JSP pages_** to these commands:
-
-- [order.jsp](src/main/webapp/WEB-INF/jsp/order/order.jsp);
-- [orders.jsp](src/main/webapp/WEB-INF/jsp/order/orders.jsp);
-- [orders_by_user.jsp](src/main/webapp/WEB-INF/jsp/order/orders_by_user.jsp);
-- [filter_orders_by_user.jsp](src/main/webapp/WEB-INF/jsp/order/filter_orders_by_user.jsp);
-- [order_not_found.jsp](src/main/webapp/WEB-INF/jsp/error/404/order_not_found.jsp).
-
-## Hometask #2.4 (ORM. JPA. Hibernate)
-
-The project has been migrated to **_JPA (Hibernate)_** technology. Now Repository-layer will interact with the database directly, without using DAO-classes. 
-
-Because of this, the _DAO_ layer has been removed, as well as the _DTOs_ used for passing between the DAO and Repository:
-
-- ~~BookDto~~;
-- ~~OrderDto~~;
-- ~~OrderItemDto~~;
-- ~~UserDto~~;
-- **~~BookDao~~**;
-- **~~UserDao~~**;
-- **~~OrderItemDao~~**;
-- **~~OrderDao~~**.
-
-Added [persistence.xml](src/main/resources/META-INF/persistence.xml), which is the configuration file for JPA.
-
-The **Hibernate** project uses **_Hikari Connection Pool_** to manage connections to the database.
-
-To organise the structure of the displayed data in the Entity layer, the _‘Deleted’_ flag filter is used. Its declaration can be found in the file [package-info.java](src/main/java/com/kozel/bookstore/data/entity/package-info.java).
+For any questions or feedback, please contact [sensitiveperson@mail.ru](mailto:sensitiveperson@mail.ru).

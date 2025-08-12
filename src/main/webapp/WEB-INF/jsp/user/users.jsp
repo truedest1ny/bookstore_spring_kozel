@@ -24,6 +24,10 @@
         </c:if>
     </div>
 
+    <div class="d-flex justify-content-end mb-4 users-form-margin-right">
+        <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
+    </div>
+
     <table class="table table-position">
         <thead class="table-light">
             <tr>
@@ -36,9 +40,13 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${users}" var="user" varStatus="counter">
+            <c:forEach items="${page.content}" var="user" varStatus="counter">
                 <tr>
-                    <td><a href="/users/<c:out value='${user.id}'/>"><c:out value="${counter.index + 1}"/></a></td>
+                    <td>
+                        <a href="/users/<c:out value='${user.id}'/>">
+                            <c:out value="${page.number * page.size + counter.index + 1}"/>
+                        </a>
+                    </td>
                     <td><c:out value="${user.email}"/></td>
                     <td><c:out value="${user.login}"/></td>
                     <td><c:out value="${user.role}"/></td>
@@ -53,7 +61,12 @@
                     <td>
                         <c:if test="${sessionScope.user.role.name() eq 'SUPER_ADMIN'}">
                             <form action="/users/delete/<c:out value='${user.id}'/>" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="size" value="${page.size}"/>
+                                    <c:forEach items="${sortParams}" var="sortParam">
+                                         <input type="hidden" name='sort' value='${sortParam}'/>
+                                    </c:forEach>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                             </form>
                         </c:if>
                     </td>
@@ -62,6 +75,9 @@
         </tbody>
     </table>
 
+    <c:if test="${page.totalPages > 1}">
+        <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+    </c:if>
     <div class="container text-center mt-3 mb-5">
         <a href="/" class="btn btn-secondary btn-lg">Back to mainpage</a>
     </div>

@@ -28,7 +28,7 @@
                 <tbody>
                     <tr>
                         <td class="font-weight-bold">Date:</td>
-                        <td><c:out value='${order.date}'/></td>
+                        <td><c:out value='${order.formattedDate}'/></td>
                     </tr>
                     <c:if test="${isEmployee}">
                         <tr>
@@ -53,6 +53,10 @@
 
         <h2 class="display-5 mb-4"><i>Items in order:</i></h2>
 
+         <div class="d-flex justify-content-end mb-4 order-item-form-margin-right">
+               <%@ include file="/WEB-INF/jsp/page_size_form.jsp" %>
+         </div>
+
         <table class="table table-position table-hover">
             <thead class="table-light">
                 <tr>
@@ -63,11 +67,11 @@
                 </tr>
             </thead>
             <tbody>
-                <c:forEach items="${order.items}" var="item" varStatus="counter">
+                <c:forEach items="${page.content}" var="item" varStatus="counter">
                     <tr>
                         <td>
                             <a href="/books/<c:out value='${item.book.id}'/>">
-                                <c:out value="${counter.count}"/>
+                                <c:out value="${page.number * page.size + counter.index + 1}"/>
                             </a>
                         </td>
                         <td><c:out value="${item.book.name}"/></td>
@@ -77,6 +81,10 @@
                 </c:forEach>
             </tbody>
         </table>
+
+         <c:if test="${page.totalPages > 1}">
+            <%@ include file="/WEB-INF/jsp/pagination_panel.jsp" %>
+         </c:if>
 
         <div class="action-buttons mt-5">
             <c:choose>
@@ -111,8 +119,7 @@
                 </c:if>
 
                 <c:if test="${order.user.login eq sessionScope.user.login
-                                && order.status.name() eq 'PENDING'
-                                && sessionScope.user.role.name() eq 'CUSTOMER'}">
+                                && order.status.name() eq 'PENDING'}">
                      <form action="/ordered/cancel/<c:out value="${order.id}"/>"
                            method="post" style="display:inline;">
                              <button type="submit" class="btn btn-danger btn-lg button-margin">

@@ -8,6 +8,7 @@ import com.kozel.bookstore.data.mapper.DataMapper;
 import com.kozel.bookstore.data.repository.CartRepository;
 import com.kozel.bookstore.data.repository.OrderRepository;
 import com.kozel.bookstore.service.OrderService;
+import com.kozel.bookstore.service.annotation.SecuredLogging;
 import com.kozel.bookstore.service.dto.order.OrderDto;
 import com.kozel.bookstore.service.dto.order.OrderShowingDto;
 import com.kozel.bookstore.service.dto.user.UserSessionDto;
@@ -15,17 +16,16 @@ import com.kozel.bookstore.service.exception.AuthorizationException;
 import com.kozel.bookstore.service.exception.BusinessException;
 import com.kozel.bookstore.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -35,43 +35,36 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderDto> getAll() {
-        log.debug("Called getAll() method");
-        return mapper.toOrderDtoList(
-                orderRepository.findAll());
+    public Page<OrderDto> getAll(Pageable pageable) {
+        return orderRepository.findAllWithDetails(pageable)
+                .map(mapper::mapOrderToDtoWithDate);
     }
 
     @Override
-    public List<OrderShowingDto> getOrdersDtoShort() {
-        log.debug("Called getOrdersDtoShort() method");
-        return mapper.toOrderShowingDtoList(
-                orderRepository.findAll());
+    public Page<OrderShowingDto> getOrdersDtoShort(Pageable pageable) {
+        return orderRepository.findAllWithDetails(pageable)
+                .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
-    public List<OrderShowingDto> findByUserId(Long userId) {
-        log.debug("Called findByUserId() method");
-        return mapper.toOrderShowingDtoList(
-                orderRepository.findByUserId(userId));
+    public Page<OrderShowingDto> findByUserId(Pageable pageable, Long userId) {
+        return orderRepository.findByUserId(pageable, userId)
+                .map(mapper::mapOrderToShortedDtoWithDate);
     }
 
     @Override
     public OrderDto getById(Long id, UserSessionDto user) {
-        log.debug("Called getById() method");
             Order order = orderRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException(
                             "Cannot find order by id " + id)
             );
 
         validateOrderAffiliation(user, order);
-        return mapper.toDto(order);
+        return mapper.mapOrderToDtoWithDate(order);
     }
 
     @Override
     public OrderDto create(Long userId) {
-        log.debug("Called create() method");
-
-
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -102,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
         cart.setTotalPrice(BigDecimal.ZERO);
         cartRepository.save(cart);
 
-        return mapper.toDto(savedOrder);
+        return mapper.mapOrderToDtoWithDate(savedOrder);
     }
 
 
@@ -110,8 +103,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto update(OrderDto orderDto) {
-        log.debug("Called update() method");
-
         if (orderDto.getId() == null) {
             throw new IllegalArgumentException(
                     "Order ID must be provided for update operation.");
@@ -130,12 +121,12 @@ public class OrderServiceImpl implements OrderService {
 
         updateOrderTotalPrice(existingOrder);
         Order savedOrder = orderRepository.save(existingOrder);
-        return mapper.toDto(savedOrder);
+        return mapper.mapOrderToDtoWithDate(savedOrder);
     }
 
     @Override
+    @SecuredLogging
     public void archive(Long orderId, UserSessionDto user) {
-        log.debug("Called archive() method");
             Order orderToArchive = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
@@ -153,12 +144,12 @@ public class OrderServiceImpl implements OrderService {
                         + orderToArchive.getStatus() + ").");
             }
 
-            orderRepository.delete(orderToArchive);
+            orderRepository.softDelete(orderToArchive.getId(), Order.Status.ARCHIVED);
     }
 
     @Override
+    @SecuredLogging
     public void approve(Long orderId, UserSessionDto user) {
-        log.debug("Called approve() method");
             Order orderToApprove = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
@@ -180,15 +171,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @SecuredLogging
     public void cancel(Long orderId, UserSessionDto user) {
-        log.debug("Called cancel() method");
             Order orderToCancel = orderRepository.findById(orderId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Cannot find order (id = " + orderId + ")"));
 
             validateOrderAffiliation(user, orderToCancel);
 
-            if (user.getRole() != UserSessionDto.Role.CUSTOMER) {
+            if ((user.getRole() != UserSessionDto.Role.CUSTOMER) &&
+                    (user.getRole() != UserSessionDto.Role.SUPER_ADMIN) ) {
                 throw new AuthorizationException(
                         "Order with ID " + orderId + " cannot be cancelled." +
                                 " You don't have corresponding rights");
