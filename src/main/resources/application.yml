@@ -21,6 +21,20 @@ server:
 # Spring Boot settings.
 #
 spring:
+  # Spring Data settings
+  data:
+  # Web-related settings (request handling)
+    web:
+      # Pagination settings
+      pageable:
+        # Setting one-indexed-parameters to 'true' tells Spring to treat
+        # page numbers in URL parameters as one-based (e.g., ?page=1).
+        # By default(false), Spring expects pagination to be zero-based.
+        #
+        # Note: The application's internal logic (Pageable, PageRequest)
+        # will still use zero-based indexing. This setting only affects
+        # how Spring converts the HTTP request parameter into the Pageable object.
+        one-indexed-parameters: true
   # Database connection settings.
   datasource:
     # The URL for the PostgreSQL database connection.

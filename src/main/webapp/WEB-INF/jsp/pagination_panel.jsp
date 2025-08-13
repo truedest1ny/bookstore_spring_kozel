@@ -5,7 +5,7 @@
         <ul class="pagination mb-0">
             <li class="page-item <c:if test='${page.first}'>disabled</c:if>">
                 <c:url value='${pageUrl}' var="prevPageUrl">
-                    <c:param name='page' value='${page.number - 1}'/>
+                    <c:param name='page' value='${page.number}'/>
                     <c:param name='size' value='${page.size}'/>
                     <c:forEach items="${sortParams}" var="sortParam">
                          <c:param name='sort' value='${sortParam}'/>
@@ -17,7 +17,7 @@
             <c:if test="${page.totalPages > 0 && page.number > 2}">
                 <li class="page-item">
                     <c:url value='${pageUrl}' var="firstPageUrl">
-                        <c:param name='page' value='0'/>
+                        <c:param name='page' value='1'/>
                         <c:param name='size' value='${page.size}'/>
                     <c:forEach items="${sortParams}" var="sortParam">
                          <c:param name='sort' value='${sortParam}'/>
@@ -37,7 +37,7 @@
             <c:forEach begin="${startPage}" end="${endPage}" var="i">
                 <li class="page-item <c:if test="${page.number eq i}">active</c:if>">
                     <c:url value='${pageUrl}' var="midPageUrl">
-                        <c:param name='page' value='${i}'/>
+                        <c:param name='page' value='${i + 1}'/>
                         <c:param name='size' value='${page.size}'/>
                     <c:forEach items="${sortParams}" var="sortParam">
                          <c:param name='sort' value='${sortParam}'/>
@@ -54,7 +54,7 @@
             <c:if test="${page.totalPages > 1 && page.number < page.totalPages - 3}">
                 <li class="page-item <c:if test="${page.number eq page.totalPages - 1}">active</c:if>">
                     <c:url value='${pageUrl}' var="lastPageUrl">
-                        <c:param name='page' value='${page.totalPages - 1}'/>
+                        <c:param name='page' value='${page.totalPages}'/>
                         <c:param name='size' value='${page.size}'/>
                     <c:forEach items="${sortParams}" var="sortParam">
                          <c:param name='sort' value='${sortParam}'/>
@@ -66,7 +66,7 @@
 
             <li class="page-item <c:if test="${page.last}">disabled</c:if>">
                 <c:url value='${pageUrl}' var="nextPageUrl">
-                    <c:param name='page' value='${page.number + 1}'/>
+                    <c:param name='page' value='${page.number + 2}'/>
                     <c:param name='size' value='${page.size}'/>
                     <c:forEach items="${sortParams}" var="sortParam">
                          <c:param name='sort' value='${sortParam}'/>

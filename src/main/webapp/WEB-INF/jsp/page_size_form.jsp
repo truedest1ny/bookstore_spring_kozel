@@ -11,7 +11,7 @@
 
     <button type="submit" class="btn btn-outline-primary ms-2">Go</button>
 
-    <input type="hidden" name="page" value="0"/>
+    <input type="hidden" name="page" value="1"/>
     <c:forEach items="${sortParams}" var="sortParam">
         <input type="hidden" name="sort" value="${sortParam}"/>
     </c:forEach>

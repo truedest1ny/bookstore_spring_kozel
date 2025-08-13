@@ -63,7 +63,7 @@
                             <td>
                                 <form action="/cart/add" method="post" class="d-inline">
                                     <input type="hidden" name="bookId" value="<c:out value='${book.id}'/>"/>
-                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="page" value="${page.number + 1}"/>
                                     <input type="hidden" name="size" value="${page.size}"/>
                                     <c:forEach items="${sortParams}" var="sortParam">
                                          <input type="hidden" name='sort' value='${sortParam}'/>
@@ -83,7 +83,7 @@
                             </td>
                             <td>
                                 <form action="/books/delete/<c:out value='${book.id}'/>" method="post" class="d-inline">
-                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="page" value="${page.number + 1}"/>
                                     <input type="hidden" name="size" value="${page.size}"/>
                                     <c:forEach items="${sortParams}" var="sortParam">
                                          <input type="hidden" name='sort' value='${sortParam}'/>

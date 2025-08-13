@@ -61,7 +61,7 @@
                     <td>
                         <c:if test="${sessionScope.user.role.name() eq 'SUPER_ADMIN'}">
                             <form action="/users/delete/<c:out value='${user.id}'/>" method="post" class="d-inline">
-                                    <input type="hidden" name="page" value="${page.number}"/>
+                                    <input type="hidden" name="page" value="${page.number + 1}"/>
                                     <input type="hidden" name="size" value="${page.size}"/>
                                     <c:forEach items="${sortParams}" var="sortParam">
                                          <input type="hidden" name='sort' value='${sortParam}'/>
