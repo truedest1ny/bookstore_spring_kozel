@@ -1,16 +1,13 @@
 package com.kozel.bookstore.data.entity;
 
 import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Converter;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,17 +65,6 @@ public class User {
     @Column(name = "login", updatable = false)
     private String login;
 
-    /**
-     * The associated password hash and salt for this user. This is a one-to-one
-     * relationship with a shared primary key, separating the user's core data
-     * from their security credentials.
-     * The {@code optional = false} setting ensures that every user must have a password hash.
-     */
-    @OneToOne(mappedBy = "user",
-            cascade = {CascadeType.PERSIST},
-            fetch = FetchType.LAZY,
-            optional = false)
-    private UserHash hash;
 
     /**
      * The role assigned to the user (e.g., ADMIN, CUSTOMER). This enum is mapped

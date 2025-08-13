@@ -3,6 +3,7 @@ package com.kozel.bookstore.service.impl;
 import com.kozel.bookstore.data.entity.User;
 import com.kozel.bookstore.data.entity.UserHash;
 import com.kozel.bookstore.data.mapper.DataMapper;
+import com.kozel.bookstore.data.repository.UserHashRepository;
 import com.kozel.bookstore.data.repository.UserRepository;
 import com.kozel.bookstore.service.Hasher;
 import com.kozel.bookstore.service.UserService;
@@ -28,9 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserHashRepository userHashRepository;
     private final DataMapper mapper;
     private final Hasher hasher;
-
 
     @Override
     public Page<UserDto> getAll(Pageable pageable) {
@@ -109,9 +110,13 @@ public class UserServiceImpl implements UserService {
                             errorAuthMessage)
             );
 
-            String userSalt = user.getHash().getSalt();
+        UserHash hash = userHashRepository.findById(user.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("UserHash not found for user ID: " + user.getId())
+        );
+
+            String userSalt = hash.getSalt();
             String inputtedPassword = userLoginDto.getPassword();
-            String userHashedPassword = user.getHash().getHashedPassword();
+            String userHashedPassword = hash.getHashedPassword();
 
             if(!hasher.hashPassword(inputtedPassword, userSalt)
                     .equals(userHashedPassword)) {
@@ -130,15 +135,19 @@ public class UserServiceImpl implements UserService {
                         "No user with such ID (" + changePasswordDto.getId() +").")
         );
 
-        String currentHashedPassword = user.getHash().getHashedPassword();
+        UserHash hash = userHashRepository.findById(user.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("UserHash not found for user ID: " + user.getId())
+        );
+
+        String currentHashedPassword = hash.getHashedPassword();
 
         String formHashedCurrentPassword = hasher.hashPassword(
                 changePasswordDto.getCurrentPassword(),
-                user.getHash().getSalt());
+                hash.getSalt());
 
         String formHashedNewPassword = hasher.hashPassword(
                 changePasswordDto.getNewPassword(),
-                user.getHash().getSalt());
+                hash.getSalt());
 
         if (!changePasswordDto.getNewPassword().
                 equals(changePasswordDto.getConfirmPassword())){
@@ -152,11 +161,11 @@ public class UserServiceImpl implements UserService {
         }
 
         String newSalt = hasher.generateSalt();
-        user.getHash().setSalt(newSalt);
+        hash.setSalt(newSalt);
 
         String newHashedPassword = hasher.hashPassword(
                 changePasswordDto.getNewPassword(), newSalt);
-        user.getHash().setHashedPassword(newHashedPassword);
+        hash.setHashedPassword(newHashedPassword);
         userRepository.save(user);
     }
 
@@ -164,6 +173,7 @@ public class UserServiceImpl implements UserService {
         User newUser = mapper.toEntity(userCreateDto);
         newUser.setRole(User.Role.CUSTOMER);
 
+        User savedUser = userRepository.save(newUser);
         UserHash hash = new UserHash();
 
         String salt = hasher.generateSalt();
@@ -172,10 +182,9 @@ public class UserServiceImpl implements UserService {
 
         hash.setSalt(salt);
         hash.setHashedPassword(hashedPassword);
-
-        newUser.setHash(hash);
-        hash.setUser(newUser);
-        return newUser;
+        hash.setUser(savedUser);
+        userHashRepository.save(hash);
+        return savedUser;
     }
 }
 

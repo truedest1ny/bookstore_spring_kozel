@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <hibernate.version>6.5.3.Final</hibernate.version>
         <jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
         <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
         <postgresql.version>42.7.4</postgresql.version>
@@ -149,23 +148,6 @@
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
                     </compilerArgs>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                <version>${hibernate.version}</version> <executions>
-                <execution>
-                    <configuration>
-                        <enableLazyInitialization>true</enableLazyInitialization>
-                        <enableDirtyTracking>true</enableDirtyTracking>
-                        <enableAssociationManagement>true</enableAssociationManagement>
-                    </configuration>
-                    <goals>
-                        <goal>enhance</goal>
-                    </goals>
-                </execution>
-            </executions>
             </plugin>
         </plugins>
     </build>

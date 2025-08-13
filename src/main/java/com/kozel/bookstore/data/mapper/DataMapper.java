@@ -56,24 +56,22 @@ public interface DataMapper {
 
     /**
      * Converts a detailed {@link UserDto} to a new {@link User} entity.
-     * The `id` and `hash` fields are ignored as they are handled separately.
+     * The `id` field is ignored as it is handled separately.
      * @param userDto The source user DTO.
      * @return A new user entity.
      */
-    @Mapping(target = "hash", ignore = true)
     @Mapping(target = "id", ignore = true)
     User toEntity(UserDto userDto);
 
     /**
      * Converts a {@link UserCreateDto} to a new {@link User} entity.
-     * The `id` and `hash` are ignored. The `role` is hardcoded to "CUSTOMER"
+     * The `id` is ignored. The `role` is hardcoded to "CUSTOMER"
      * for new user registration. Other fields are also ignored to ensure
      * a clean new entity creation.
      * @param userCreateDto The source DTO for creating a new user.
      * @return A new user entity with a "CUSTOMER" role.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "hash", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "role", constant = "CUSTOMER")
     @Mapping(target = "firstName", ignore = true)
@@ -82,13 +80,12 @@ public interface DataMapper {
 
     /**
      * Updates an existing {@link User} entity with data from a {@link UserUpdateDto}.
-     * The `id`, `hash`, `login`, and `isDeleted` fields are ignored to prevent
+     * The `id`, `login`, and `isDeleted` fields are ignored to prevent
      * them from being modified during an update operation.
      * @param dto The source DTO with update data.
      * @param user The target user entity to be updated.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "hash", ignore = true)
     @Mapping(target = "login", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     void mapToEntity(UserUpdateDto dto,@MappingTarget User user);
