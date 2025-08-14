@@ -102,19 +102,23 @@ public class ErrorHandler {
     }
 
     /**
-     * Handles authentication exceptions, typically during the login process.
-     * It returns a custom login page with a 401 Unauthorized status and a user-friendly message.
+     * Handles custom authentication exceptions by redirecting the user.
+     * <p>
+     * It uses the {@code redirectToLastPage} helper method to redirect the user
+     * to the previous page or to the login page if the "Referer" header is not present.
+     * The exception message is passed as a flash attribute.
+     * </p>
      *
-     * @param model The Spring Model to pass the error message to the view.
-     * @param e The authentication exception that was thrown.
-     * @return The view name for the user login page.
+     * @param request The HttpServletRequest to get the Referer header.
+     * @param attributes The RedirectAttributes to pass the flash message.
+     * @param e The authentication exception.
+     * @return A redirect string to the user's previous page or the login page.
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleAuthentificationException (Model model, AuthentificationException e){
-        log(e);
-        model.addAttribute(ERROR_MESSAGE_KEY, e.getMessage());
-        return "user/login";
+    public String handleAuthentificationException (HttpServletRequest request,
+                                                   RedirectAttributes attributes,
+                                                   AuthentificationException e){
+        return redirectToLastPage(request, attributes, e, "/login");
     }
 
     /**
@@ -134,38 +138,66 @@ public class ErrorHandler {
 
     /**
      * Handles exceptions related to invalid password scenarios.
-     * It returns the change password page with a 400 Bad Request status
-     * and a specific error message for the user.
+     * <p>
+     * It uses the {@code redirectToLastPage} helper method to redirect the user
+     * to the change password page with an error message passed as a flash attribute.
+     * </p>
      *
-     * @param model The Spring Model to pass the error message to the view.
-     * @param e The invalid password exception that was thrown.
-     * @return The view name for the change password page.
+     * @param request The HttpServletRequest to get the Referer header.
+     * @param attributes The RedirectAttributes to pass the flash message.
+     * @param e The invalid password exception.
+     * @return A redirect string to the user's previous page or the password change page.
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleInvalidPasswordException (Model model, InvalidPasswordException e){
-        log(e);
-        model.addAttribute(ERROR_MESSAGE_KEY, e.getMessage());
-        return "user/change_password";
+    public String handleInvalidPasswordException (HttpServletRequest request,
+                                                  RedirectAttributes attributes,
+                                                  InvalidPasswordException e){
+        return redirectToLastPage(request, attributes, e, "/profile/edit/password");
     }
 
     /**
      * Handles business logic exceptions that require a redirection.
-     * This method catches {@link BusinessException} and redirects the user,
-     * adding the error message as a flash attribute to be displayed on the next page.
+     * <p>
+     * It uses the {@code redirectToLastPage} helper method to redirect the user
+     * to the previous page or to the home page with an error message passed as a flash attribute.
+     * </p>
      *
+     * @param request The HttpServletRequest to get the Referer header.
      * @param attributes The RedirectAttributes to pass a flash message.
-     * @param e The business exception that was thrown.
-     * @return The redirect URL to the books page.
+     * @param e The business exception.
+     * @return A redirect string to the user's previous page or the home page.
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public String handleBusinessException (RedirectAttributes attributes, BusinessException e){
-        log(e);
-        attributes.addFlashAttribute(ERROR_MESSAGE_KEY, e.getMessage());
-        return "redirect:/books";
+    public String handleBusinessException (HttpServletRequest request,
+                                           RedirectAttributes attributes,
+                                           BusinessException e){
+        return redirectToLastPage(request, attributes, e, "/");
     }
 
+    /**
+     * Helper method to redirect the user to the last visited page.
+     * <p>
+     * This method checks for the "Referer" header to find the previous URL. If it's
+     * not present, it redirects to a specified base URL. The exception is logged,
+     * and its message is added to the {@code RedirectAttributes} as a flash attribute.
+     * </p>
+     *
+     * @param request The HttpServletRequest to get the Referer header.
+     * @param attributes The RedirectAttributes to add the flash message.
+     * @param e The exception that triggered the redirect.
+     * @param baseUrl The default URL to redirect to if the "Referer" header is missing.
+     * @return A redirect string to the last page or the base URL.
+     */
+    private String redirectToLastPage(HttpServletRequest request,
+                                      RedirectAttributes attributes,
+                                      Throwable e,
+                                      String baseUrl) {
+        String referer = request.getHeader("Referer");
+        String redirectUrl = (referer != null) ? referer : baseUrl;
+        log(e);
+        attributes.addFlashAttribute(ERROR_MESSAGE_KEY, e.getMessage());
+        return "redirect:" + redirectUrl;
+    }
 
     private void log(Throwable e) {
         log.error("Error occurred: ", e);
