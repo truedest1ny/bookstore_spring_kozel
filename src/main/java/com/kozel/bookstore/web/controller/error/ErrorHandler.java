@@ -9,16 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.kozel.bookstore.util.WebConstants.ERROR_MESSAGE_KEY;
-import static com.kozel.bookstore.util.WebConstants.URL_KEY;
+import static com.kozel.bookstore.util.WebConstants.*;
 
 /**
  * Global exception handler for controllers.
@@ -26,7 +25,7 @@ import static com.kozel.bookstore.util.WebConstants.URL_KEY;
  * exception handling across all controllers. It maps various exceptions to
  * appropriate HTTP status codes and custom error pages.
  */
-@ControllerAdvice(annotations = Controller.class)
+@ControllerAdvice
 @Slf4j
 public class ErrorHandler {
 
@@ -118,7 +117,8 @@ public class ErrorHandler {
     public String handleAuthentificationException (HttpServletRequest request,
                                                    RedirectAttributes attributes,
                                                    AuthentificationException e){
-        return redirectToLastPage(request, attributes, e, "/login");
+        return redirectToLastPage
+                (request, attributes, e, "/login");
     }
 
     /**
@@ -152,7 +152,8 @@ public class ErrorHandler {
     public String handleInvalidPasswordException (HttpServletRequest request,
                                                   RedirectAttributes attributes,
                                                   InvalidPasswordException e){
-        return redirectToLastPage(request, attributes, e, "/profile/edit/password");
+        return redirectToLastPage
+                (request, attributes, e, "/profile/edit/password");
     }
 
     /**
@@ -171,7 +172,26 @@ public class ErrorHandler {
     public String handleBusinessException (HttpServletRequest request,
                                            RedirectAttributes attributes,
                                            BusinessException e){
-        return redirectToLastPage(request, attributes, e, "/");
+        return redirectToLastPage
+                (request, attributes, e, "/");
+    }
+
+    /**
+     * Handles cases where the HTTP method is not supported for a given URL.
+     * This method catches {@link HttpRequestMethodNotSupportedException} and
+     * redirects the user to the last visited page with a custom error message.
+     *
+     * @param request The HttpServletRequest to get the Referer header.
+     * @param attributes The RedirectAttributes to pass a flash message.
+     * @param e The exception that was thrown.
+     * @return A redirect string to the user's previous page or the home page.
+     */
+    @ExceptionHandler
+    public String handleMethodNotSupportedException (HttpServletRequest request,
+                                                     RedirectAttributes attributes,
+                                                     HttpRequestMethodNotSupportedException e){
+        return redirectToLastPage
+                (request, attributes, e, METHOD_NOT_SUPPORTED_MESSAGE_VALUE, "/");
     }
 
     /**
@@ -192,10 +212,37 @@ public class ErrorHandler {
                                       RedirectAttributes attributes,
                                       Throwable e,
                                       String baseUrl) {
+        log(e);
         String referer = request.getHeader("Referer");
         String redirectUrl = (referer != null) ? referer : baseUrl;
-        log(e);
         attributes.addFlashAttribute(ERROR_MESSAGE_KEY, e.getMessage());
+        return "redirect:" + redirectUrl;
+    }
+
+    /**
+     * Overloaded helper method to redirect the user with a custom error message.
+     * <p>
+     * This method is similar to the main {@code redirectToLastPage} but uses a
+     * provided custom error message instead of the exception's message. The exception
+     * is still logged for debugging purposes.
+     * </p>
+     *
+     * @param request The HttpServletRequest to get the Referer header.
+     * @param attributes The RedirectAttributes to add the flash message.
+     * @param e The exception that triggered the redirect.
+     * @param errorMessage The custom error message to display.
+     * @param baseUrl The default URL to redirect to if the "Referer" header is missing.
+     * @return A redirect string to the last page or the base URL.
+     */
+    private String redirectToLastPage(HttpServletRequest request,
+                                      RedirectAttributes attributes,
+                                      Throwable e,
+                                      String errorMessage,
+                                      String baseUrl) {
+        log(e);
+        String referer = request.getHeader("Referer");
+        String redirectUrl = (referer != null) ? referer : baseUrl;
+        attributes.addFlashAttribute(ERROR_MESSAGE_KEY, errorMessage);
         return "redirect:" + redirectUrl;
     }
 

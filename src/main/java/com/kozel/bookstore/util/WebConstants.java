@@ -1,5 +1,7 @@
 package com.kozel.bookstore.util;
 
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+
 import java.util.Set;
 
 /**
@@ -85,6 +87,21 @@ public final class WebConstants {
     public static final String URL_KEY = "url";
 
     /*Error constants*/
+
+    /**
+     * The error message displayed when a request is made with an unsupported HTTP method.
+     * This message is used in the global exception handler to inform the user that the operation
+     * is only valid when initiated from a web form or through specific system-level requests,
+     * preventing direct access via an unsupported method.
+     * <p>
+     * This message is an internationalized string that should not be changed without providing
+     * a corresponding translation in all supported languages.
+     * </p>
+     *
+     * @see HttpRequestMethodNotSupportedException
+     */
+    public static final String METHOD_NOT_SUPPORTED_MESSAGE_VALUE =
+            "This operation can only be processed via a form or system requests.";
 
     /**
      * The key for the error status in error messages.
