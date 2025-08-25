@@ -134,4 +134,4 @@ If you'd like to contribute, please fork the repository and submit a pull reques
 
 ## Contact
 
-For any questions or feedback, please contact [sensitiveperson@mail.ru](mailto:sensitiveperson@mail.ru).
+For any questions or feedback, please contact [olegkozelres@gmail.com](mailto:olegkozelres@gmail.com).
